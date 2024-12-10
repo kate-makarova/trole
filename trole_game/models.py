@@ -49,3 +49,11 @@ class Post(models.Model):
     date_created = models.DateTimeField()
     content = models.TextField()
     order = models.IntegerField()
+
+class CharacterCounter(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    participating_episodes = models.IntegerField()
+    posts_written = models.IntegerField()
+    unread_posts = models.IntegerField()
+    last_post_date = models.DateTimeField()
+

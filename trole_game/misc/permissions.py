@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-
+from django.utils.translation import gettext as _
 from trole_game.models import Game, UserGameParticipation
 
 
@@ -7,9 +6,9 @@ class GamePermissions:
 
     def get_levels(self):
         return {
-            0: 'Open to guests',
-            1: 'Open to users',
-            2: 'Open to participants'
+            0: _('Open to guests'),
+            1: _('Open to users'),
+            2: _('Open to participants')
         }
 
     def check_game_access(self, game_id, user_id):

@@ -33,6 +33,12 @@ class Game(models.Model):
     total_episodes = models.IntegerField()
     total_characters = models.IntegerField()
     last_post_published = models.DateTimeField()
+    permission_level = models.IntegerField()
+
+class UserGameParticipation(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.IntegerField()
 
 class GameEpisodeCategory(models.Model):
     name = models.CharField(max_length=50)

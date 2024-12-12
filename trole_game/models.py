@@ -32,8 +32,10 @@ class Game(models.Model):
     total_posts = models.IntegerField()
     total_episodes = models.IntegerField()
     total_characters = models.IntegerField()
+    total_users = models.IntegerField()
     last_post_published = models.DateTimeField()
     permission_level = models.IntegerField()
+    was_online_in_24 = models.IntegerField()
 
 class UserGameParticipation(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -80,4 +82,21 @@ class CharacterCounter(models.Model):
     posts_written = models.IntegerField()
     unread_posts = models.IntegerField()
     last_post_date = models.DateTimeField()
+
+class UserGameDisplay(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    display_category = models.IntegerField()
+    is_on_main_page = models.BooleanField()
+    order = models.IntegerField()
+
+class SiteStatistics(models.Model):
+    total_fandoms = models.IntegerField()
+    total_games = models.IntegerField()
+    total_posts = models.IntegerField()
+    total_episodes = models.IntegerField()
+    total_characters = models.IntegerField()
+    total_users = models.IntegerField()
+    permission_level = models.IntegerField()
+    was_online_in_24 = models.IntegerField()
 

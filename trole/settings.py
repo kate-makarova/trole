@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["localhost", "wonderful-pond-097208f0f.4.azurestaticapps.net"]
+ALLOWED_HOSTS = ["localhost", "trole-backend-aac3cvhdf4c2hngs.canadacentral-01.azurewebsites.net"]
 
 
 # Application definition

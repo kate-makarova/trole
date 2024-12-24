@@ -26,8 +26,8 @@ class Fandom(models.Model):
 
 class Game(models.Model):
     name = models.CharField(max_length=300)
-    fandom = models.ForeignKey(Fandom, on_delete=models.DO_NOTHING)
-    genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING)
+    fandoms = models.ManyToManyField(Fandom)
+    genres = models.ManyToManyField(Genre)
     rating = models.ForeignKey(Rating, on_delete=models.DO_NOTHING)
     image = models.CharField(max_length=300)
     status = models.ForeignKey(GameStatus, on_delete=models.DO_NOTHING)
@@ -38,7 +38,7 @@ class Game(models.Model):
     total_episodes = models.IntegerField()
     total_characters = models.IntegerField()
     total_users = models.IntegerField()
-    last_post_published = models.DateTimeField()
+    last_post_published = models.DateTimeField(null=True)
     permission_level = models.IntegerField()
     was_online_in_24 = models.IntegerField()
 

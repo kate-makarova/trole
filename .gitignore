@@ -2,3 +2,4 @@
 .venv
 .env
 !.env.dev
+trole/settings_local.py

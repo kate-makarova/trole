@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{$ block content %}
+<style>
+    /* Split the screen in half */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+}
+</style>
+
+<div class="row column">
+ <div class="media-object">
+  <div class="media-object-section">
+    <a href="#"><div class="thumbnail">
+        <h5>Raphael</h5>
+      <img width="80px" src="https://64.media.tumblr.com/1822097588ed3271666fa1b98b4b60ae/2766637fd38ec5c4-c5/s1280x1920/f0587a62ff45edfdc28436632ddd32d15dedb2b2.jpg" />
+    </div></a>
+  </div>
+  <div class="media-object-section">
+    <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+        laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+        architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas
+        sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
+        voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit
+        amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut
+        labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
+        nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea
+        commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit
+        esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas
+        nulla pariatur?</p>
+  </div>
+</div>
+</div>
+
+<div class="split right">
+    Here is a screen for typing
+</div>
+{% endblock %}

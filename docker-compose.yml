@@ -21,5 +21,28 @@ services:
       - POSTGRES_PASSWORD=hello_django
       - POSTGRES_DB=hello_django_dev
 
+  languagetool:
+    image: languagetool-custom:latest
+    container_name: languagetool
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_SETUID
+      - CAP_SETGID
+      - CAP_CHOWN
+    security_opt:
+      - no-new-privileges
+    ports:
+      - 8010:8010
+    environment:
+      download_ngrams_for_langs: en,ru
+    volumes:
+      - ./ngrams:/ngrams
+      - ./fasttext:/fasttext
+
 volumes:
   postgres_data:

@@ -15,9 +15,14 @@ class Rating(models.Model):
     name = models.CharField(max_length=5)
     description=models.TextField()
 
+class MediaType(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
 class Fandom(models.Model):
     name = models.CharField(max_length=200)
     genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING)
+    mediaType = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
 
 class Game(models.Model):
     name = models.CharField(max_length=300)
@@ -62,12 +67,12 @@ class Episode(models.Model):
     status = models.ForeignKey(EpisodeStatus, on_delete=models.DO_NOTHING)
     category = models.ForeignKey(GameEpisodeCategory, on_delete=DO_NOTHING)
     rating = models.ForeignKey(Rating, on_delete=models.DO_NOTHING)
-    characters = models.ManyToManyField(Character, on_delete=models.DO_NOTHING)
+    characters = models.ManyToManyField(Character)
     date_created = models.DateTimeField()
     number_of_posts = models.IntegerField()
     last_post_date = models.DateTimeField()
-    last_post_author = models.ForeignKey(Character, on_delete=models.DO_NOTHING)
-    in_category_order = order = models.IntegerField()
+    last_post_author = models.ForeignKey(Character, related_name='last_post_author_id', on_delete=models.DO_NOTHING)
+    in_category_order = models.IntegerField()
 
 class Post(models.Model):
     episode = models.ForeignKey(Episode, on_delete=models.DO_NOTHING)

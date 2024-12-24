@@ -1,0 +1,56 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+  </head>
+  <body>
+<style>
+  /*icon styles*/
+  .fi-social-facebook {
+    color: dodgerblue;
+    font-size: 2rem;
+  }
+  .fi-social-youtube {
+    color: red;
+    font-size: 2rem;
+  }
+  .fi-social-pinterest {
+    color: darkred;
+    font-size: 2rem;
+  }
+  i.fi-social-instagram {
+    color: brown;
+    font-size: 2rem;
+  }
+  i.fi-social-tumblr {
+    color: navy;
+    font-size: 2rem;
+  }
+  .fi-social-twitter {
+    color: skyblue;
+    font-size: 2rem;
+  }
+
+</style>
+
+{% include 'header.html' %}
+
+<br>
+
+<hr>
+
+{% block content %}{% endblock %}
+
+
+{% include 'footer.html' %}
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

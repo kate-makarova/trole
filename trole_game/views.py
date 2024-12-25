@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.models import Character, Game, UserGameParticipation, Episode
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post
 
 
 def index(request):
@@ -91,12 +91,40 @@ class GetGameById(APIView):
         }
         return Response({"data": data})
 
+class GetEpisodeById(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        episode = Episode.objects.get(pk=id)
+        data = {
+            "id": episode.id,
+            "name": episode.name,
+            "image": episode.image,
+            "status": episode.status.name,
+            "total_posts": episode.number_of_posts,
+            "description": episode.description,
+            "characters": []
+        }
+        is_mine = False
+        for character in episode.characters.all():
+            data['characters'].append({
+                "id": character.id,
+                "name": character.name,
+                "avatar": character.avatar,
+                "is_mine": (character.user.id == request.user.id)
+            })
+            if character.user.id == request.user.id:
+                is_mine = True
+        data["is_mine"] = is_mine
+        return Response({"data": data})
+
 class GetEpisodeList(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, game_id):
-        episodes = Episode.objects.filter(game_id=game_id)
+        episodes = Episode.objects.filter(game_id=game_id).order_by('-last_post_date')
         data = []
 
         for episode in episodes:
@@ -135,7 +163,7 @@ class GetCharacterList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, game_id):
-        characters = Character.objects.filter(game_id=game_id)
+        characters = Character.objects.filter(game_id=game_id).order_by('name')
         data = []
 
         for character in characters:
@@ -148,6 +176,30 @@ class GetCharacterList(APIView):
                     "name": character.user.username
                 },
                 "is_mine": (character.user.id == request.user.id)
+            })
+        return Response({"data": data})
+
+class GetPostsByEpisode(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, episode_id):
+        posts = Post.objects.filter(episode_id=episode_id).order_by('order')
+        data = []
+
+        for post in posts:
+            data.append({
+                "id": post.id,
+                "is_read": True,
+                "content": post.content,
+                "post_date": post.date_created,
+                "character": {
+                    "id": post.post_author.id,
+                    "name": post.post_author.name,
+                    "avatar": post.post_author.avatar,
+                    "is_mine": (post.post_author.user.id == request.user.id)
+                },
+                "is_mine": (post.post_author.user.id == request.user.id)
             })
         return Response({"data": data})
 

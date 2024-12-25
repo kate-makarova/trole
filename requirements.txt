@@ -2,3 +2,5 @@ Django
 psycopg2-binary
 mssql-django
 django-cors-headers
+djangorestframework
+djangorestframework_simplejwt

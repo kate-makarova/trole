@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.models import Character, Game, UserGameParticipation, Episode, Post
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating
 
 
 def index(request):
@@ -203,3 +203,19 @@ class GetPostsByEpisode(APIView):
             })
         return Response({"data": data})
 
+class Autocomplete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_classes = [Character, Fandom, Rating]
+
+    def get(self, request, class_name, search):
+        cls = globals()[class_name]
+        results = getattr(cls, "objects").filter(name__contains=search).order_by('name')[:10]
+        data = []
+
+        for result in results:
+            data.append({
+                "id": result.id,
+                "name": result.name
+            })
+        return Response({"data": data})

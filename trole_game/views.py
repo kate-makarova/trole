@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
@@ -219,3 +221,32 @@ class Autocomplete(APIView):
                 "name": result.name
             })
         return Response({"data": data})
+
+class EpisodeCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_classes = [Character, Fandom, Rating]
+
+    def post(self, request):
+
+        print(request.data)
+
+        episode = Episode.objects.create(
+        name = request.data['name'],
+        image = request.data['image'],
+        description = request.data['description'],
+        status_id = 1,
+        category = None,
+        rating_id = 3,
+        game_id = request.data['game'],
+        user_created_id = request.user.id,
+        date_created = datetime.datetime.now(),
+        number_of_posts = 0,
+        last_post_date = None,
+        last_post_author = None,
+        in_category_order = None
+        )
+        for entity in request.data['characters']:
+            episode.characters.add(entity['id'])
+
+        return Response({"data": episode.id})

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
-    GetPostsByEpisode, Autocomplete
+    GetPostsByEpisode, Autocomplete, EpisodeCreate
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -11,5 +11,6 @@ urlpatterns = [
     path('api/character-list/<int:game_id>', GetCharacterList.as_view(), name='character_list'),
     path('api/episode/<int:id>', GetEpisodeById.as_view(), name='get_episode'),
     path('api/episode-posts/<int:episode_id>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
-    path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete')
+    path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete'),
+    path('api/episode-create', EpisodeCreate.as_view(), name='episode_create')
 ]

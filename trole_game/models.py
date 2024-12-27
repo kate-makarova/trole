@@ -69,6 +69,7 @@ class Episode(models.Model):
     rating = models.ForeignKey(Rating, on_delete=models.DO_NOTHING)
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
     characters = models.ManyToManyField(Character)
+    user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
     date_created = models.DateTimeField()
     number_of_posts = models.IntegerField()
     last_post_date = models.DateTimeField(null=True)

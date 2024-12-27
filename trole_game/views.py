@@ -250,3 +250,23 @@ class EpisodeCreate(APIView):
             episode.characters.add(entity['id'])
 
         return Response({"data": episode.id})
+
+class CharacterCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_classes = [Character, Fandom, Rating]
+
+    def post(self, request):
+
+        print(request.data)
+
+        character = Character.objects.create(
+            name=request.data['name'],
+            game_id = request.data['game'],
+            avatar = request.data['avatar'],
+            description = request.data['description'],
+            user_id = request.user.id,
+            date_created = datetime.datetime.now(),
+        )
+
+        return Response({"data": character.id})

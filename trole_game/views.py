@@ -9,7 +9,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
-from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus
 
 
 def index(request):
@@ -210,7 +210,7 @@ class GetPostsByEpisode(APIView):
 class Autocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_entities = [Character, Fandom]
+    allowed_entities = ['Character', 'Fandom']
 
     def get(self, request, class_name, search):
         data = []
@@ -229,7 +229,7 @@ class Autocomplete(APIView):
 class StaticList(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_entities = [Rating, Genre]
+    allowed_entities = ['Rating', 'Genre', 'GameStatus']
     static_names = ['GamePermissions', 'ParticipationStatus', 'ParticipationRole']
 
     def get(self, request, class_name):

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
-    GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList
+    GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -15,6 +15,6 @@ urlpatterns = [
     path('api/static-list/<str:class_name>', StaticList.as_view(), name='static_list'),
     path('api/episode-create', EpisodeCreate.as_view(), name='episode_create'),
     path('api/character-create', CharacterCreate.as_view(), name='character_create'),
-    path('api/game-create', CharacterCreate.as_view(), name='game_create'),
-    path('api/post-create', CharacterCreate.as_view(), name='post_create')
+    path('api/game-create', GameCreate.as_view(), name='game_create'),
+    path('api/post-create', PostCreate.as_view(), name='post_create')
 ]

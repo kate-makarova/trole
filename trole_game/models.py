@@ -96,7 +96,7 @@ class UserGameDisplay(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     display_category = models.IntegerField()
     is_on_main_page = models.BooleanField()
-    order = models.IntegerField()
+    order = models.IntegerField(null=True)
 
 class SiteStatistics(models.Model):
     total_fandoms = models.IntegerField()

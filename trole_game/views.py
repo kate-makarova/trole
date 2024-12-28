@@ -9,7 +9,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
-from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus, \
+    UserGameDisplay
 
 
 def index(request):
@@ -323,8 +324,8 @@ class GameCreate(APIView):
 
         game = Game.objects.create(
             name=request.data['name'],
-            image = request.data['avatar'],
-            status = 1,
+            image = request.data['image'],
+            status_id = request.data['status'],
             description = request.data['description'],
             user_created_id = request.user.id,
             date_created = datetime.datetime.now(),
@@ -332,18 +333,40 @@ class GameCreate(APIView):
             total_episodes = 0,
             total_characters = 0,
             total_users = 1,
-            permission_level = 1,
+            permission_level = request.data['access_level'],
             was_online_in_24 = 1,
-            rating_id = 3,
+            rating_id = request.data['rating'],
         )
+        is_original = False
+        fandom_ids = []
+
         for entity in request.data['fandoms']:
+            if entity['id'] == 1:
+                is_original = True
+            fandom_ids.append(entity['id'])
             game.fandoms.add(entity['id'])
+
+        if is_original:
+            for genre in request.data['genres']:
+                game.fandoms.add(genre)
+
+        genres = Genre.objects.filter(id__in=fandom_ids)
+        for genre in genres:
+            game.genres.add(genre)
 
         UserGameParticipation.objects.create(
             user_id = request.user.id,
             game_id = game.id,
             status = 1,
             role = 1
+        )
+
+        UserGameDisplay.objects.create(
+            user_id = request.user.id,
+            game_id = game.id,
+            display_category = 1,
+            is_on_main_page = True,
+            order = None
         )
 
         return Response({"data": game.id})

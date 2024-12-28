@@ -13,5 +13,7 @@ urlpatterns = [
     path('api/episode-posts/<int:episode_id>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
     path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete'),
     path('api/episode-create', EpisodeCreate.as_view(), name='episode_create'),
-    path('api/character-create', CharacterCreate.as_view(), name='character_create')
+    path('api/character-create', CharacterCreate.as_view(), name='character_create'),
+    path('api/game-create', CharacterCreate.as_view(), name='game_create'),
+    path('api/post-create', CharacterCreate.as_view(), name='post_create')
 ]

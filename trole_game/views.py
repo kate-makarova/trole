@@ -270,3 +270,57 @@ class CharacterCreate(APIView):
         )
 
         return Response({"data": character.id})
+
+class GameCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_classes = [Character, Fandom, Rating]
+
+    def post(self, request):
+
+        print(request.data)
+
+        game = Game.objects.create(
+            name=request.data['name'],
+            image = request.data['avatar'],
+            status = 1,
+            description = request.data['description'],
+            user_created_id = request.user.id,
+            date_created = datetime.datetime.now(),
+            total_posts= 0,
+            total_episodes = 0,
+            total_characters = 0,
+            total_users = 1,
+            permission_level = 1,
+            was_online_in_24 = 1,
+            rating_id = 3,
+        )
+        for entity in request.data['fandoms']:
+            game.fandoms.add(entity['id'])
+
+        UserGameParticipation.objects.create(
+            user_id = request.user.id,
+            game_id = game.id,
+            status = 1
+        )
+
+        return Response({"data": game.id})
+
+class PostCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_classes = [Character, Fandom, Rating]
+
+    def post(self, request):
+
+        print(request.data)
+
+        post = Post.objects.create(
+            content=request.data['name'],
+            episode_id = request.data['episode'],
+            order=request.data['order'],
+            post_author_id = request.user.id,
+            date_created = datetime.datetime.now(),
+        )
+
+        return Response({"data": post.id})

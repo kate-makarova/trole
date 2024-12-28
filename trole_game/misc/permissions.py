@@ -4,7 +4,8 @@ from trole_game.models import Game, UserGameParticipation
 
 class GamePermissions:
 
-    def get_levels(self):
+    @staticmethod
+    def get_levels():
         return {
             0: _('Open to guests'),
             1: _('Open to users'),

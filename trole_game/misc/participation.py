@@ -2,7 +2,8 @@ from django.utils.translation import gettext as _
 
 class Participation:
 
-    def get_participation_status(self):
+    @staticmethod
+    def get_participation_status():
         return {
             0: _('Cancelled'),
             1: _('Active'),
@@ -10,7 +11,8 @@ class Participation:
             3: _('Suspended')
         }
 
-    def get_participation_level(self):
+    @staticmethod
+    def get_participation_role():
         return {
             1: _('Super Admin'),
             2: _('Admin'),

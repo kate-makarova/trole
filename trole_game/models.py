@@ -46,6 +46,7 @@ class UserGameParticipation(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.IntegerField()
+    role = models.IntegerField()
 
 class GameEpisodeCategory(models.Model):
     name = models.CharField(max_length=50)

@@ -7,7 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating
+from trole_game.misc.participation import Participation
+from trole_game.misc.permissions import GamePermissions
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre
 
 
 def index(request):
@@ -208,24 +210,65 @@ class GetPostsByEpisode(APIView):
 class Autocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_classes = [Character, Fandom, Rating]
+    allowed_entities = [Character, Fandom]
 
     def get(self, request, class_name, search):
-        cls = globals()[class_name]
-        results = getattr(cls, "objects").filter(name__contains=search).order_by('name')[:10]
         data = []
+        if class_name in self.allowed_entities:
+            cls = globals()[class_name]
+            results = getattr(cls, "objects").filter(name__contains=search).order_by('name')[:10]
 
-        for result in results:
-            data.append({
-                "id": result.id,
-                "name": result.name
-            })
+            for result in results:
+                data.append({
+                    "id": result.id,
+                    "name": result.name
+                })
+
+        return Response({"data": data})
+
+class StaticList(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_entities = [Rating, Genre]
+    static_names = ['GamePermissions', 'ParticipationStatus', 'ParticipationRole']
+
+    def get(self, request, class_name):
+        data = []
+        if class_name in self.allowed_entities:
+            cls = globals()[class_name]
+            results = getattr(cls, "objects").all().order_by('name')[:10]
+
+            for result in results:
+                data.append({
+                    "id": result.id,
+                    "name": result.name
+                })
+
+        if class_name in self.static_names:
+            if class_name == 'GamePermissions':
+                for key, val in GamePermissions.get_levels().items():
+                    data.append({
+                        "id": key,
+                        "name": val
+                    })
+            if class_name == 'ParticipationRole':
+                for key, val in Participation.get_participation_role().items():
+                    data.append({
+                        "id": key,
+                        "name": val
+                    })
+            if class_name == 'ParticipationStatus':
+                for key, val in Participation.get_participation_status().items():
+                    data.append({
+                        "id": key,
+                        "name": val
+                    })
+
         return Response({"data": data})
 
 class EpisodeCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_classes = [Character, Fandom, Rating]
 
     def post(self, request):
 
@@ -254,7 +297,6 @@ class EpisodeCreate(APIView):
 class CharacterCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_classes = [Character, Fandom, Rating]
 
     def post(self, request):
 
@@ -274,7 +316,6 @@ class CharacterCreate(APIView):
 class GameCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_classes = [Character, Fandom, Rating]
 
     def post(self, request):
 
@@ -301,7 +342,8 @@ class GameCreate(APIView):
         UserGameParticipation.objects.create(
             user_id = request.user.id,
             game_id = game.id,
-            status = 1
+            status = 1,
+            role = 1
         )
 
         return Response({"data": game.id})
@@ -309,7 +351,6 @@ class GameCreate(APIView):
 class PostCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_classes = [Character, Fandom, Rating]
 
     def post(self, request):
 
@@ -324,3 +365,4 @@ class PostCreate(APIView):
         )
 
         return Response({"data": post.id})
+

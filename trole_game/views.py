@@ -10,7 +10,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus, \
-    UserGameDisplay
+    UserGameDisplay, CharacterEpisodeNotification
 
 
 def index(request):
@@ -306,8 +306,22 @@ class EpisodeCreate(APIView):
         last_post_author = None,
         in_category_order = None
         )
+
         for entity in request.data['characters']:
             episode.characters.add(entity['id'])
+            if request.user.id != entity['id']:
+
+                character = Character.objects.get(pk=entity['id'])
+                character.participating_episodes += 1;
+                character.save()
+
+                CharacterEpisodeNotification.objects.create(
+                    character_id = entity['id'],
+                    episode_id = episode.id,
+                    date_created = datetime.datetime.now(),
+                    is_read = False,
+                    notification_type=1
+                )
 
         game = Game.objects.get(pk=request.data['game'])
         game.total_episodes += 1
@@ -433,11 +447,27 @@ class PostCreate(APIView):
             date_created = datetime.datetime.now(),
         )
 
+        post.post_author.posts_written += 1
+        post.post_author.last_post_date = post.date_created
+        post.post_author.save()
+
         episode = Episode.objects.get(pk=request.data['episode'])
         episode.number_of_posts += 1
         episode.last_post_date = post.date_created
         episode.last_post_author = post.post_author
         episode.save()
+
+        for character in episode.characters:
+            if character.user.id != post.post_author.id:
+
+                CharacterEpisodeNotification.objects.create(
+                    character_id = character.id,
+                    episode_id = episode.id,
+                    post_id = post.id,
+                    date_created = datetime.datetime.now(),
+                    is_read = False,
+                    notification_type=2
+                )
 
         game = Game.objects.get(pk=episode.game.id)
         game.total_posts += 1

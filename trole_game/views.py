@@ -211,7 +211,7 @@ class GetPostsByEpisode(APIView):
 class Autocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_entities = ['Character', 'Fandom']
+    allowed_entities = ['Fandom']
 
     def get(self, request, class_name, search):
         data = []
@@ -224,6 +224,22 @@ class Autocomplete(APIView):
                     "id": result.id,
                     "name": result.name
                 })
+
+        return Response({"data": data})
+
+class CharacterAutocomplete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, game_id, search):
+        data = []
+        results = Character.objects.filter(game_id=game_id, name__contains=search).order_by('name')[:10]
+
+        for result in results:
+            data.append({
+                "id": result.id,
+                "name": result.name
+            })
 
         return Response({"data": data})
 
@@ -293,7 +309,28 @@ class EpisodeCreate(APIView):
         for entity in request.data['characters']:
             episode.characters.add(entity['id'])
 
+        game = Game.objects.get(pk=request.data['game'])
+        game.total_episodes += 1
+        game.save()
+
         return Response({"data": episode.id})
+
+
+class GameJoin(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        print(request.data)
+
+        UserGameParticipation.create(
+            user_id = request.user.id,
+            game_id = request.data['game'],
+            status = 2,
+            role = 4
+        )
+
+        return Response({"data": 'success'})
 
 class CharacterCreate(APIView):
     authentication_classes = [JWTAuthentication]
@@ -311,6 +348,15 @@ class CharacterCreate(APIView):
             user_id = request.user.id,
             date_created = datetime.datetime.now(),
         )
+
+        participation = UserGameParticipation.objects.find(user_id=request.user.id, game_id=request.data['game'])
+        if participation.status == 2:
+            participation.status = 1
+            participation.save()
+
+        game = Game.objects.get(pk=request.data['game'])
+        game.total_characters += 1
+        game.save()
 
         return Response({"data": character.id})
 
@@ -386,6 +432,18 @@ class PostCreate(APIView):
             post_author_id = request.user.id,
             date_created = datetime.datetime.now(),
         )
+
+        episode = Episode.objects.get(pk=request.data['episode'])
+        episode.number_of_posts += 1
+        episode.last_post_date = post.date_created
+        episode.last_post_author = post.post_author
+        episode.save()
+
+        game = Game.objects.get(pk=episode.game.id)
+        game.total_posts += 1
+        game.last_post_published = post.date_created
+        game.save()
+
 
         return Response({"data": post.id})
 

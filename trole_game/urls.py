@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
-    GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate
+    GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
+    CharacterAutocomplete, GameJoin
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -12,9 +13,11 @@ urlpatterns = [
     path('api/episode/<int:id>', GetEpisodeById.as_view(), name='get_episode'),
     path('api/episode-posts/<int:episode_id>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
     path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete'),
+    path('api/character-autocomplete/<int:game_id>/<str:search>', CharacterAutocomplete.as_view(), name='character_autocomplete'),
     path('api/static-list/<str:class_name>', StaticList.as_view(), name='static_list'),
     path('api/episode-create', EpisodeCreate.as_view(), name='episode_create'),
     path('api/character-create', CharacterCreate.as_view(), name='character_create'),
     path('api/game-create', GameCreate.as_view(), name='game_create'),
+    path('api/game-join', GameJoin.as_view(), name='game_join'),
     path('api/post-create', PostCreate.as_view(), name='post_create')
 ]

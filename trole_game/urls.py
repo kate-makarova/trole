@@ -22,5 +22,5 @@ urlpatterns = [
     path('api/post-create', PostCreate.as_view(), name='post_create'),
     path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
     path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),
-    path('api/breadcrumbs', Breadcrumbs.as_view(), name='breadcrumbs'),
+    path('api/breadcrumbs/<str:path>', Breadcrumbs.as_view(), name='breadcrumbs'),
 ]

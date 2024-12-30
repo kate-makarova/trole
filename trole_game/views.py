@@ -475,17 +475,17 @@ class PostCreate(APIView):
         episode.last_post_author = post.post_author
         episode.save()
 
-        for character in episode.characters.all():
-            if character.user.id != post.post_author.id:
+        for character in episode.characters.exclude(user_id=request.user.id) :
+            # if character.user.id != post.post_author.id:
 
-                CharacterEpisodeNotification.objects.create(
-                    character_id = character.id,
-                    episode_id = episode.id,
-                    post_id = post.id,
-                    date_created = datetime.datetime.now(),
-                    is_read = False,
-                    notification_type=2
-                )
+            CharacterEpisodeNotification.objects.create(
+                character_id = character.id,
+                episode_id = episode.id,
+                post_id = post.id,
+                date_created = datetime.datetime.now(),
+                is_read = False,
+                notification_type=2
+            )
 
         game = Game.objects.get(pk=episode.game.id)
         game.total_posts += 1

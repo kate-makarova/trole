@@ -34,9 +34,11 @@ class UserHome(APIView):
                 "image": participation.game.image,
                 "total_episodes": participation.game.total_episodes,
                 "total_posts": participation.game.total_posts,
+                "total_characters": participation.game.total_characters,
+                "total_users": participation.game.total_users,
                 "my_characters": [],
                 "fandoms": [],
-                "genres": []
+                "genres": [],
             }
             for fandom in participation.game.fandoms.all():
                 game["fandoms"].append({
@@ -45,10 +47,22 @@ class UserHome(APIView):
                 })
             characters = Character.objects.filter(game_id=participation.game.id, user_id=user_id)
             for character in characters:
+                new_episodes = 0
+                unread_posts = 0
+
+                notifications = CharacterEpisodeNotification.objects.filter(character_id=character.id, is_read=False)
+                for notification in notifications:
+                    if notification.notification_type == 1:
+                        new_episodes += 1
+                    if notification.notification_type == 2:
+                        unread_posts += 1
+
                 game['my_characters'].append({
                     "id": character.id,
                     "name": character.name,
-                    "avatar": character.avatar
+                    "avatar": character.avatar,
+                    "unread_posts": unread_posts,
+                    "new_episodes": new_episodes,
                 })
             data.append(game)
         return Response({
@@ -92,7 +106,9 @@ class GetGameById(APIView):
             "total_users": game.total_users,
             "total_episodes": game.total_episodes,
             "rating": game.rating.name,
-            "description": game.description
+            "description": game.description,
+            "fandoms": game.fandoms.all().values('id', 'name'),
+            "genres": game.genres.all().values('id', 'name')
         }
         return Response({"data": data})
 
@@ -361,9 +377,10 @@ class CharacterCreate(APIView):
             description = request.data['description'],
             user_id = request.user.id,
             date_created = datetime.datetime.now(),
+            posts_written = 0,
         )
 
-        participation = UserGameParticipation.objects.find(user_id=request.user.id, game_id=request.data['game'])
+        participation = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
         if participation.status == 2:
             participation.status = 1
             participation.save()
@@ -439,11 +456,12 @@ class PostCreate(APIView):
 
         print(request.data)
 
+        order = Post.objects.filter(episode_id=request.data['episode']).count() + 1
         post = Post.objects.create(
-            content=request.data['name'],
+            content=request.data['content'],
             episode_id = request.data['episode'],
-            order=request.data['order'],
-            post_author_id = request.user.id,
+            order=order,
+            post_author_id = request.data['character'],
             date_created = datetime.datetime.now(),
         )
 
@@ -457,7 +475,7 @@ class PostCreate(APIView):
         episode.last_post_author = post.post_author
         episode.save()
 
-        for character in episode.characters:
+        for character in episode.characters.all():
             if character.user.id != post.post_author.id:
 
                 CharacterEpisodeNotification.objects.create(

@@ -79,6 +79,12 @@ class Episode(models.Model):
     last_post_author = models.ForeignKey(Character, related_name='last_post_author_id', on_delete=models.DO_NOTHING, null=True)
     in_category_order = models.IntegerField(null=True)
 
+    def user_participates(self, user_id):
+        for character in self.characters.all():
+            if character.user.id == user_id:
+                return True
+        return False
+
 class Post(models.Model):
     episode = models.ForeignKey(Episode, on_delete=models.DO_NOTHING)
     post_author = models.ForeignKey(Character, on_delete=models.DO_NOTHING)

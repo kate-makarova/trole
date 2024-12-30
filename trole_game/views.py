@@ -504,9 +504,15 @@ class GetArticleById(APIView):
         data = {
             "id": article.id,
             "name": article.name,
-            "content": article.image,
-            "game_id": article.game_id,
-            "author_id": article.user_created,
+            "content": article.content,
+            "game": {
+                "id": article.game_id,
+                "name": article.game.name
+            },
+            "author": {
+                "id": article.user_created.id,
+                "name": article.user_created.username
+            },
             "date_created": article.date_created,
         }
         return Response({"data": data})
@@ -520,9 +526,15 @@ class GetIndexArticle(APIView):
         data = {
             "id": article.id,
             "name": article.name,
-            "content": article.image,
-            "game_id": article.game_id,
-            "author_id": article.user_created,
+            "content": article.content,
+            "game": {
+                "id": article.game_id,
+                "name": article.game.name
+            },
+            "author": {
+                "id": article.user_created.id,
+                "name": article.user_created.username
+            },
             "date_created": article.date_created,
         }
         return Response({"data": data})

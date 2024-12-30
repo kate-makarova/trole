@@ -113,3 +113,11 @@ class SiteStatistics(models.Model):
     permission_level = models.IntegerField()
     was_online_in_24 = models.IntegerField()
 
+class Article(models.Model):
+    name = models.CharField(max_length=300)
+    content = models.TextField()
+    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
+    user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
+    date_created = models.DateTimeField()
+    is_index = models.BooleanField()
+

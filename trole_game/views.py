@@ -10,7 +10,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus, \
-    UserGameDisplay, CharacterEpisodeNotification
+    UserGameDisplay, CharacterEpisodeNotification, Article
 
 
 def index(request):
@@ -494,4 +494,36 @@ class PostCreate(APIView):
 
 
         return Response({"data": post.id})
+
+class GetArticleById(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        article = Article.objects.get(pk=id)
+        data = {
+            "id": article.id,
+            "name": article.name,
+            "content": article.image,
+            "game_id": article.game_id,
+            "author_id": article.user_created,
+            "date_created": article.date_created,
+        }
+        return Response({"data": data})
+
+class GetIndexArticle(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        article = Article.objects.get(is_index=True)
+        data = {
+            "id": article.id,
+            "name": article.name,
+            "content": article.image,
+            "game_id": article.game_id,
+            "author_id": article.user_created,
+            "date_created": article.date_created,
+        }
+        return Response({"data": data})
 

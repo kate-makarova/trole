@@ -499,8 +499,8 @@ class GetArticleById(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, id):
-        article = Article.objects.get(pk=id)
+    def get(self, request, game_id, id):
+        article = Article.objects.get(game_id=game_id, pk=id)
         data = {
             "id": article.id,
             "name": article.name,
@@ -521,8 +521,8 @@ class GetIndexArticle(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        article = Article.objects.get(is_index=True)
+    def get(self, request, game_id):
+        article = Article.objects.get(game_id=game_id, is_index=True)
         data = {
             "id": article.id,
             "name": article.name,

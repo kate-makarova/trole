@@ -20,6 +20,6 @@ urlpatterns = [
     path('api/game-create', GameCreate.as_view(), name='game_create'),
     path('api/game-join', GameJoin.as_view(), name='game_join'),
     path('api/post-create', PostCreate.as_view(), name='post_create'),
-    path('api/article/<int:id>', GetArticleById.as_view(), name='article'),
-    path('api/article-index', GetIndexArticle.as_view(), name='article_index'),
+    path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
+    path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),
 ]

@@ -544,59 +544,73 @@ class Breadcrumbs(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, path):
-        print(request.data)
-
         breadcrumbs = []
 
         if path == 'game':
-            game = Game.objects.get(pk=request.data[0])
+            game = Game.objects.get(pk=request.GET.get('0'))
             participates = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id).count()
             if participates:
                 breadcrumbs = [
                     {"name": "My Games", "path": "/home"},
-                    {"name": game.name, "path": "/game/" + game.id},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
                 ]
             else:
                 breadcrumbs = [
                     {"name": "Games", "path": "/games"},
-                    {"name": game.name, "path": "/game/" + game.id},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
                 ]
 
         if path == 'episode':
-            episode = Episode.objects.get(pk=request.data[0])
+            episode = Episode.objects.get(pk=request.GET.get('0'))
             if episode.user_participates(request.user.id):
                 breadcrumbs = [
                     {"name": "My Games", "path": "/home"},
-                    {"name": episode.game.name, "path": "/game/"+episode.game.id},
-                    {"name": episode.name, "path": "/episode"+episode.id}
+                    {"name": episode.game.name, "path": "/game/"+str(episode.game.id)},
+                    {"name": episode.name, "path": "/episode"+str(episode.id)}
                 ]
             else:
                 breadcrumbs = [
                     {"name": "Games", "path": "/games"},
-                    {"name": episode.game.name, "path": "/game/" + episode.game.id},
-                    {"name": episode.name, "path": "/episode/" + episode.id}
+                    {"name": episode.game.name, "path": "/game/" + str(episode.game.id)},
+                    {"name": episode.name, "path": "/episode/" + str(episode.id)}
                 ]
 
         if path == 'article':
-            if len(request.data):
-                article = Article.objects.get(game_id=request.data[0], pk=request.data[1])
-                path = '/article/'+request.data[0]+'/'+request.data[1]
+            if len(request.GET) > 1:
+                article = Article.objects.get(game_id=request.GET.get('0'), pk=request.GET.get('1'))
+                index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
+                article_breadcrumbs = [
+                    {
+                        "name": index_article.name,
+                        "path": '/article/' + str(request.GET.get('0'))
+                    },
+                    {
+                        "name": article.name,
+                        "path": '/article/'+str(request.GET.get('0'))+'/'+str(request.GET.get('1'))
+                    }
+                ]
+
             else:
-                article = Article.objects.get(game_id=request.data[0], is_index=True)
-                path = '/article/' + request.data[0]
-            participates = UserGameParticipation.objects.filter(game_id=article.game.id, user_id=request.user.id).count()
+                index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
+                article_breadcrumbs = [
+                    {
+                        "name": index_article.name,
+                        "path": '/article/' + str(request.GET.get('0'))
+                    }
+                ]
+
+            participates = UserGameParticipation.objects.filter(game_id=index_article.game.id, user_id=request.user.id).count()
             if participates:
                 breadcrumbs = [
                     {"name": "My Games", "path": "/home"},
-                    {"name": article.game.name, "path": "/game/"+article.game.id},
-                    {"name": article.name, "path": path}
+                    {"name": index_article.game.name, "path": "/game/"+str(index_article.game.id)},
                 ]
             else:
                 breadcrumbs = [
                     {"name": "Games", "path": "/games"},
-                    {"name": article.game.name, "path": "/game/" + article.game.id},
-                    {"name": article.name, "path": "/episode/" + path}
+                    {"name": index_article.game.name, "path": "/game/" + str(index_article.game.id)},
                 ]
+            breadcrumbs += article_breadcrumbs
 
 
         return Response({"data": breadcrumbs})

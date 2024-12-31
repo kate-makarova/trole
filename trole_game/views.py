@@ -111,6 +111,12 @@ class GetGameById(APIView):
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name')
         }
+        participation = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id)
+        if len(participation):
+            data["is_mine"] = True
+        else:
+            data["is_mine"] = False
+
         return Response({"data": data})
 
 class GetEpisodeById(APIView):
@@ -176,6 +182,7 @@ class GetEpisodeList(APIView):
                 "last_post_date": episode.last_post_date,
                 "last_post_autor": last_post_author,
                 "description": episode.description,
+                "characters": episode.characters.all().values('id', 'name', 'avatar'),
                 "is_mine": is_mine
             })
         return Response({"data": data})
@@ -528,7 +535,7 @@ class GetIndexArticle(APIView):
         data = {
             "id": article.id,
             "name": article.name,
-            "content": article.content,
+            "content": article.content_html,
             "game": {
                 "id": article.game_id,
                 "name": article.game.name

@@ -9,8 +9,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
-from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Fandom, Rating, Genre, GameStatus, \
+from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article
+from trole_game.util.bb_translator import translate_bb
 
 
 def index(request):
@@ -212,7 +213,7 @@ class GetPostsByEpisode(APIView):
             data.append({
                 "id": post.id,
                 "is_read": True,
-                "content": post.content,
+                "content": post.content_html,
                 "post_date": post.date_created,
                 "character": {
                     "id": post.post_author.id,
@@ -458,7 +459,8 @@ class PostCreate(APIView):
 
         order = Post.objects.filter(episode_id=request.data['episode']).count() + 1
         post = Post.objects.create(
-            content=request.data['content'],
+            content_bb=request.data['content'],
+            content_html=translate_bb(request.data['content']),
             episode_id = request.data['episode'],
             order=order,
             post_author_id = request.data['character'],
@@ -504,7 +506,7 @@ class GetArticleById(APIView):
         data = {
             "id": article.id,
             "name": article.name,
-            "content": article.content,
+            "content": article.content_html,
             "game": {
                 "id": article.game_id,
                 "name": article.game.name

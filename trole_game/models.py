@@ -89,7 +89,8 @@ class Post(models.Model):
     episode = models.ForeignKey(Episode, on_delete=models.DO_NOTHING)
     post_author = models.ForeignKey(Character, on_delete=models.DO_NOTHING)
     date_created = models.DateTimeField()
-    content = models.TextField()
+    content_bb = models.TextField()
+    content_html = models.TextField()
     order = models.IntegerField()
 
 class CharacterEpisodeNotification(models.Model):
@@ -121,7 +122,8 @@ class SiteStatistics(models.Model):
 
 class Article(models.Model):
     name = models.CharField(max_length=300)
-    content = models.TextField()
+    content_bb = models.TextField()
+    content_html = models.TextField()
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
     user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
     date_created = models.DateTimeField()

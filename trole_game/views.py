@@ -445,6 +445,7 @@ class GameCreate(APIView):
             total_episodes = 0,
             total_characters = 0,
             total_users = 1,
+            total_articles = 1,
             permission_level = request.data['access_level'],
             was_online_in_24 = 1,
             rating_id = request.data['rating'],
@@ -479,6 +480,16 @@ class GameCreate(APIView):
             display_category = 1,
             is_on_main_page = True,
             order = None
+        )
+
+        Article.objects.create(
+            name= game.name + ' - Index',
+            content_bb = 'Write your articles',
+            content_html = '<p>Write your articles</p>',
+            game_id = game.id,
+            user_created_id = request.user.id,
+            date_created = datetime.datetime.now(),
+            is_index = True
         )
 
         return Response({"data": game.id})

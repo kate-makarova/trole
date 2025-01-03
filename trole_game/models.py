@@ -28,6 +28,7 @@ class Game(models.Model):
     total_episodes = models.IntegerField()
     total_characters = models.IntegerField()
     total_users = models.IntegerField()
+    total_articles = models.IntegerField()
     last_post_published = models.DateTimeField(null=True)
     permission_level = models.IntegerField()
     was_online_in_24 = models.IntegerField()

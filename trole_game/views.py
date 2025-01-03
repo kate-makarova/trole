@@ -42,6 +42,7 @@ class UserHome(APIView):
                 "fandoms": [],
                 "genres": [],
             }
+
             for fandom in participation.game.fandoms.all():
                 game["fandoms"].append({
                     "id": fandom.id,
@@ -110,11 +111,14 @@ class GetGameById(APIView):
             "rating": Rating.get_ratings()[game.rating_id]['name'],
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
-            "genres": game.genres.all().values('id', 'name')
+            "genres": game.genres.all().values('id', 'name'),
+            "my_characters": []
         }
         participation = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id)
         if len(participation):
             data["is_mine"] = True
+
+            data['my_characters'] = Character.objects.filter(game_id=game.id, user_id=request.user.id).values("id", "name")
         else:
             data["is_mine"] = False
 
@@ -130,7 +134,7 @@ class GetEpisodeById(APIView):
             "id": episode.id,
             "name": episode.name,
             "image": episode.image,
-            "status": EpisodeStatus.get_game_status()[episode.status_id]['name'],
+            "status": EpisodeStatus.get_episode_status()[episode.status_id],
             "total_posts": episode.number_of_posts,
             "description": episode.description,
             "characters": []
@@ -162,26 +166,26 @@ class GetEpisodeList(APIView):
                 if character.user.id == request.user.id:
                     is_mine = True
                     break
-            if episode.category == None:
+            if episode.category is None:
                 category = ''
             else:
                 category = episode.category.name
 
-            if episode.last_post_author == None:
+            if episode.last_post_author is None:
                 last_post_author = None
             else:
                 last_post_author = {
                     "id": episode.last_post_author.id,
                     "name": episode.last_post_author.name
-                },
+                }
             data.append({
                 "id": episode.id,
                 "name": episode.name,
                 "image": episode.image,
                 "category": category,
-                "status": EpisodeStatus.get_game_status()[episode.status_id]['name'],
+                "status": EpisodeStatus.get_episode_status()[episode.status_id],
                 "last_post_date": episode.last_post_date,
-                "last_post_autor": last_post_author,
+                "last_post_author": last_post_author,
                 "description": episode.description,
                 "characters": episode.characters.all().values('id', 'name', 'avatar'),
                 "is_mine": is_mine
@@ -355,7 +359,7 @@ class EpisodeCreate(APIView):
             if request.user.id != entity['id']:
 
                 character = Character.objects.get(pk=entity['id'])
-                character.participating_episodes += 1;
+                character.participating_episodes += 1
                 character.save()
 
                 CharacterEpisodeNotification.objects.create(
@@ -404,16 +408,20 @@ class CharacterCreate(APIView):
             description = request.data['description'],
             user_id = request.user.id,
             date_created = datetime.datetime.now(),
+            participating_episodes=0,
             posts_written = 0,
         )
 
-        participation = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
-        if participation.status == 2:
-            participation.status = 1
-            participation.save()
+        participations = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
+        if len(participations):
+            participation = participations[0]
+            if participation.status == 2:
+                participation.status = 1
+                participation.save()
 
         game = Game.objects.get(pk=request.data['game'])
         game.total_characters += 1
+        print(game)
         game.save()
 
         return Response({"data": character.id})
@@ -586,6 +594,38 @@ class Breadcrumbs(APIView):
                 breadcrumbs = [
                     {"name": "Games", "path": "/games"},
                     {"name": game.name, "path": "/game/" + str(game.id)},
+                ]
+
+        if path == 'character-list':
+            game = Game.objects.get(pk=request.GET.get('0'))
+            participates = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id).count()
+            if participates:
+                breadcrumbs = [
+                    {"name": "My Games", "path": "/home"},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Character List", "path": "/character-list/" + str(game.id)}
+                ]
+            else:
+                breadcrumbs = [
+                    {"name": "Games", "path": "/games"},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Character List", "path": "/character-list/" + str(game.id)}
+                ]
+
+        if path == 'episode-create':
+            game = Game.objects.get(pk=request.GET.get('0'))
+            participates = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id).count()
+            if participates:
+                breadcrumbs = [
+                    {"name": "My Games", "path": "/home"},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Create Episode", "path": "/episode-create/" + str(game.id)}
+                ]
+            else:
+                breadcrumbs = [
+                    {"name": "Games", "path": "/games"},
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Create Episode", "path": "/episode-create/" + str(game.id)}
                 ]
 
         if path == 'episode':

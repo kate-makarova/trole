@@ -50,6 +50,7 @@ class Character(models.Model):
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date_created = models.DateTimeField()
+    participating_episodes = models.IntegerField()
     posts_written = models.IntegerField()
     last_post_date = models.DateTimeField(null=True)
 

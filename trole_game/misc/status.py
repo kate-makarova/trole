@@ -14,7 +14,7 @@ class GameStatus:
 class EpisodeStatus:
 
     @staticmethod
-    def get_game_status():
+    def get_episode_status():
         return {
             0: _('Cancelled'),
             1: _('Active'),

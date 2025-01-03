@@ -1,0 +1,47 @@
+[
+  {
+    "model": "trole_game.fandom",
+    "pk": 1,
+    "fields": {
+      "name": "Original",
+      "genre": 1,
+      "mediaType": 1
+    }
+  },
+  {
+    "model": "trole_game.fandom",
+    "pk": 2,
+    "fields": {
+      "name": "Dungeons and Dragons (D&D)",
+      "genre": 2,
+      "mediaType": 2
+    }
+  },
+  {
+    "model": "trole_game.fandom",
+    "pk": 3,
+    "fields": {
+      "name": "Dragon Age",
+      "genre": 2,
+      "mediaType": 2
+    }
+  },
+  {
+    "model": "trole_game.fandom",
+    "pk": 4,
+    "fields": {
+      "name": "Baldur's Gate III",
+      "genre": 2,
+      "mediaType": 2
+    }
+  },
+  {
+    "model": "trole_game.fandom",
+    "pk": 5,
+    "fields": {
+      "name": "Mass Effect",
+      "genre": 3,
+      "mediaType": 2
+    }
+  }
+]

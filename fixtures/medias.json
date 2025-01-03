@@ -1,0 +1,44 @@
+[
+  {
+    "model": "trole_game.mediatype",
+    "pk": 1,
+    "fields": {
+      "name": "Other"
+    }
+  },
+  {
+    "model": "trole_game.mediatype",
+    "pk": 2,
+    "fields": {
+      "name": "Video Game"
+    }
+  },
+  {
+    "model": "trole_game.mediatype",
+    "pk": 3,
+    "fields": {
+      "name": "Movie"
+    }
+  },
+  {
+    "model": "trole_game.mediatype",
+    "pk": 4,
+    "fields": {
+      "name": "TV Series"
+    }
+  },
+  {
+    "model": "trole_game.mediatype",
+    "pk": 4,
+    "fields": {
+      "name": "Books"
+    }
+  },
+  {
+    "model": "trole_game.mediatype",
+    "pk": 4,
+    "fields": {
+      "name": "Comics"
+    }
+  }
+]

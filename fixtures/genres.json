@@ -1,0 +1,37 @@
+[
+   {
+    "model": "trole_game.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Other"
+    }
+  },
+  {
+    "model": "trole_game.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Fantasy"
+    }
+  },
+  {
+    "model": "trole_game.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Sci-Fi"
+    }
+  },
+  {
+    "model": "trole_game.genre",
+    "pk": 4,
+    "fields": {
+      "name": "Romance"
+    }
+  },
+  {
+    "model": "trole_game.genre",
+    "pk": 5,
+    "fields": {
+      "name": "Horror"
+    }
+  }
+]

@@ -6,11 +6,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from trole_game.misc.rating import Rating
+from trole_game.misc.status import GameStatus, EpisodeStatus
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
-    UserGameDisplay, CharacterEpisodeNotification, Article
+    UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType
 from trole_game.util.bb_translator import translate_bb
 
 
@@ -106,7 +107,7 @@ class GetGameById(APIView):
             "total_posts": game.total_posts,
             "total_users": game.total_users,
             "total_episodes": game.total_episodes,
-            "rating": game.rating.name,
+            "rating": Rating.get_ratings()[game.rating_id]['name'],
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name')
@@ -129,7 +130,7 @@ class GetEpisodeById(APIView):
             "id": episode.id,
             "name": episode.name,
             "image": episode.image,
-            "status": episode.status.name,
+            "status": EpisodeStatus.get_game_status()[episode.status_id]['name'],
             "total_posts": episode.number_of_posts,
             "description": episode.description,
             "characters": []
@@ -178,7 +179,7 @@ class GetEpisodeList(APIView):
                 "name": episode.name,
                 "image": episode.image,
                 "category": category,
-                "status": episode.status.name,
+                "status": EpisodeStatus.get_game_status()[episode.status_id]['name'],
                 "last_post_date": episode.last_post_date,
                 "last_post_autor": last_post_author,
                 "description": episode.description,
@@ -270,8 +271,12 @@ class CharacterAutocomplete(APIView):
 class StaticList(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_entities = ['Rating', 'Genre', 'GameStatus']
-    static_names = ['GamePermissions', 'ParticipationStatus', 'ParticipationRole']
+    allowed_entities = ['Genre']
+    static_names = ['GamePermissions',
+                    'ParticipationStatus',
+                    'ParticipationRole',
+                    'GameStatus',
+                    'Rating']
 
     def get(self, request, class_name):
         data = []
@@ -303,6 +308,20 @@ class StaticList(APIView):
                     data.append({
                         "id": key,
                         "name": val
+                    })
+
+            if class_name == 'GameStatus':
+                for key, val in GameStatus.get_game_status().items():
+                    data.append({
+                        "id": key,
+                        "name": val
+                    })
+
+            if class_name == 'Rating':
+                for key, val in Rating.get_ratings().items():
+                    data.append({
+                        "id": key,
+                        "name": val['name']
                     })
 
         return Response({"data": data})

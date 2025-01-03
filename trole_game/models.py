@@ -2,18 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import DO_NOTHING
 
-class GameStatus(models.Model):
-    name = models.CharField(max_length=50)
-
-class EpisodeStatus(models.Model):
-    name = models.CharField(max_length=50)
-
 class Genre(models.Model):
     name = models.CharField(max_length=200)
-
-class Rating(models.Model):
-    name = models.CharField(max_length=5)
-    description=models.TextField()
 
 class MediaType(models.Model):
     name = models.CharField(max_length=50)
@@ -28,9 +18,9 @@ class Game(models.Model):
     name = models.CharField(max_length=300)
     fandoms = models.ManyToManyField(Fandom)
     genres = models.ManyToManyField(Genre)
-    rating = models.ForeignKey(Rating, on_delete=models.DO_NOTHING)
+    rating_id = models.IntegerField()
     image = models.CharField(max_length=300)
-    status = models.ForeignKey(GameStatus, on_delete=models.DO_NOTHING)
+    status_id = models.IntegerField()
     description = models.TextField()
     date_created = models.DateTimeField()
     user_created = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -67,9 +57,9 @@ class Episode(models.Model):
     name = models.CharField(max_length=300)
     image = models.CharField(max_length=300)
     description = models.TextField()
-    status = models.ForeignKey(EpisodeStatus, on_delete=models.DO_NOTHING)
+    status_id = models.IntegerField()
     category = models.ForeignKey(GameEpisodeCategory, on_delete=DO_NOTHING, null=True)
-    rating = models.ForeignKey(Rating, on_delete=models.DO_NOTHING)
+    rating_id = models.IntegerField()
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
     characters = models.ManyToManyField(Character)
     user_created = models.ForeignKey(User, on_delete=DO_NOTHING)

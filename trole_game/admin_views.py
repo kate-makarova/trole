@@ -7,13 +7,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from trole_game.models import UserSetting
 
 
-class UserCreate(APIView):
+class AdminUserCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 
     def post(self, request):
-
-        print(request.data)
 
         user = User.objects.create(
             username=request.data['username'],

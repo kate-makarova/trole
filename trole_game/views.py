@@ -81,7 +81,7 @@ class UserGetByUsername(APIView):
         data = {
             "id": user.id,
             "username": user.username,
-            "is_admin": user.is_stuff,
+            "is_admin": user.is_staff,
             "avatar": "",
             "characters": []
         }

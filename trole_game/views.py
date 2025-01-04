@@ -81,6 +81,7 @@ class UserGetByUsername(APIView):
         data = {
             "id": user.id,
             "username": user.username,
+            "is_admin": user.is_stuff,
             "avatar": "",
             "characters": []
         }
@@ -716,4 +717,3 @@ class SetPostsRead(APIView):
             notification.date_read = datetime.datetime.now()
             notification.save()
         return Response({"data": "ok"})
-

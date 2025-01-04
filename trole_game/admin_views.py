@@ -13,7 +13,7 @@ class AdminUserCreate(APIView):
 
     def post(self, request):
 
-        user = User.objects.create(
+        user = User.objects.create_user(
             username=request.data['username'],
             email=request.data['email'],
             password=request.data['password'],

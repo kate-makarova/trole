@@ -86,6 +86,7 @@ class Post(models.Model):
     order = models.IntegerField()
 
 class CharacterEpisodeNotification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
     is_read = models.BooleanField()

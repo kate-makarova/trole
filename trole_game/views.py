@@ -178,6 +178,7 @@ class GetEpisodeList(APIView):
                     "id": episode.last_post_author.id,
                     "name": episode.last_post_author.name
                 }
+
             data.append({
                 "id": episode.id,
                 "name": episode.name,
@@ -221,10 +222,16 @@ class GetPostsByEpisode(APIView):
         posts = Post.objects.filter(episode_id=episode_id).order_by('order')
         data = []
 
+        unread_post_ids = CharacterEpisodeNotification.objects.filter(
+            episode_id=episode_id,
+            user_id=request.user.id,
+            is_read=False
+        ).order_by('post_id').values_list('id', flat=True)
+
         for post in posts:
             data.append({
                 "id": post.id,
-                "is_read": True,
+                "is_read": post.id not in unread_post_ids,
                 "content": post.content_html,
                 "post_date": post.date_created,
                 "character": {
@@ -693,4 +700,20 @@ class Breadcrumbs(APIView):
 
 
         return Response({"data": breadcrumbs})
+
+class SetPostsRead(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, episode_id):
+        notifications = CharacterEpisodeNotification.objects.filter(
+            episode_id=episode_id,
+            user_id=request.user.id,
+            is_read=False
+        )
+        for notification in notifications:
+            notification.is_read = True
+            notification.date_read = datetime.datetime.now()
+            notification.save()
+        return Response({"data": "ok"})
 

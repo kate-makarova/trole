@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
-    CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, Breadcrumbs
+    CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, Breadcrumbs, SetPostsRead
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
     path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),
     path('api/breadcrumbs/<str:path>', Breadcrumbs.as_view(), name='breadcrumbs'),
+    path('api/set-posts-read/<int:episode_id>', SetPostsRead.as_view(), name='set_posts_read'),
 ]

@@ -151,6 +151,18 @@ class GetEpisodeById(APIView):
             if character.user.id == request.user.id:
                 is_mine = True
         data["is_mine"] = is_mine
+
+        notification = CharacterEpisodeNotification.objects.filter(
+            episode_id=episode.id,
+            user_id=request.user.id,
+            notification_type=1,
+            is_read=False
+        )
+        if len(notification):
+            data["is_new"] = True
+        else:
+            data["is_new"] = False
+
         return Response({"data": data})
 
 class GetEpisodeList(APIView):
@@ -227,13 +239,18 @@ class GetPostsByEpisode(APIView):
             episode_id=episode_id,
             user_id=request.user.id,
             is_read=False
-        ).order_by('post_id').values_list('id', flat=True)
+        ).order_by('post_id').values_list('post_id', flat=True)
 
         for post in posts:
+            if post.post_author.user.id == request.user.id:
+                content_bb = post.content_bb
+            else:
+                content_bb = None
             data.append({
                 "id": post.id,
                 "is_read": post.id not in unread_post_ids,
                 "content": post.content_html,
+                "content_bb": content_bb,
                 "post_date": post.date_created,
                 "character": {
                     "id": post.post_author.id,
@@ -364,14 +381,15 @@ class EpisodeCreate(APIView):
 
         for entity in request.data['characters']:
             episode.characters.add(entity['id'])
-            if request.user.id != entity['id']:
 
-                character = Character.objects.get(pk=entity['id'])
-                character.participating_episodes += 1
-                character.save()
+            character = Character.objects.get(pk=entity['id'])
+            character.participating_episodes += 1
+            character.save()
 
+            if request.user.id != character.user.id:
                 CharacterEpisodeNotification.objects.create(
-                    character_id = entity['id'],
+                    user_id = character.user.id,
+                    character_id = character.id,
                     episode_id = episode.id,
                     date_created = datetime.datetime.now(),
                     is_read = False,
@@ -392,7 +410,7 @@ class GameJoin(APIView):
     def post(self, request):
         print(request.data)
 
-        UserGameParticipation.create(
+        UserGameParticipation.objects.create(
             user_id = request.user.id,
             game_id = request.data['game'],
             status = 2,
@@ -429,7 +447,6 @@ class CharacterCreate(APIView):
 
         game = Game.objects.get(pk=request.data['game'])
         game.total_characters += 1
-        print(game)
         game.save()
 
         return Response({"data": character.id})
@@ -531,9 +548,9 @@ class PostCreate(APIView):
         episode.save()
 
         for character in episode.characters.exclude(user_id=request.user.id) :
-            # if character.user.id != post.post_author.id:
 
             CharacterEpisodeNotification.objects.create(
+                user_id = character.user.id,
                 character_id = character.id,
                 episode_id = episode.id,
                 post_id = post.id,
@@ -709,6 +726,7 @@ class SetPostsRead(APIView):
     def get(self, request, episode_id):
         notifications = CharacterEpisodeNotification.objects.filter(
             episode_id=episode_id,
+            notification_type__in=[1,2],
             user_id=request.user.id,
             is_read=False
         )
@@ -716,4 +734,5 @@ class SetPostsRead(APIView):
             notification.is_read = True
             notification.date_read = datetime.datetime.now()
             notification.save()
+
         return Response({"data": "ok"})

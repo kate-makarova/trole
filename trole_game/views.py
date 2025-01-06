@@ -736,3 +736,27 @@ class SetPostsRead(APIView):
             notification.save()
 
         return Response({"data": "ok"})
+
+class ArticleCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        print(request.data)
+
+        article = Article.objects.create(
+        name = request.data['name'],
+        game_id = request.data['game'],
+        user_created_id = request.user.id,
+        date_created = datetime.datetime.now(),
+        content_bb = request.data['content'],
+        content_html = translate_bb(request.data['content']),
+        is_index = False
+        )
+
+        game = Game.objects.get(pk=request.data['game'])
+        game.total_articles += 1
+        game.save()
+
+        return Response({"data": article.id})

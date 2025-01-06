@@ -1,9 +1,10 @@
 from django.urls import path
 
 from .admin_views import AdminUserCreate
+from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
-    CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, Breadcrumbs, SetPostsRead, ArticleCreate, \
+    CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate
 
 urlpatterns = [

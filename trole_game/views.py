@@ -1,4 +1,5 @@
 import datetime
+from importlib.resources import contents
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -577,6 +578,7 @@ class GetArticleById(APIView):
             "id": article.id,
             "name": article.name,
             "content": article.content_html,
+            "content_bb": article.content_bb,
             "game": {
                 "id": article.game_id,
                 "name": article.game.name
@@ -599,6 +601,7 @@ class GetIndexArticle(APIView):
             "id": article.id,
             "name": article.name,
             "content": article.content_html,
+            "content_bb": article.content_bb,
             "game": {
                 "id": article.game_id,
                 "name": article.game.name
@@ -760,3 +763,20 @@ class ArticleCreate(APIView):
         game.save()
 
         return Response({"data": article.id})
+
+class ArticleUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        article = Article.objects.get(pk=id)
+        if article.user_created_id != request.user.id:
+            return Response({"data": "You are not the author of this article"})
+        else:
+            article.name = request.data['name']
+            article.content_bb = request.data['content']
+            article.content_html = translate_bb(request.data['content'])
+            article.save()
+
+        return Response({"data": article})

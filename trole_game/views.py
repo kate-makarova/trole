@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from trole_game.access_level import AccessLevelPermission
 from trole_game.misc.rating import Rating
 from trole_game.misc.status import GameStatus, EpisodeStatus
 from trole_game.misc.participation import Participation
@@ -98,7 +100,7 @@ class UserGetByUsername(APIView):
 
 class GetGameById(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
         game = Game.objects.get(pk=id)
@@ -128,7 +130,7 @@ class GetGameById(APIView):
 
 class GetEpisodeById(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
         episode = Episode.objects.get(pk=id)
@@ -168,7 +170,7 @@ class GetEpisodeById(APIView):
 
 class GetEpisodeList(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
         episodes = Episode.objects.filter(game_id=game_id).order_by('-last_post_date')
@@ -209,7 +211,7 @@ class GetEpisodeList(APIView):
 
 class GetCharacterList(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
         characters = Character.objects.filter(game_id=game_id).order_by('name')
@@ -230,7 +232,7 @@ class GetCharacterList(APIView):
 
 class GetPostsByEpisode(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, episode_id):
         posts = Post.objects.filter(episode_id=episode_id).order_by('order')
@@ -570,7 +572,7 @@ class PostCreate(APIView):
 
 class GetArticleById(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id, id):
         article = Article.objects.get(game_id=game_id, pk=id)
@@ -593,7 +595,7 @@ class GetArticleById(APIView):
 
 class GetIndexArticle(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
         article = Article.objects.get(game_id=game_id, is_index=True)

@@ -193,7 +193,7 @@ class GetGameById(APIView):
 
 
 class GetEpisodeById(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
@@ -298,7 +298,7 @@ class GetCharacterList(APIView):
 
 
 class GetPostsByEpisode(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, episode_id):
@@ -643,7 +643,7 @@ class PostCreate(APIView):
 
 
 class GetArticleById(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id, id):
@@ -667,7 +667,7 @@ class GetArticleById(APIView):
 
 
 class GetIndexArticle(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):

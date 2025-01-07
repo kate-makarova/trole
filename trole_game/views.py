@@ -3,7 +3,7 @@ from importlib.resources import contents
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -22,6 +22,7 @@ def index(request):
     return JsonResponse({
         'status': 'ok'
     })
+
 
 class UserHome(APIView):
     authentication_classes = [JWTAuthentication]
@@ -75,6 +76,7 @@ class UserHome(APIView):
             'data': data
         })
 
+
 class UserGetByUsername(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -88,7 +90,7 @@ class UserGetByUsername(APIView):
             "avatar": "",
             "characters": []
         }
-        characters = Character.objects.filter(user_id = user.id)
+        characters = Character.objects.filter(user_id=user.id)
         for character in characters:
             data['characters'].append({
                 "id": character.id,
@@ -98,8 +100,9 @@ class UserGetByUsername(APIView):
             })
         return Response({"data": data})
 
+
 class GetGameById(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
@@ -122,11 +125,13 @@ class GetGameById(APIView):
         if len(participation):
             data["is_mine"] = True
 
-            data['my_characters'] = Character.objects.filter(game_id=game.id, user_id=request.user.id).values("id", "name")
+            data['my_characters'] = Character.objects.filter(game_id=game.id, user_id=request.user.id).values("id",
+                                                                                                              "name")
         else:
             data["is_mine"] = False
 
         return Response({"data": data})
+
 
 class GetEpisodeById(APIView):
     authentication_classes = [JWTAuthentication]
@@ -168,8 +173,9 @@ class GetEpisodeById(APIView):
 
         return Response({"data": data})
 
+
 class GetEpisodeList(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
@@ -209,8 +215,9 @@ class GetEpisodeList(APIView):
             })
         return Response({"data": data})
 
+
 class GetCharacterList(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = []
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
@@ -229,6 +236,7 @@ class GetCharacterList(APIView):
                 "is_mine": (character.user.id == request.user.id)
             })
         return Response({"data": data})
+
 
 class GetPostsByEpisode(APIView):
     authentication_classes = [JWTAuthentication]
@@ -265,6 +273,7 @@ class GetPostsByEpisode(APIView):
             })
         return Response({"data": data})
 
+
 class Autocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -284,6 +293,7 @@ class Autocomplete(APIView):
 
         return Response({"data": data})
 
+
 class CharacterAutocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -299,6 +309,7 @@ class CharacterAutocomplete(APIView):
             })
 
         return Response({"data": data})
+
 
 class StaticList(APIView):
     authentication_classes = [JWTAuthentication]
@@ -358,6 +369,7 @@ class StaticList(APIView):
 
         return Response({"data": data})
 
+
 class EpisodeCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -367,19 +379,19 @@ class EpisodeCreate(APIView):
         print(request.data)
 
         episode = Episode.objects.create(
-        name = request.data['name'],
-        image = request.data['image'],
-        description = request.data['description'],
-        status_id = 1,
-        category = None,
-        rating_id = 3,
-        game_id = request.data['game'],
-        user_created_id = request.user.id,
-        date_created = datetime.datetime.now(),
-        number_of_posts = 0,
-        last_post_date = None,
-        last_post_author = None,
-        in_category_order = None
+            name=request.data['name'],
+            image=request.data['image'],
+            description=request.data['description'],
+            status_id=1,
+            category=None,
+            rating_id=3,
+            game_id=request.data['game'],
+            user_created_id=request.user.id,
+            date_created=datetime.datetime.now(),
+            number_of_posts=0,
+            last_post_date=None,
+            last_post_author=None,
+            in_category_order=None
         )
 
         for entity in request.data['characters']:
@@ -391,11 +403,11 @@ class EpisodeCreate(APIView):
 
             if request.user.id != character.user.id:
                 CharacterEpisodeNotification.objects.create(
-                    user_id = character.user.id,
-                    character_id = character.id,
-                    episode_id = episode.id,
-                    date_created = datetime.datetime.now(),
-                    is_read = False,
+                    user_id=character.user.id,
+                    character_id=character.id,
+                    episode_id=episode.id,
+                    date_created=datetime.datetime.now(),
+                    is_read=False,
                     notification_type=1
                 )
 
@@ -414,13 +426,14 @@ class GameJoin(APIView):
         print(request.data)
 
         UserGameParticipation.objects.create(
-            user_id = request.user.id,
-            game_id = request.data['game'],
-            status = 2,
-            role = 4
+            user_id=request.user.id,
+            game_id=request.data['game'],
+            status=2,
+            role=4
         )
 
         return Response({"data": 'success'})
+
 
 class CharacterCreate(APIView):
     authentication_classes = [JWTAuthentication]
@@ -432,13 +445,13 @@ class CharacterCreate(APIView):
 
         character = Character.objects.create(
             name=request.data['name'],
-            game_id = request.data['game'],
-            avatar = request.data['avatar'],
-            description = request.data['description'],
-            user_id = request.user.id,
-            date_created = datetime.datetime.now(),
+            game_id=request.data['game'],
+            avatar=request.data['avatar'],
+            description=request.data['description'],
+            user_id=request.user.id,
+            date_created=datetime.datetime.now(),
             participating_episodes=0,
-            posts_written = 0,
+            posts_written=0,
         )
 
         participations = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
@@ -454,6 +467,7 @@ class CharacterCreate(APIView):
 
         return Response({"data": character.id})
 
+
 class GameCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -464,19 +478,19 @@ class GameCreate(APIView):
 
         game = Game.objects.create(
             name=request.data['name'],
-            image = request.data['image'],
-            status_id = request.data['status'],
-            description = request.data['description'],
-            user_created_id = request.user.id,
-            date_created = datetime.datetime.now(),
-            total_posts= 0,
-            total_episodes = 0,
-            total_characters = 0,
-            total_users = 1,
-            total_articles = 1,
-            permission_level = request.data['access_level'],
-            was_online_in_24 = 1,
-            rating_id = request.data['rating'],
+            image=request.data['image'],
+            status_id=request.data['status'],
+            description=request.data['description'],
+            user_created_id=request.user.id,
+            date_created=datetime.datetime.now(),
+            total_posts=0,
+            total_episodes=0,
+            total_characters=0,
+            total_users=1,
+            total_articles=1,
+            permission_level=request.data['access_level'],
+            was_online_in_24=1,
+            rating_id=request.data['rating'],
         )
         is_original = False
         fandom_ids = []
@@ -496,48 +510,48 @@ class GameCreate(APIView):
             game.genres.add(genre)
 
         UserGameParticipation.objects.create(
-            user_id = request.user.id,
-            game_id = game.id,
-            status = 1,
-            role = 1
+            user_id=request.user.id,
+            game_id=game.id,
+            status=1,
+            role=1
         )
 
         UserGameDisplay.objects.create(
-            user_id = request.user.id,
-            game_id = game.id,
-            display_category = 1,
-            is_on_main_page = True,
-            order = None
+            user_id=request.user.id,
+            game_id=game.id,
+            display_category=1,
+            is_on_main_page=True,
+            order=None
         )
 
         Article.objects.create(
-            name= game.name + ' - Index',
-            content_bb = 'Write your articles',
-            content_html = '<p>Write your articles</p>',
-            game_id = game.id,
-            user_created_id = request.user.id,
-            date_created = datetime.datetime.now(),
-            is_index = True
+            name=game.name + ' - Index',
+            content_bb='Write your articles',
+            content_html='<p>Write your articles</p>',
+            game_id=game.id,
+            user_created_id=request.user.id,
+            date_created=datetime.datetime.now(),
+            is_index=True
         )
 
         return Response({"data": game.id})
+
 
 class PostCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         print(request.data)
 
         order = Post.objects.filter(episode_id=request.data['episode']).count() + 1
         post = Post.objects.create(
             content_bb=request.data['content'],
             content_html=translate_bb(request.data['content']),
-            episode_id = request.data['episode'],
+            episode_id=request.data['episode'],
             order=order,
-            post_author_id = request.data['character'],
-            date_created = datetime.datetime.now(),
+            post_author_id=request.data['character'],
+            date_created=datetime.datetime.now(),
         )
 
         post.post_author.posts_written += 1
@@ -550,15 +564,14 @@ class PostCreate(APIView):
         episode.last_post_author = post.post_author
         episode.save()
 
-        for character in episode.characters.exclude(user_id=request.user.id) :
-
+        for character in episode.characters.exclude(user_id=request.user.id):
             CharacterEpisodeNotification.objects.create(
-                user_id = character.user.id,
-                character_id = character.id,
-                episode_id = episode.id,
-                post_id = post.id,
-                date_created = datetime.datetime.now(),
-                is_read = False,
+                user_id=character.user.id,
+                character_id=character.id,
+                episode_id=episode.id,
+                post_id=post.id,
+                date_created=datetime.datetime.now(),
+                is_read=False,
                 notification_type=2
             )
 
@@ -567,8 +580,8 @@ class PostCreate(APIView):
         game.last_post_published = post.date_created
         game.save()
 
-
         return Response({"data": post.id})
+
 
 class GetArticleById(APIView):
     authentication_classes = [JWTAuthentication]
@@ -593,6 +606,7 @@ class GetArticleById(APIView):
         }
         return Response({"data": data})
 
+
 class GetIndexArticle(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [AccessLevelPermission]
@@ -616,6 +630,7 @@ class GetIndexArticle(APIView):
         }
         return Response({"data": data})
 
+
 class SetPostsRead(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -623,7 +638,7 @@ class SetPostsRead(APIView):
     def get(self, request, episode_id):
         notifications = CharacterEpisodeNotification.objects.filter(
             episode_id=episode_id,
-            notification_type__in=[1,2],
+            notification_type__in=[1, 2],
             user_id=request.user.id,
             is_read=False
         )
@@ -634,22 +649,22 @@ class SetPostsRead(APIView):
 
         return Response({"data": "ok"})
 
+
 class ArticleCreate(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         print(request.data)
 
         article = Article.objects.create(
-        name = request.data['name'],
-        game_id = request.data['game'],
-        user_created_id = request.user.id,
-        date_created = datetime.datetime.now(),
-        content_bb = request.data['content'],
-        content_html = translate_bb(request.data['content']),
-        is_index = False
+            name=request.data['name'],
+            game_id=request.data['game'],
+            user_created_id=request.user.id,
+            date_created=datetime.datetime.now(),
+            content_bb=request.data['content'],
+            content_html=translate_bb(request.data['content']),
+            is_index=False
         )
 
         game = Game.objects.get(pk=request.data['game'])
@@ -657,6 +672,7 @@ class ArticleCreate(APIView):
         game.save()
 
         return Response({"data": article.id})
+
 
 class ArticleUpdate(APIView):
     authentication_classes = [JWTAuthentication]

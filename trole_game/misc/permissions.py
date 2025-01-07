@@ -13,16 +13,19 @@ class GamePermissions:
         }
 
     @staticmethod
-    def check_game_access(game_id, user_id):
+    def check_game_access(game_id, user):
         game = Game.objects.get(pk=game_id)
 
         if game.permission_level == 0:
             return True
 
-        if user_id != 0 and game.permission_level == 1:
+        if not user.is_authenticated and game.permission_level > 0:
+            return False
+
+        if user.is_authenticated and game.permission_level == 1:
             return True
 
-        participation = UserGameParticipation.objects.get(game_id=game_id, user_id=user_id)
+        participation = UserGameParticipation.objects.filter(game_id=game_id, user_id=user.id)
 
         if len(participation) and participation[0].status == 1:
             return True

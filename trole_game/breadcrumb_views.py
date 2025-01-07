@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from trole_game.access_level import AccessLevelPermission
 from trole_game.models import UserGameParticipation, Game, Episode, Article
 
 
 class Breadcrumbs(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
     def get(self, request, path):
         breadcrumbs = []
@@ -57,7 +58,7 @@ class Breadcrumbs(APIView):
         if path == 'episode':
             episode = Episode.objects.get(pk=request.GET.get('0'))
             breadcrumbs = [
-                get_game_link(game.id, request.user.id),
+                get_game_link(episode.game.id, request.user.id),
                 {"name": episode.game.name, "path": "/game/" + str(episode.game.id)},
                 {"name": episode.name, "path": "/episode/" + str(episode.id)}
             ]

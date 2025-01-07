@@ -5,11 +5,12 @@ from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
-    ArticleUpdate
+    ArticleUpdate, GameList
 
 urlpatterns = [
     path('api/', index, name='index'),
     path('api/home', UserHome.as_view(), name='home'),
+    path('api/game-list', GameList.as_view(), name='game_list'),
     path('api/user/get-by-username/<str:username>', UserGetByUsername.as_view()),
     path('api/game/<int:id>', GetGameById.as_view(), name='game'),
     path('api/episode-list/<int:game_id>', GetEpisodeList.as_view(), name='episode_list'),

@@ -77,6 +77,65 @@ class UserHome(APIView):
         })
 
 
+class GameList(APIView):
+    authentication_classes = []
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        if request.user.is_athenticated:
+            games = Game.objects.all().order_by('-last_post_date')[:10]
+        else:
+            games = Game.objects.filter(permission_level=0).order_by('-last_post_date')[:10]
+
+        data = []
+
+        for game in games:
+            game_data = {
+                "id": game.id,
+                "name": game.name,
+                "description": game.description,
+                "image": game.image,
+                "total_episodes": game.total_episodes,
+                "total_posts": game.total_posts,
+                "total_characters": game.total_characters,
+                "total_users": game.total_users,
+                "my_characters": [],
+                "fandoms": [],
+                "genres": [],
+            }
+
+            for fandom in game.fandoms.all():
+                game_data["fandoms"].append({
+                    "id": fandom.id,
+                    "name": fandom.name
+                })
+
+            if request.user.is_athenticated:
+                characters = Character.objects.filter(game_id=game.id, user_id=request.user.id)
+                for character in characters:
+                    new_episodes = 0
+                    unread_posts = 0
+
+                    notifications = CharacterEpisodeNotification.objects.filter(character_id=character.id, is_read=False)
+                    for notification in notifications:
+                        if notification.notification_type == 1:
+                            new_episodes += 1
+                        if notification.notification_type == 2:
+                            unread_posts += 1
+
+                    game_data['my_characters'].append({
+                        "id": character.id,
+                        "name": character.name,
+                        "avatar": character.avatar,
+                        "unread_posts": unread_posts,
+                        "new_episodes": new_episodes,
+                    })
+            data.append(game_data)
+        return Response({
+            'data': data
+        })
+
+
 class UserGetByUsername(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

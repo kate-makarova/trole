@@ -750,3 +750,23 @@ class ArticleUpdate(APIView):
             article.save()
 
         return Response({"data": article})
+
+class PostUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        post = Post.objects.get(pk=id)
+        if post.post_author.user.id != request.user.id:
+            return Response({"data": "You are not the author of this post"})
+        else:
+            post.content_bb = request.data['content']
+            post.content_html = translate_bb(request.data['content'])
+            post.save()
+
+        return Response({"data": {
+            "id": post.id,
+            "content": post.content_html,
+            "content_bb": post.content_bb
+        }})

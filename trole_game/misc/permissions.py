@@ -19,6 +19,7 @@ class GamePermissions:
         if game.permission_level == 0:
             return True
 
+        print(user.is_authenticated)
         if not user.is_authenticated and game.permission_level > 0:
             return False
 

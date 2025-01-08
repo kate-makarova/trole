@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.access_level import AccessLevelPermission
+from trole_game.authentication import JWTOrGuestAuthentication
 from trole_game.misc.rating import Rating
 from trole_game.misc.status import GameStatus, EpisodeStatus
 from trole_game.misc.participation import Participation
@@ -78,14 +79,14 @@ class UserHome(APIView):
 
 
 class GameList(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        if request.user.is_athenticated:
-            games = Game.objects.all().order_by('-last_post_date')[:10]
+        if request.user.is_authenticated:
+            games = Game.objects.all().order_by('-last_post_published')[:10]
         else:
-            games = Game.objects.filter(permission_level=0).order_by('-last_post_date')[:10]
+            games = Game.objects.filter(permission_level=0).order_by('-last_post_published')[:10]
 
         data = []
 
@@ -110,7 +111,7 @@ class GameList(APIView):
                     "name": fandom.name
                 })
 
-            if request.user.is_athenticated:
+            if request.user.is_authenticated:
                 characters = Character.objects.filter(game_id=game.id, user_id=request.user.id)
                 for character in characters:
                     new_episodes = 0
@@ -161,7 +162,7 @@ class UserGetByUsername(APIView):
 
 
 class GetGameById(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
@@ -193,7 +194,7 @@ class GetGameById(APIView):
 
 
 class GetEpisodeById(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
@@ -234,7 +235,7 @@ class GetEpisodeById(APIView):
 
 
 class GetEpisodeList(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
@@ -276,7 +277,7 @@ class GetEpisodeList(APIView):
 
 
 class GetCharacterList(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
@@ -298,7 +299,7 @@ class GetCharacterList(APIView):
 
 
 class GetPostsByEpisode(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, episode_id):
@@ -643,7 +644,7 @@ class PostCreate(APIView):
 
 
 class GetArticleById(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id, id):
@@ -667,7 +668,7 @@ class GetArticleById(APIView):
 
 
 class GetIndexArticle(APIView):
-    authentication_classes = []
+    authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):

@@ -89,7 +89,7 @@ class Breadcrumbs(APIView):
 
 
             breadcrumbs = [
-                get_game_link(game.id, request.user.id),
+                get_game_link(index_article.game.id, request.user.id),
                 {"name": index_article.game.name, "path": "/game/" + str(index_article.game.id)},
             ]
             breadcrumbs += article_breadcrumbs

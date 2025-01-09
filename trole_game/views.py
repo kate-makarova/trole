@@ -15,7 +15,8 @@ from trole_game.misc.status import GameStatus, EpisodeStatus
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
-    UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType
+    UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
+    CharacterSheetTemplateField
 from trole_game.util.bb_translator import translate_bb
 
 
@@ -770,3 +771,51 @@ class PostUpdate(APIView):
             "content": post.content_html,
             "content_bb": post.content_bb
         }})
+
+class CharacterSheetTemplateGet(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, game_id):
+       # character_sheet = CharacterSheetTemplate.get(game_id=game_id)
+
+        field_data = [
+            {
+                "id": "name",
+                "type": 1,
+                "field_name": "Character Name",
+                "description": "Character name",
+                "is_required": True
+            },
+            {
+                "id": "avatar",
+                "type": 1,
+                "field_name": "Character Avatar",
+                "description": "Character avatar",
+                "is_required": True
+            },
+            {
+                "id": "description",
+                "type": 1,
+                "field_name": "Character Description",
+                "description": "Character description",
+                "is_required": True
+            }
+        ]
+        # fields = CharacterSheetTemplateField.objects.filter(character_sheet_template=self.id)
+        # for field in fields:
+        #     field_data.append({
+        #         "id": field.id,
+        #         "type": field.type,
+        #         "field_name": field.fieldName,
+        #         "description": field.description,
+        #         "is_required": field.is_required
+        #     })
+
+        return Response({
+            "data": {
+                # "id": character_sheet.id,
+                # "game_id": character_sheet.game_id,
+                "fields": field_data
+            }
+        })

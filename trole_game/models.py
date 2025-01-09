@@ -127,3 +127,20 @@ class Article(models.Model):
     date_created = models.DateTimeField()
     is_index = models.BooleanField()
 
+class CharacterSheetTemplate(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
+
+class CharacterSheetTemplateField(models.Model):
+    character_sheet_template = models.ForeignKey(CharacterSheetTemplate, on_delete=models.CASCADE)
+    field_name = models.CharField(max_length=300)
+    type = models.IntegerField()
+    options = models.TextField(null=True)
+    description = models.TextField()
+    is_required = models.BooleanField()
+
+class CharacterSheetField(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    character_sheet_template_field = models.ForeignKey(CharacterSheetTemplateField, on_delete=models.DO_NOTHING)
+    value = models.TextField()
+
+

@@ -828,8 +828,7 @@ class CharacterSheetTemplateGet(APIView):
             }
         ]
         fields = CharacterSheetTemplateField.objects.filter(
-            character_sheet_template=character_sheet.id,
-            is_active=True
+            character_sheet_template=character_sheet.id
         )
         for field in fields:
             field_data.append({

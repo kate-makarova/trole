@@ -814,7 +814,7 @@ class CharacterSheetTemplateGet(APIView):
             },
             {
                 "id": "description",
-                "type": 1,
+                "type": 2,
                 "field_name": "Character Description",
                 "description": "Character description",
                 "is_required": True

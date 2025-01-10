@@ -16,7 +16,7 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
-    CharacterSheetTemplateField
+    CharacterSheetTemplateField, CharacterSheetField
 from trole_game.util.bb_translator import translate_bb
 
 
@@ -180,8 +180,14 @@ class GetGameById(APIView):
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name'),
-            "my_characters": []
+            "my_characters": [],
         }
+
+        if game.user_created.id == request.user.id:
+            data["can_admin"] = True
+        else:
+            data["can_admin"] = False
+
         participation = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id)
         if len(participation):
             data["is_mine"] = True
@@ -515,6 +521,14 @@ class CharacterCreate(APIView):
             posts_written=0,
         )
 
+        for key, value in request.data.items():
+            if key not in ['name', 'game', 'avatar', 'description']:
+                CharacterSheetField.objects.create(
+                    character=character,
+                    character_sheet_template_field_id=key,
+                    value=value
+                )
+
         participations = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
         if len(participations):
             participation = participations[0]
@@ -593,6 +607,10 @@ class GameCreate(APIView):
             user_created_id=request.user.id,
             date_created=datetime.datetime.now(),
             is_index=True
+        )
+
+        CharacterSheetTemplate.create(
+            game=game
         )
 
         return Response({"data": game.id})
@@ -777,7 +795,7 @@ class CharacterSheetTemplateGet(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, game_id):
-       # character_sheet = CharacterSheetTemplate.get(game_id=game_id)
+        character_sheet = CharacterSheetTemplate.objects.get(game_id=game_id)
 
         field_data = [
             {
@@ -802,20 +820,20 @@ class CharacterSheetTemplateGet(APIView):
                 "is_required": True
             }
         ]
-        # fields = CharacterSheetTemplateField.objects.filter(character_sheet_template=self.id)
-        # for field in fields:
-        #     field_data.append({
-        #         "id": field.id,
-        #         "type": field.type,
-        #         "field_name": field.fieldName,
-        #         "description": field.description,
-        #         "is_required": field.is_required
-        #     })
+        fields = CharacterSheetTemplateField.objects.filter(character_sheet_template=character_sheet.id)
+        for field in fields:
+            field_data.append({
+                "id": field.id,
+                "type": field.type,
+                "field_name": field.field_name,
+                "description": field.description,
+                "is_required": field.is_required
+            })
 
         return Response({
             "data": {
-                # "id": character_sheet.id,
-                # "game_id": character_sheet.game_id,
+                "id": character_sheet.id,
+                "game_id": character_sheet.game_id,
                 "fields": field_data
             }
         })

@@ -803,21 +803,27 @@ class CharacterSheetTemplateGet(APIView):
                 "type": 1,
                 "field_name": "Character Name",
                 "description": "Character name",
-                "is_required": True
+                "is_required": True,
+                "order": character_sheet.name_order,
+                "is_active":character_sheet.is_active
             },
             {
                 "id": "avatar",
                 "type": 1,
                 "field_name": "Character Avatar",
                 "description": "Character avatar",
-                "is_required": True
+                "is_required": True,
+                "order": character_sheet.name_order,
+                "is_active": character_sheet.is_active
             },
             {
                 "id": "description",
                 "type": 2,
                 "field_name": "Character Description",
                 "description": "Character description",
-                "is_required": True
+                "is_required": True,
+                "order": character_sheet.name_order,
+                "is_active": character_sheet.is_active
             }
         ]
         fields = CharacterSheetTemplateField.objects.filter(character_sheet_template=character_sheet.id)
@@ -827,7 +833,9 @@ class CharacterSheetTemplateGet(APIView):
                 "type": field.type,
                 "field_name": field.field_name,
                 "description": field.description,
-                "is_required": field.is_required
+                "is_required": field.is_required,
+                "order": field.order,
+                "is_active": field.is_active
             })
 
         return Response({

@@ -129,6 +129,10 @@ class Article(models.Model):
 
 class CharacterSheetTemplate(models.Model):
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
+    name_order = models.IntegerField(default=1)
+    avatar_order = models.IntegerField(default=2)
+    description = models.IntegerField(default=3)
+
 
 class CharacterSheetTemplateField(models.Model):
     character_sheet_template = models.ForeignKey(CharacterSheetTemplate, on_delete=models.CASCADE)
@@ -137,6 +141,8 @@ class CharacterSheetTemplateField(models.Model):
     options = models.TextField(null=True)
     description = models.TextField()
     is_required = models.BooleanField()
+    order = models.IntegerField()
+    is_active = models.BooleanField(default=True)
 
 class CharacterSheetField(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)

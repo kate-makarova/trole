@@ -18,6 +18,7 @@ from trole_game.models import Character, Game, UserGameParticipation, Episode, P
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
     CharacterSheetTemplateField, CharacterSheetField
 from trole_game.util.bb_translator import translate_bb
+import operator
 
 
 def index(request):
@@ -837,6 +838,8 @@ class CharacterSheetTemplateGet(APIView):
                 "order": field.order,
                 "is_active": field.is_active
             })
+
+        field_data = sorted(field_data, key=operator.itemgetter('order'))
 
         return Response({
             "data": {

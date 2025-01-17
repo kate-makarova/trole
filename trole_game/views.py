@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from trole.settings import DEFAULT_LANGUAGE
 from trole_game.access_level import AccessLevelPermission
 from trole_game.authentication import JWTOrGuestAuthentication
 from trole_game.misc.rating import Rating
@@ -16,7 +17,7 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
-    CharacterSheetTemplateField, CharacterSheetField, Page
+    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting
 from trole_game.util.bb_translator import translate_bb
 import operator
 
@@ -879,11 +880,19 @@ class GetPageByPath(APIView):
     permission_classes = []
 
     def get(self, request, path):
-        article = Page.objects.get(path=path)
+        user_setting = UserSetting.objects.filter(user_id=request.user.id)[:1][0]
+
+        articles = Page.objects.filter(path=path)
+        filtered = [article for article in articles if article.language == user_setting.language]
+        if len(filtered) == 0:
+            filtered = [article for article in articles if article.language == DEFAULT_LANGUAGE]
+        article = filtered[0]
+
         data = {
             "id": article.id,
             "name": article.name,
             "content": article.content_html,
+            "language": article.language,
             "content_bb": article.content_bb,
             "author": {
                 "id": article.user_created.id,

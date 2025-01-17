@@ -149,6 +149,7 @@ LANGUAGES = [
     ('en', 'English'),
     ('ru', 'Russian'),
 ]
+DEFAULT_LANGUAGE = 'en'
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 # Static files (CSS, JavaScript, Images)

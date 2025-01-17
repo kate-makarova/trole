@@ -151,6 +151,7 @@ class CharacterSheetField(models.Model):
 
 class Page(models.Model):
     name = models.CharField(max_length=300)
+    language = models.CharField(max_length=2)
     path = models.CharField()
     content_bb = models.TextField()
     content_html = models.TextField()

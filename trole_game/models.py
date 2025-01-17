@@ -149,4 +149,11 @@ class CharacterSheetField(models.Model):
     character_sheet_template_field = models.ForeignKey(CharacterSheetTemplateField, on_delete=models.DO_NOTHING)
     value = models.TextField()
 
+class Page(models.Model):
+    name = models.CharField(max_length=300)
+    path = models.CharField()
+    content_bb = models.TextField()
+    content_html = models.TextField()
+    user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
+    date_created = models.DateTimeField()
 

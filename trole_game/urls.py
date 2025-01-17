@@ -5,7 +5,7 @@ from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
-    ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet
+    ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/breadcrumbs/<str:path>', Breadcrumbs.as_view(), name='breadcrumbs'),
     path('api/set-posts-read/<int:episode_id>', SetPostsRead.as_view(), name='set_posts_read'),
     path('api/character-sheet-template/<int:game_id>', CharacterSheetTemplateGet.as_view(), name='get_character_sheet_template'),
+    path('api/page/<str:path>', GetPageByPath.as_view(), name='page_get'),
 
     path('api/admin-user-create', AdminUserCreate.as_view(), name='admin_user_create'),
 ]

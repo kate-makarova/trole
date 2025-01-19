@@ -129,10 +129,19 @@ class Article(models.Model):
 
 class CharacterSheetTemplate(models.Model):
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
-    name_order = models.IntegerField(default=1)
-    avatar_order = models.IntegerField(default=2)
-    description = models.IntegerField(default=3)
 
+    name_field_name = models.CharField(max_length=300, null=True)
+    avatar_field_name = models.CharField(max_length=300, null=True)
+    description_field_name = models.CharField(max_length=300, null=True)
+
+    name_description = models.CharField(null=True)
+    avatar_description = models.CharField(null=True)
+    description_description = models.CharField(null=True)
+
+    name_order = models.IntegerField(default=1, null=True)
+    avatar_order = models.IntegerField(default=2, null=True)
+    description_order = models.IntegerField(default=3, null=True)
+    is_active = models.BooleanField()
 
 class CharacterSheetTemplateField(models.Model):
     character_sheet_template = models.ForeignKey(CharacterSheetTemplate, on_delete=models.CASCADE)

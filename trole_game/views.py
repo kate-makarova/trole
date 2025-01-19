@@ -852,6 +852,52 @@ class CharacterSheetTemplateGet(APIView):
             }
         })
 
+class CharacterSheetTemplateUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        template = CharacterSheetTemplate.objects.get(pk=id)
+        if template.game.user_created.id != request.user.id:
+            return Response({"data": "You are not the admin of this game"})
+
+        new_field_data = {}
+        old_field_data = {}
+
+        for key, value in request.data.items():
+            key_parts = key.split('-')
+
+            if len(key_parts) == 2 and key_parts[1] in ['name', 'description', 'avatar']:
+                setattr(template, key_parts[1]+'-'+key_parts[0], value)
+
+            if len(key_parts) == 3:
+                if key_parts[2] not in new_field_data:
+                    new_field_data[key_parts[2]] = {}
+                new_field_data[key_parts[2]][key_parts[0]] = value
+
+            if len(key_parts) == 2 and key_parts[1] not in ['name', 'description', 'avatar']:
+                if key_parts[1] not in old_field_data:
+                    old_field_data[key_parts[1]] = {}
+                old_field_data[key_parts[1]][key_parts[0]] = value
+
+        for key, data in old_field_data.items():
+            field = CharacterSheetTemplateField.objects.get(pk=int(key))
+            for field_name, field_value in data.items():
+                setattr(field, field_name, field_value)
+            field.save()
+
+        for key, data in new_field_data.items():
+            new_field = CharacterSheetTemplateField()
+            new_field.character_sheet_template = template
+            new_field.is_required = False
+            for field_name, field_value in data.items():
+                setattr(new_field, field_name, field_value)
+            new_field.save()
+
+        template.save()
+
+        return Response({"data": template.id})
+
 class GetNewsArticleById(APIView):
     authentication_classes = []
     permission_classes = []

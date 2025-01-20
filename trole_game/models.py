@@ -2,20 +2,29 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import DO_NOTHING
 
+class Language(models.Model):
+    code = models.CharField(max_length=2)
+    name = models.CharField(max_length=300)
+    name_rus = models.CharField(max_length=300)
+
 class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    language = models.CharField(max_length=2)
+    ui_language = models.CharField(max_length=2)
     timezone = models.CharField(max_length=20)
 
 class Genre(models.Model):
     name = models.CharField(max_length=200)
+    name_rus = models.CharField(max_length=200, null=True)
 
 class MediaType(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
+    name_rus = models.CharField(max_length=50, null=True)
+    description_rus = models.TextField(null=True)
 
 class Fandom(models.Model):
     name = models.CharField(max_length=200)
+    name_rus = models.CharField(max_length=200, null=True)
     genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING)
     mediaType = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
 
@@ -37,6 +46,7 @@ class Game(models.Model):
     last_post_published = models.DateTimeField(null=True)
     permission_level = models.IntegerField()
     was_online_in_24 = models.IntegerField()
+    languages = models.ManyToManyField(Language)
 
 class UserGameParticipation(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

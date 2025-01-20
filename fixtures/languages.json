@@ -1,0 +1,373 @@
+[
+  {
+    "model" : "trole_game.language",
+    "id" : 1,
+    "code" : "en",
+    "name" : "English",
+    "name_rus" : "English"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 2,
+    "code" : "am",
+    "name" : "Amharic",
+    "name_rus" : "Amharic"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 3,
+    "code" : "ar",
+    "name" : "Arabic",
+    "name_rus" : "Arabic"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 4,
+    "code" : "eu",
+    "name" : "Basque",
+    "name_rus" : "Basque"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 5,
+    "code" : "bn",
+    "name" : "Bengali",
+    "name_rus" : "Bengali"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 6,
+    "code" : "pt",
+    "name" : "Portuguese",
+    "name_rus" : "Portuguese"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 7,
+    "code" : "bg",
+    "name" : "Bulgarian",
+    "name_rus" : "Bulgarian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 8,
+    "code" : "ca",
+    "name" : "Catalan",
+    "name_rus" : "Catalan"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 9,
+    "code" : "chr",
+    "name" : "Cherokee",
+    "name_rus" : "Cherokee"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 10,
+    "code" : "hr",
+    "name" : "Croatian",
+    "name_rus" : "Croatian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 11,
+    "code" : "cs",
+    "name" : "Czech",
+    "name_rus" : "Czech"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 12,
+    "code" : "da",
+    "name" : "Danish",
+    "name_rus" : "Danish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 13,
+    "code" : "nl",
+    "name" : "Dutch",
+    "name_rus" : "Dutch"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 14,
+    "code" : "et",
+    "name" : "Estonian",
+    "name_rus" : "Estonian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 15,
+    "code" : "fil",
+    "name" : "Filipino",
+    "name_rus" : "Filipino"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 16,
+    "code" : "fi",
+    "name" : "Finnish",
+    "name_rus" : "Finnish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 17,
+    "code" : "fr",
+    "name" : "French",
+    "name_rus" : "French"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 18,
+    "code" : "de",
+    "name" : "German",
+    "name_rus" : "German"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 19,
+    "code" : "el",
+    "name" : "Greek",
+    "name_rus" : "Greek"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 20,
+    "code" : "gu",
+    "name" : "Gujarati",
+    "name_rus" : "Gujarati"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 21,
+    "code" : "iw",
+    "name" : "Hebrew",
+    "name_rus" : "Hebrew"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 22,
+    "code" : "hi",
+    "name" : "Hindi",
+    "name_rus" : "Hindi"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 23,
+    "code" : "hu",
+    "name" : "Hungarian",
+    "name_rus" : "Hungarian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 24,
+    "code" : "is",
+    "name" : "Icelandic",
+    "name_rus" : "Icelandic"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 25,
+    "code" : "id",
+    "name" : "Indonesian",
+    "name_rus" : "Indonesian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 26,
+    "code" : "it",
+    "name" : "Italian",
+    "name_rus" : "Italian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 27,
+    "code" : "ja",
+    "name" : "Japanese",
+    "name_rus" : "Japanese"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 28,
+    "code" : "kn",
+    "name" : "Kannada",
+    "name_rus" : "Kannada"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 29,
+    "code" : "ko",
+    "name" : "Korean",
+    "name_rus" : "Korean"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 30,
+    "code" : "lv",
+    "name" : "Latvian",
+    "name_rus" : "Latvian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 31,
+    "code" : "lt",
+    "name" : "Lithuanian",
+    "name_rus" : "Lithuanian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 32,
+    "code" : "ms",
+    "name" : "Malay",
+    "name_rus" : "Malay"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 33,
+    "code" : "ml",
+    "name" : "Malayalam",
+    "name_rus" : "Malayalam"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 34,
+    "code" : "mr",
+    "name" : "Marathi",
+    "name_rus" : "Marathi"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 35,
+    "code" : "no",
+    "name" : "Norwegian",
+    "name_rus" : "Norwegian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 36,
+    "code" : "pl",
+    "name" : "Polish",
+    "name_rus" : "Polish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 37,
+    "code" : "ro",
+    "name" : "Romanian",
+    "name_rus" : "Romanian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 38,
+    "code" : "ru",
+    "name" : "Russian",
+    "name_rus" : "Russian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 39,
+    "code" : "sr",
+    "name" : "Serbian",
+    "name_rus" : "Serbian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 40,
+    "code" : "sk",
+    "name" : "Slovak",
+    "name_rus" : "Slovak"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 41,
+    "code" : "sl",
+    "name" : "Slovenian",
+    "name_rus" : "Slovenian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 42,
+    "code" : "es",
+    "name" : "Spanish",
+    "name_rus" : "Spanish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 43,
+    "code" : "sw",
+    "name" : "Swahili",
+    "name_rus" : "Swahili"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 44,
+    "code" : "sv",
+    "name" : "Swedish",
+    "name_rus" : "Swedish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 45,
+    "code" : "ta",
+    "name" : "Tamil",
+    "name_rus" : "Tamil"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 46,
+    "code" : "te",
+    "name" : "Telugu",
+    "name_rus" : "Telugu"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 47,
+    "code" : "th",
+    "name" : "Thai",
+    "name_rus" : "Thai"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 48,
+    "code" : "zh",
+    "name" : "Chinese",
+    "name_rus" : "Chinese"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 49,
+    "code" : "tr",
+    "name" : "Turkish",
+    "name_rus" : "Turkish"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 50,
+    "code" : "ur",
+    "name" : "Urdu",
+    "name_rus" : "Urdu"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 51,
+    "code" : "uk",
+    "name" : "Ukrainian",
+    "name_rus" : "Ukrainian"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 52,
+    "code" : "vi",
+    "name" : "Vietnamese",
+    "name_rus" : "Vietnamese"
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 53,
+    "code" : "cy",
+    "name" : "Welsh",
+    "name_rus" : "Welsh"
+  }
+]

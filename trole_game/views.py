@@ -1014,3 +1014,18 @@ class GetLanguageList(APIView):
                 "name": language.name
             })
         return data
+
+class GetGameLanguageList(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, game_id):
+        game = Game.objects.get(pk=game_id)
+        languages = game.languages.all()
+        data = []
+        for language in languages:
+            data.append({
+                "id": language.id,
+                "name": language.name
+            })
+        return data

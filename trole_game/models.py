@@ -92,16 +92,17 @@ class Episode(models.Model):
     image = models.CharField(max_length=300)
     description = models.TextField()
     status_id = models.IntegerField()
-    category = models.ForeignKey(GameEpisodeCategory, on_delete=DO_NOTHING, null=True)
+    category = models.ForeignKey(GameEpisodeCategory, on_delete=models.DO_NOTHING, null=True)
     rating_id = models.IntegerField()
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
     characters = models.ManyToManyField(Character)
-    user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
+    user_created = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date_created = models.DateTimeField()
     number_of_posts = models.IntegerField()
     last_post_date = models.DateTimeField(null=True)
     last_post_author = models.ForeignKey(Character, related_name='last_post_author_id', on_delete=models.DO_NOTHING, null=True)
-    in_category_order = models.IntegerField(null=True)
+    in_category_order = models.IntegerField(null=True),
+    language = models.ForeignKey(Language, null=True, on_delete=models.DO_NOTHING)
 
     def user_participates(self, user_id):
         for character in self.characters.all():

@@ -17,7 +17,7 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
-    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting
+    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language
 from trole_game.util.bb_translator import translate_bb
 import operator
 
@@ -214,9 +214,14 @@ class GetEpisodeById(APIView):
             "image": episode.image,
             "status": EpisodeStatus.get_episode_status()[episode.status_id],
             "total_posts": episode.number_of_posts,
+            "language": None,
             "description": episode.description,
             "characters": []
         }
+
+        if episode.language is not None:
+            data["language"] = episode.language.name
+
         is_mine = False
         for character in episode.characters.all():
             data['characters'].append({
@@ -447,6 +452,10 @@ class EpisodeCreate(APIView):
 
         print(request.data)
 
+        language = None
+        if request.data['language']:
+            language = language
+
         episode = Episode.objects.create(
             name=request.data['name'],
             image=request.data['image'],
@@ -460,7 +469,8 @@ class EpisodeCreate(APIView):
             number_of_posts=0,
             last_post_date=None,
             last_post_author=None,
-            in_category_order=None
+            in_category_order=None,
+            language_id = language
         )
 
         for entity in request.data['characters']:
@@ -990,3 +1000,17 @@ class GetCharacterSheetById(APIView):
         }
 
         return Response({"data": data})
+
+class GetLanguageList(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self):
+        languages = Language.objects.all()
+        data = []
+        for language in languages:
+            data.append({
+                "id": language.id,
+                "name": language.name
+            })
+        return data

@@ -2,7 +2,7 @@ from django.urls import resolve
 from rest_framework import permissions
 
 from trole_game.misc.permissions import GamePermissions
-from trole_game.models import Episode
+from trole_game.models import Episode, Character
 
 
 class AccessLevelPermission(permissions.BasePermission):
@@ -24,6 +24,13 @@ class AccessLevelPermission(permissions.BasePermission):
         ]:
             game_id = resolved.kwargs['game_id']
             return GamePermissions.check_game_access(game_id, request.user)
+
+        if current_url in [
+            'character_sheet'
+        ]:
+            character_id = resolved.kwargs['character_id']
+            character = Character.objects.get(pk=character_id)
+            return GamePermissions.check_game_access(character.game.id, request.user)
 
         if current_url in [
             'episode'

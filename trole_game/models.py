@@ -49,6 +49,22 @@ class GameEpisodeCategory(models.Model):
     order = models.IntegerField()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
+class CharacterSheetTemplate(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
+
+    name_field_name = models.CharField(max_length=300, null=True)
+    avatar_field_name = models.CharField(max_length=300, null=True)
+    description_field_name = models.CharField(max_length=300, null=True)
+
+    name_description = models.CharField(null=True)
+    avatar_description = models.CharField(null=True)
+    description_description = models.CharField(null=True)
+
+    name_order = models.IntegerField(default=1, null=True)
+    avatar_order = models.IntegerField(default=2, null=True)
+    description_order = models.IntegerField(default=3, null=True)
+    is_active = models.BooleanField()
+
 class Character(models.Model):
     name = models.CharField(max_length=300)
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
@@ -59,6 +75,7 @@ class Character(models.Model):
     participating_episodes = models.IntegerField()
     posts_written = models.IntegerField()
     last_post_date = models.DateTimeField(null=True)
+    character_sheet_template = models.ForeignKey(CharacterSheetTemplate, on_delete=models.DO_NOTHING)
 
 class Episode(models.Model):
     name = models.CharField(max_length=300)
@@ -126,22 +143,6 @@ class Article(models.Model):
     user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
     date_created = models.DateTimeField()
     is_index = models.BooleanField()
-
-class CharacterSheetTemplate(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
-
-    name_field_name = models.CharField(max_length=300, null=True)
-    avatar_field_name = models.CharField(max_length=300, null=True)
-    description_field_name = models.CharField(max_length=300, null=True)
-
-    name_description = models.CharField(null=True)
-    avatar_description = models.CharField(null=True)
-    description_description = models.CharField(null=True)
-
-    name_order = models.IntegerField(default=1, null=True)
-    avatar_order = models.IntegerField(default=2, null=True)
-    description_order = models.IntegerField(default=3, null=True)
-    is_active = models.BooleanField()
 
 class CharacterSheetTemplateField(models.Model):
     character_sheet_template = models.ForeignKey(CharacterSheetTemplate, on_delete=models.CASCADE)

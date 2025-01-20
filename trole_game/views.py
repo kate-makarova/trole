@@ -947,3 +947,46 @@ class GetPageByPath(APIView):
             "date_created": article.date_created,
         }
         return Response({"data": data})
+
+class GetCharacterSheetById(APIView):
+    authentication_classes = [JWTOrGuestAuthentication]
+    permission_classes = [AccessLevelPermission]
+
+    def get(self, request, character_id):
+        character = Character.objects.get(pk=character_id)
+      #  template = CharacterSheetTemplate.objects.get(pk=character.character_sheet_template.id)
+        fields = []
+        fields.append({
+            "id": "name",
+            "field_name": "name",
+            "value": character.name
+        })
+        fields.append({
+            "id": "avatar",
+            "field_name": "avatar",
+            "value": character.avatar
+        })
+        fields.append({
+            "id": "description",
+            "field_name": "description",
+            "value": character.description
+        })
+        additional_fields = CharacterSheetField.objects.filter(character_id=character.id)
+        for additional_field in additional_fields:
+            template = CharacterSheetTemplateField.objects.get(pk=additional_field.character_sheet_template_field_id)
+            fields.append({
+                "id": additional_field.id,
+                "field_name": template.field_name,
+                "value": additional_field.value
+            })
+
+        data = {
+            "character_id": character.id,
+            "fields": fields,
+            "user": {
+                "id": character.user.id,
+                "name": character.user.username
+            }
+        }
+
+        return Response({"data": data})

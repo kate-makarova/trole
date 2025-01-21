@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.access_level import AccessLevelPermission
-from trole_game.models import UserGameParticipation, Game, Episode, Article
+from trole_game.models import UserGameParticipation, Game, Episode, Article, Character
 
 
 class Breadcrumbs(APIView):
@@ -43,6 +43,16 @@ class Breadcrumbs(APIView):
                 get_game_link(game.id, request.user.id),
                 {"name": game.name, "path": "/game/" + str(game.id)},
                 {"name": "Create Character", "path": "/character-create/" + str(game.id)}
+            ]
+
+        if path == 'character':
+            character = Character.objects.get(pk=request.GET.get('0'))
+            game = Game.objects.get(pk=character.game_id)
+            breadcrumbs = [
+                get_game_link(game.id, request.user.id),
+                {"name": game.name, "path": "/game/" + str(game.id)},
+                {"name": "Character List", "path": "/character-list/" + str(game.id)},
+                {"name": character.name, "path": "/character/" + str(character.id)}
             ]
 
         if path == 'article-create':

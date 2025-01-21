@@ -1,0 +1,7 @@
+You can customize the character sheet template according to your needs. In order to do so, go to game settings, character sheet tab. There you can find a template for you character sheet.
+
+Please, be advised that you cannot remove the three basic fields: character name, avatar, and description. They are needed ny the system. However, you can rename them.
+
+In addition to these basic fields, you can add your own. Click on "Add field" button to create a new field. Each field has a name, a short description that comes right below the name and a type. It can be a simple text field, a large text area, a dropdown, or a collection of checkboxes (one or more), or a collection of radioboxes (two or more). For the types like dropdown or radioboxes you need to provide the options the user can choose from.
+
+Finally, each field can be required or not. The required fields have to be filled; the character sheet cannot be submitted without them. The fields that are not required can be left blank. The basic fields are always required.

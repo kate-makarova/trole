@@ -182,6 +182,7 @@ class GetGameById(APIView):
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name'),
+            "languages": game.languages.all().values('id', 'name'),
             "my_characters": [],
         }
 
@@ -454,22 +455,18 @@ class EpisodeCreate(APIView):
 
         language = None
         if request.data['language']:
-            language = language
+            language = int(request.data['language'])
 
         episode = Episode.objects.create(
             name=request.data['name'],
             image=request.data['image'],
             description=request.data['description'],
             status_id=1,
-            category=None,
             rating_id=3,
             game_id=request.data['game'],
             user_created_id=request.user.id,
             date_created=datetime.datetime.now(),
             number_of_posts=0,
-            last_post_date=None,
-            last_post_author=None,
-            in_category_order=None,
             language_id = language
         )
 
@@ -521,12 +518,14 @@ class CharacterCreate(APIView):
     def post(self, request):
 
         print(request.data)
+        characterSheetTemplate = CharacterSheetTemplate.objects.filter(game_id=request.data['game'])[0]
 
         character = Character.objects.create(
             name=request.data['name'],
             game_id=request.data['game'],
             avatar=request.data['avatar'],
             description=request.data['description'],
+            character_sheet_template=characterSheetTemplate,
             user_id=request.user.id,
             date_created=datetime.datetime.now(),
             participating_episodes=0,
@@ -582,6 +581,9 @@ class GameCreate(APIView):
         is_original = False
         fandom_ids = []
 
+        for language_id in request.data['languages']:
+            game.languages.add(language_id)
+
         for entity in request.data['fandoms']:
             if entity['id'] == 1:
                 is_original = True
@@ -621,8 +623,18 @@ class GameCreate(APIView):
             is_index=True
         )
 
-        CharacterSheetTemplate.create(
-            game=game
+        CharacterSheetTemplate.objects.create(
+            game=game,
+            name_field_name=None,
+            avatar_field_name=None,
+            description_field_name=None,
+            name_description=None,
+            avatar_description=None,
+            description_description=None,
+            name_order=1,
+            avatar_order=2,
+            description_order=3,
+            is_active=True
         )
 
         return Response({"data": game.id})
@@ -1005,7 +1017,7 @@ class GetLanguageList(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self):
+    def get(self, request):
         languages = Language.objects.all()
         data = []
         for language in languages:
@@ -1013,13 +1025,13 @@ class GetLanguageList(APIView):
                 "id": language.id,
                 "name": language.name
             })
-        return data
+        return Response({"data": data})
 
 class GetGameLanguageList(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, game_id):
+    def get(self, request, game_id):
         game = Game.objects.get(pk=game_id)
         languages = game.languages.all()
         data = []
@@ -1028,4 +1040,4 @@ class GetGameLanguageList(APIView):
                 "id": language.id,
                 "name": language.name
             })
-        return data
+        return Response({"data": data})

@@ -1,461 +1,650 @@
 [
   {
-    "model": "trole_game.language",
-    "pk": 1,
-    "fields": {
-      "code": "en",
-      "name": "English",
-      "name_rus": "English"
+    "model" : "trole_game.language",
+    "id" : 1,
+    "fields" : {
+      "code" : "AF",
+      "name" : "Afrikanns",
+      "name_rus" : "Afrikanns"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 2,
-    "fields": {
-      "code": "am",
-      "name": "Amharic",
-      "name_rus": "Amharic"
+    "model" : "trole_game.language",
+    "id" : 2,
+    "fields" : {
+      "code" : "SQ",
+      "name" : "Albanian",
+      "name_rus" : "Albanian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 3,
-    "fields": {
-      "code": "ar",
-      "name": "Arabic",
-      "name_rus": "Arabic"
+    "model" : "trole_game.language",
+    "id" : 3,
+    "fields" : {
+      "code" : "AR",
+      "name" : "Arabic",
+      "name_rus" : "Arabic"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 4,
-    "fields": {
-      "code": "eu",
-      "name": "Basque",
-      "name_rus": "Basque"
+    "model" : "trole_game.language",
+    "id" : 4,
+    "fields" : {
+      "code" : "HY",
+      "name" : "Armenian",
+      "name_rus" : "Armenian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 5,
-    "fields": {
-      "code": "bn",
-      "name": "Bengali",
-      "name_rus": "Bengali"
+    "model" : "trole_game.language",
+    "id" : 5,
+    "fields" : {
+      "code" : "EU",
+      "name" : "Basque",
+      "name_rus" : "Basque"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 6,
-    "fields": {
-      "code": "pt",
-      "name": "Portuguese",
-      "name_rus": "Portuguese"
+    "model" : "trole_game.language",
+    "id" : 6,
+    "fields" : {
+      "code" : "BN",
+      "name" : "Bengali",
+      "name_rus" : "Bengali"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 7,
-    "fields": {
-      "code": "bg",
-      "name": "Bulgarian",
-      "name_rus": "Bulgarian"
+    "model" : "trole_game.language",
+    "id" : 7,
+    "fields" : {
+      "code" : "BG",
+      "name" : "Bulgarian",
+      "name_rus" : "Bulgarian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 8,
-    "fields": {
-      "code": "ca",
-      "name": "Catalan",
-      "name_rus": "Catalan"
-    }
-  },
-    {
-    "model": "trole_game.language",
-    "pk": 9,
-    "fields": {
-      "code": "cy",
-      "name": "Welsh",
-      "name_rus": "Welsh"
+    "model" : "trole_game.language",
+    "id" : 8,
+    "fields" : {
+      "code" : "CA",
+      "name" : "Catalan",
+      "name_rus" : "Catalan"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 10,
-    "fields": {
-      "code": "hr",
-      "name": "Croatian",
-      "name_rus": "Croatian"
+    "model" : "trole_game.language",
+    "id" : 9,
+    "fields" : {
+      "code" : "KM",
+      "name" : "Cambodian",
+      "name_rus" : "Cambodian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 11,
-    "fields": {
-      "code": "cs",
-      "name": "Czech",
-      "name_rus": "Czech"
+    "model" : "trole_game.language",
+    "id" : 10,
+    "fields" : {
+      "code" : "ZH",
+      "name" : "Chinese (Mandarin)",
+      "name_rus" : "Chinese (Mandarin)"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 12,
-    "fields": {
-      "code": "da",
-      "name": "Danish",
-      "name_rus": "Danish"
+    "model" : "trole_game.language",
+    "id" : 11,
+    "fields" : {
+      "code" : "HR",
+      "name" : "Croation",
+      "name_rus" : "Croation"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 13,
-    "fields": {
-      "code": "nl",
-      "name": "Dutch",
-      "name_rus": "Dutch"
+    "model" : "trole_game.language",
+    "id" : 12,
+    "fields" : {
+      "code" : "CS",
+      "name" : "Czech",
+      "name_rus" : "Czech"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 14,
-    "fields": {
-      "code": "et",
-      "name": "Estonian",
-      "name_rus": "Estonian"
-    }
-  },
-    {
-    "model": "trole_game.language",
-    "pk": 15,
-    "fields": {
-      "code": "vi",
-      "name": "Vietnamese",
-      "name_rus": "Vietnamese"
+    "model" : "trole_game.language",
+    "id" : 13,
+    "fields" : {
+      "code" : "DA",
+      "name" : "Danish",
+      "name_rus" : "Danish"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 16,
-    "fields": {
-      "code": "fi",
-      "name": "Finnish",
-      "name_rus": "Finnish"
+    "model" : "trole_game.language",
+    "id" : 14,
+    "fields" : {
+      "code" : "NL",
+      "name" : "Dutch",
+      "name_rus" : "Dutch"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 17,
-    "fields": {
-      "code": "fr",
-      "name": "French",
-      "name_rus": "French"
+    "model" : "trole_game.language",
+    "id" : 15,
+    "fields" : {
+      "code" : "EN",
+      "name" : "English",
+      "name_rus" : "English"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 18,
-    "fields": {
-      "code": "de",
-      "name": "German",
-      "name_rus": "German"
+    "model" : "trole_game.language",
+    "id" : 16,
+    "fields" : {
+      "code" : "ET",
+      "name" : "Estonian",
+      "name_rus" : "Estonian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 19,
-    "fields": {
-      "code": "el",
-      "name": "Greek",
-      "name_rus": "Greek"
+    "model" : "trole_game.language",
+    "id" : 17,
+    "fields" : {
+      "code" : "FJ",
+      "name" : "Fiji",
+      "name_rus" : "Fiji"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 20,
-    "fields": {
-      "code": "gu",
-      "name": "Gujarati",
-      "name_rus": "Gujarati"
+    "model" : "trole_game.language",
+    "id" : 18,
+    "fields" : {
+      "code" : "FI",
+      "name" : "Finnish",
+      "name_rus" : "Finnish"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 21,
-    "fields": {
-      "code": "iw",
-      "name": "Hebrew",
-      "name_rus": "Hebrew"
+    "model" : "trole_game.language",
+    "id" : 19,
+    "fields" : {
+      "code" : "FR",
+      "name" : "French",
+      "name_rus" : "French"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 22,
-    "fields": {
-      "code": "hi",
-      "name": "Hindi",
-      "name_rus": "Hindi"
+    "model" : "trole_game.language",
+    "id" : 20,
+    "fields" : {
+      "code" : "KA",
+      "name" : "Georgian",
+      "name_rus" : "Georgian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 23,
-    "fields": {
-      "code": "hu",
-      "name": "Hungarian",
-      "name_rus": "Hungarian"
+    "model" : "trole_game.language",
+    "id" : 21,
+    "fields" : {
+      "code" : "DE",
+      "name" : "German",
+      "name_rus" : "German"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 24,
-    "fields": {
-      "code": "is",
-      "name": "Icelandic",
-      "name_rus": "Icelandic"
+    "model" : "trole_game.language",
+    "id" : 22,
+    "fields" : {
+      "code" : "EL",
+      "name" : "Greek",
+      "name_rus" : "Greek"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 25,
-    "fields": {
-      "code": "pk",
-      "name": "Indonesian",
-      "name_rus": "Indonesian"
+    "model" : "trole_game.language",
+    "id" : 23,
+    "fields" : {
+      "code" : "GU",
+      "name" : "Gujarati",
+      "name_rus" : "Gujarati"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 26,
-    "fields": {
-      "code": "it",
-      "name": "Italian",
-      "name_rus": "Italian"
+    "model" : "trole_game.language",
+    "id" : 24,
+    "fields" : {
+      "code" : "HE",
+      "name" : "Hebrew",
+      "name_rus" : "Hebrew"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 27,
-    "fields": {
-      "code": "ja",
-      "name": "Japanese",
-      "name_rus": "Japanese"
+    "model" : "trole_game.language",
+    "id" : 25,
+    "fields" : {
+      "code" : "HI",
+      "name" : "Hindi",
+      "name_rus" : "Hindi"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 28,
-    "fields": {
-      "code": "kn",
-      "name": "Kannada",
-      "name_rus": "Kannada"
+    "model" : "trole_game.language",
+    "id" : 26,
+    "fields" : {
+      "code" : "HU",
+      "name" : "Hungarian",
+      "name_rus" : "Hungarian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 29,
-    "fields": {
-      "code": "ko",
-      "name": "Korean",
-      "name_rus": "Korean"
+    "model" : "trole_game.language",
+    "id" : 27,
+    "fields" : {
+      "code" : "IS",
+      "name" : "Icelandic",
+      "name_rus" : "Icelandic"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 30,
-    "fields": {
-      "code": "lv",
-      "name": "Latvian",
-      "name_rus": "Latvian"
+    "model" : "trole_game.language",
+    "id" : 28,
+    "fields" : {
+      "code" : "ID",
+      "name" : "Indonesian",
+      "name_rus" : "Indonesian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 31,
-    "fields": {
-      "code": "lt",
-      "name": "Lithuanian",
-      "name_rus": "Lithuanian"
+    "model" : "trole_game.language",
+    "id" : 29,
+    "fields" : {
+      "code" : "GA",
+      "name" : "Irish",
+      "name_rus" : "Irish"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 32,
-    "fields": {
-      "code": "ms",
-      "name": "Malay",
-      "name_rus": "Malay"
+    "model" : "trole_game.language",
+    "id" : 30,
+    "fields" : {
+      "code" : "IT",
+      "name" : "Italian",
+      "name_rus" : "Italian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 33,
-    "fields": {
-      "code": "ml",
-      "name": "Malayalam",
-      "name_rus": "Malayalam"
+    "model" : "trole_game.language",
+    "id" : 31,
+    "fields" : {
+      "code" : "JA",
+      "name" : "Japanese",
+      "name_rus" : "Japanese"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 34,
-    "fields": {
-      "code": "mr",
-      "name": "Marathi",
-      "name_rus": "Marathi"
+    "model" : "trole_game.language",
+    "id" : 32,
+    "fields" : {
+      "code" : "JW",
+      "name" : "Javanese",
+      "name_rus" : "Javanese"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 35,
-    "fields": {
-      "code": "no",
-      "name": "Norwegian",
-      "name_rus": "Norwegian"
+    "model" : "trole_game.language",
+    "id" : 33,
+    "fields" : {
+      "code" : "KO",
+      "name" : "Korean",
+      "name_rus" : "Korean"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 36,
-    "fields": {
-      "code": "pl",
-      "name": "Polish",
-      "name_rus": "Polish"
+    "model" : "trole_game.language",
+    "id" : 34,
+    "fields" : {
+      "code" : "LA",
+      "name" : "Latin",
+      "name_rus" : "Latin"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 37,
-    "fields": {
-      "code": "ro",
-      "name": "Romanian",
-      "name_rus": "Romanian"
+    "model" : "trole_game.language",
+    "id" : 35,
+    "fields" : {
+      "code" : "LV",
+      "name" : "Latvian",
+      "name_rus" : "Latvian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 38,
-    "fields": {
-      "code": "ru",
-      "name": "Russian",
-      "name_rus": "Russian"
+    "model" : "trole_game.language",
+    "id" : 36,
+    "fields" : {
+      "code" : "LT",
+      "name" : "Lithuanian",
+      "name_rus" : "Lithuanian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 39,
-    "fields": {
-      "code": "sr",
-      "name": "Serbian",
-      "name_rus": "Serbian"
+    "model" : "trole_game.language",
+    "id" : 37,
+    "fields" : {
+      "code" : "MK",
+      "name" : "Macedonian",
+      "name_rus" : "Macedonian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 40,
-    "fields": {
-      "code": "sk",
-      "name": "Slovak",
-      "name_rus": "Slovak"
+    "model" : "trole_game.language",
+    "id" : 38,
+    "fields" : {
+      "code" : "MS",
+      "name" : "Malay",
+      "name_rus" : "Malay"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 41,
-    "fields": {
-      "code": "sl",
-      "name": "Slovenian",
-      "name_rus": "Slovenian"
+    "model" : "trole_game.language",
+    "id" : 39,
+    "fields" : {
+      "code" : "ML",
+      "name" : "Malayalam",
+      "name_rus" : "Malayalam"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 42,
-    "fields": {
-      "code": "es",
-      "name": "Spanish",
-      "name_rus": "Spanish"
+    "model" : "trole_game.language",
+    "id" : 40,
+    "fields" : {
+      "code" : "MT",
+      "name" : "Maltese",
+      "name_rus" : "Maltese"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 43,
-    "fields": {
-      "code": "sw",
-      "name": "Swahili",
-      "name_rus": "Swahili"
+    "model" : "trole_game.language",
+    "id" : 41,
+    "fields" : {
+      "code" : "MI",
+      "name" : "Maori",
+      "name_rus" : "Maori"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 44,
-    "fields": {
-      "code": "sv",
-      "name": "Swedish",
-      "name_rus": "Swedish"
+    "model" : "trole_game.language",
+    "id" : 42,
+    "fields" : {
+      "code" : "MR",
+      "name" : "Marathi",
+      "name_rus" : "Marathi"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 45,
-    "fields": {
-      "code": "ta",
-      "name": "Tamil",
-      "name_rus": "Tamil"
+    "model" : "trole_game.language",
+    "id" : 43,
+    "fields" : {
+      "code" : "MN",
+      "name" : "Mongolian",
+      "name_rus" : "Mongolian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 46,
-    "fields": {
-      "code": "te",
-      "name": "Telugu",
-      "name_rus": "Telugu"
+    "model" : "trole_game.language",
+    "id" : 44,
+    "fields" : {
+      "code" : "NE",
+      "name" : "Nepali",
+      "name_rus" : "Nepali"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 47,
-    "fields": {
-      "code": "th",
-      "name": "Thai",
-      "name_rus": "Thai"
+    "model" : "trole_game.language",
+    "id" : 45,
+    "fields" : {
+      "code" : "NO",
+      "name" : "Norwegian",
+      "name_rus" : "Norwegian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 48,
-    "fields": {
-      "code": "zh",
-      "name": "Chinese",
-      "name_rus": "Chinese"
+    "model" : "trole_game.language",
+    "id" : 46,
+    "fields" : {
+      "code" : "FA",
+      "name" : "Persian",
+      "name_rus" : "Persian"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 49,
-    "fields": {
-      "code": "tr",
-      "name": "Turkish",
-      "name_rus": "Turkish"
+    "model" : "trole_game.language",
+    "id" : 47,
+    "fields" : {
+      "code" : "PL",
+      "name" : "Polish",
+      "name_rus" : "Polish"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 50,
-    "fields": {
-      "code": "ur",
-      "name": "Urdu",
-      "name_rus": "Urdu"
+    "model" : "trole_game.language",
+    "id" : 48,
+    "fields" : {
+      "code" : "PT",
+      "name" : "Portuguese",
+      "name_rus" : "Portuguese"
     }
   },
   {
-    "model": "trole_game.language",
-    "pk": 51,
-    "fields": {
-      "code": "uk",
-      "name": "Ukrainian",
-      "name_rus": "Ukrainian"
+    "model" : "trole_game.language",
+    "id" : 49,
+    "fields" : {
+      "code" : "PA",
+      "name" : "Punjabi",
+      "name_rus" : "Punjabi"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 50,
+    "fields" : {
+      "code" : "QU",
+      "name" : "Quechua",
+      "name_rus" : "Quechua"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 51,
+    "fields" : {
+      "code" : "RO",
+      "name" : "Romanian",
+      "name_rus" : "Romanian"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 52,
+    "fields" : {
+      "code" : "RU",
+      "name" : "Russian",
+      "name_rus" : "Russian"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 53,
+    "fields" : {
+      "code" : "SM",
+      "name" : "Samoan",
+      "name_rus" : "Samoan"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 54,
+    "fields" : {
+      "code" : "SR",
+      "name" : "Serbian",
+      "name_rus" : "Serbian"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 55,
+    "fields" : {
+      "code" : "SK",
+      "name" : "Slovak",
+      "name_rus" : "Slovak"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 56,
+    "fields" : {
+      "code" : "SL",
+      "name" : "Slovenian",
+      "name_rus" : "Slovenian"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 57,
+    "fields" : {
+      "code" : "ES",
+      "name" : "Spanish",
+      "name_rus" : "Spanish"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 58,
+    "fields" : {
+      "code" : "SW",
+      "name" : "Swahili",
+      "name_rus" : "Swahili"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 59,
+    "fields" : {
+      "code" : "SV",
+      "name" : "Swedish ",
+      "name_rus" : "Swedish "
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 60,
+    "fields" : {
+      "code" : "TA",
+      "name" : "Tamil",
+      "name_rus" : "Tamil"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 61,
+    "fields" : {
+      "code" : "TT",
+      "name" : "Tatar",
+      "name_rus" : "Tatar"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 62,
+    "fields" : {
+      "code" : "TE",
+      "name" : "Telugu",
+      "name_rus" : "Telugu"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 63,
+    "fields" : {
+      "code" : "TH",
+      "name" : "Thai",
+      "name_rus" : "Thai"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 64,
+    "fields" : {
+      "code" : "BO",
+      "name" : "Tibetan",
+      "name_rus" : "Tibetan"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 65,
+    "fields" : {
+      "code" : "TO",
+      "name" : "Tonga",
+      "name_rus" : "Tonga"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 66,
+    "fields" : {
+      "code" : "TR",
+      "name" : "Turkish",
+      "name_rus" : "Turkish"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 67,
+    "fields" : {
+      "code" : "UK",
+      "name" : "Ukranian",
+      "name_rus" : "Ukranian"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 68,
+    "fields" : {
+      "code" : "UR",
+      "name" : "Urdu",
+      "name_rus" : "Urdu"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 69,
+    "fields" : {
+      "code" : "UZ",
+      "name" : "Uzbek",
+      "name_rus" : "Uzbek"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 70,
+    "fields" : {
+      "code" : "VI",
+      "name" : "Vietnamese",
+      "name_rus" : "Vietnamese"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 71,
+    "fields" : {
+      "code" : "CY",
+      "name" : "Welsh",
+      "name_rus" : "Welsh"
+    }
+  },
+  {
+    "model" : "trole_game.language",
+    "id" : 72,
+    "fields" : {
+      "code" : "XH",
+      "name" : "Xhosa",
+      "name_rus" : "Xhosa"
     }
   }
 ]

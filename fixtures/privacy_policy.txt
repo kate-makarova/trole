@@ -1,0 +1,39 @@
+Privacy Policy
+At Trole Online, we are committed to protecting your privacy. This Privacy Policy outlines the information we collect, how we use it, and your rights regarding your data when you use our platform.
+
+1. Information We Collect
+When you create an account on Trole Online, we collect the following mandatory information:
+
+Email address: To identify your account and communicate with you.
+Username: To identify you on the platform.
+Password: To secure your account.
+Additionally, you may choose to provide the following optional information:
+
+Timezone: To adjust the platform to your local time.
+User Interface Language: To personalize your experience based on your preferred language.
+2. How We Use Your Information
+The information we collect is used solely to provide you with the services on Trole Online:
+
+To create and manage your account.
+To send you necessary notifications (e.g., new posts or updates in games you are part of).
+To personalize your user experience based on the language and timezone preferences you provide.
+We do not sell, rent, or share your personal data with third parties for marketing purposes.
+
+3. Data Security
+We take your privacy and data security seriously. Your account password is stored securely and encrypted. We make every effort to protect your personal information from unauthorized access or disclosure, but please remember that no method of transmission over the internet or electronic storage is 100% secure.
+
+4. No Analytics or Tracking
+We do not use any third-party analytics tools or track your activities on the site for marketing or advertising purposes. Your use of the platform remains private and focused solely on your interactions within the games.
+
+5. Your Rights
+You have the right to:
+
+Access your data: You can view the personal data we store about you at any time.
+Update your information: You can modify your account details, including email address, timezone, and language preferences.
+Delete your account: You can request to delete your account and all associated data by contacting us at [contact email].
+6. Changes to This Policy
+We may update this Privacy Policy from time to time. When we do, we will notify you by posting the updated policy on this page. The updated policy will be effective as of the date it is posted.
+
+7. Contact Us
+If you have any questions or concerns about this Privacy Policy, please feel free to reach out to us at [contact email].
+

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .admin_views import AdminUserCreate
+from .admin_views import AdminUserCreate, AdminPageCreate
 from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
@@ -47,4 +47,5 @@ urlpatterns = [
     path('api/page/<str:path>', GetPageByPath.as_view(), name='page_get'),
 
     path('api/admin-user-create', AdminUserCreate.as_view(), name='admin_user_create'),
+    path('api/admin-page-create', AdminPageCreate.as_view(), name='admin_page_create'),
 ]

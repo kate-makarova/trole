@@ -948,10 +948,14 @@ class GetPageByPath(APIView):
     permission_classes = []
 
     def get(self, request, path):
-        user_setting = UserSetting.objects.filter(user_id=request.user.id)[:1][0]
+        try:
+            user_setting = UserSetting.objects.filter(user_id=request.user.id)[:1][0]
+            language = user_setting.language
+        except:
+            language = 'en'
 
         articles = Page.objects.filter(path=path)
-        filtered = [article for article in articles if article.language == user_setting.language]
+        filtered = [article for article in articles if article.language == language]
         if len(filtered) == 0:
             filtered = [article for article in articles if article.language == DEFAULT_LANGUAGE]
         article = filtered[0]

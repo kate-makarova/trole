@@ -146,12 +146,15 @@ class UserGetByUsername(APIView):
 
     def get(self, request, username):
         user = User.objects.get(username=username)
+        settings = UserSetting.objects.filter(user_id=user.id)[0]
         data = {
             "id": user.id,
             "username": user.username,
             "is_admin": user.is_staff,
             "avatar": "",
-            "characters": []
+            "characters": [],
+            "theme": settings.theme,
+            "language": settings.ui_language
         }
         characters = Character.objects.filter(user_id=user.id)
         for character in characters:

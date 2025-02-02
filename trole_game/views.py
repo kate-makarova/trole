@@ -784,13 +784,13 @@ class GameUpdate(APIView):
         if is_original:
             old_genres = list(game.genres.all().values_list('id', flat=True))
 
-            for entity in request.data['genres']:
-                if entity == '':
+            for genre_id in request.data['genres']:
+                if genre_id == '':
                     continue
-                if entity['id'] in old_genres:
-                    old_genres.remove(entity['id'])
+                if genre_id in old_genres:
+                    old_genres.remove(genre_id)
                 else:
-                    game.genres.add(entity['id'])
+                    game.genres.add(genre_id)
 
             for removed_genre in old_genres:
                 genre = Genre.objects.get(pk=removed_genre)

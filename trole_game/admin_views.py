@@ -25,7 +25,7 @@ class AdminUserCreate(APIView):
 
         UserSetting.objects.create(
             user=user,
-            language='en',
+            ui_language='en',
             timezone='UTC',
         )
 

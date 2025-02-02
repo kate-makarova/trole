@@ -175,13 +175,24 @@ class GetGameById(APIView):
         game = Game.objects.get(pk=id)
         data = {
             "id": game.id,
+            "status": {
+                'id': game.status_id,
+                'name': GameStatus.get_game_status()[game.status_id]
+            },
+            "access_level": {
+                'id': game.permission_level,
+                'name': GamePermissions.get_levels()[game.permission_level]
+            },
             "name": game.name,
             "image": game.image,
             "total_characters": game.total_characters,
             "total_posts": game.total_posts,
             "total_users": game.total_users,
             "total_episodes": game.total_episodes,
-            "rating": Rating.get_ratings()[game.rating_id]['name'],
+            "rating": {
+                "id": game.rating_id,
+                "name": Rating.get_ratings()[game.rating_id]['name']
+            },
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name'),
@@ -716,6 +727,83 @@ class GameCreate(APIView):
 
         return Response({"data": game.id})
 
+class GameUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        print(request.data)
+
+        game = Game.objects.get(pk=id)
+
+        game.name=request.data['name']
+        game.image=request.data['image']
+        game.status_id=request.data['status']
+        game.description=request.data['description']
+        game.permission_level=request.data['access_level']
+        game.rating_id=request.data['rating']
+
+        old_languages = list(game.languages.all().values_list('id', flat=True))
+
+        for lang_id in request.data['languages']:
+            if id == '':
+                continue
+            lang_id = int(lang_id)
+            if id in old_languages:
+                old_languages.remove(lang_id)
+            else:
+                game.languages.add(lang_id)
+
+        for removed_language in old_languages:
+            language = Language.objects.get(pk=removed_language)
+            game.languages.remove(language)
+
+        is_original = False
+        fandom_ids = []
+
+        old_fandoms = list(game.fandoms.all().values_list('id', flat=True))
+
+        for entity in request.data['fandoms']:
+            if entity == '':
+                continue
+            if entity['id'] == 1:
+                is_original = True
+            if entity['id'] in old_fandoms:
+                old_fandoms.remove(entity['id'])
+            else:
+                game.fandoms.add(entity['id'])
+
+        for removed_fandom in old_fandoms:
+            fandom = Fandom.objects.get(pk=removed_fandom)
+            game.fandoms.remove(fandom)
+
+        if not is_original:
+            game.genres.clear()
+
+        if is_original:
+            old_genres = list(game.genres.all().values_list('id', flat=True))
+
+            for entity in request.data['genres']:
+                if entity == '':
+                    continue
+                if entity['id'] in old_genres:
+                    old_genres.remove(entity['id'])
+                else:
+                    game.genres.add(entity['id'])
+
+            for removed_genre in old_genres:
+                genre = Genre.objects.get(pk=removed_genre)
+                game.genre.remove(genre)
+
+        genres = Genre.objects.filter(id__in=fandom_ids)
+        for genre in genres:
+            if not len(game.genres.filter(pk=genre.id)):
+                game.genres.add(genre)
+
+        game.save()
+
+        return Response({"data": game.id})
 
 class PostCreate(APIView):
     authentication_classes = [JWTAuthentication]

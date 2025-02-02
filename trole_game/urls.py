@@ -6,13 +6,14 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
-    GetCharacterSheetById, GetLanguageList, GetGameLanguageList
+    GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings
 
 urlpatterns = [
     path('api/', index, name='index'),
     path('api/home', UserHome.as_view(), name='home'),
     path('api/game-list', GameList.as_view(), name='game_list'),
     path('api/user/get-by-username/<str:username>', UserGetByUsername.as_view()),
+    path('api/user-settings-update/<int:user_id>', UpdateUserSettings.as_view()),
     path('api/language-list', GetLanguageList.as_view(), name='language_list'),
     path('api/game-language-list/<int:game_id>', GetGameLanguageList.as_view(), name='game_language_list'),
     path('api/game/<int:id>', GetGameById.as_view(), name='game'),

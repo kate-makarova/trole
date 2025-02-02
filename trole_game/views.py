@@ -1048,3 +1048,14 @@ class GetGameLanguageList(APIView):
                 "name": language.name
             })
         return Response({"data": data})
+
+class UpdateUserSettings(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        settings = UserSetting.objects.filter(user_id=user_id)[0]
+        settings.theme = request.data['theme']
+        settings.save()
+
+        return Response({"data": True})

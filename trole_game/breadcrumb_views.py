@@ -37,6 +37,16 @@ class Breadcrumbs(APIView):
                 {"name": "Create Episode", "path": "/episode-create/" + str(game.id)}
             ]
 
+        if path == 'episode-edit':
+            episode = Episode.objects.get(pk=request.GET.get('0'))
+            game = Game.objects.get(pk=episode.game_id)
+            breadcrumbs = [
+                get_game_link(game.id, request.user.id),
+                {"name": game.name, "path": "/game/" + str(game.id)},
+                {"name": episode.name, "path": "/episode/" + str(episode.id)},
+                {"name": "Edit Episode", "path": "/episode-edit/" + str(episode.id)}
+            ]
+
         if path == 'character-create':
             game = Game.objects.get(pk=request.GET.get('0'))
             breadcrumbs = [

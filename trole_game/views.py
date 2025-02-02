@@ -214,6 +214,7 @@ class GetEpisodeById(APIView):
         episode = Episode.objects.get(pk=id)
         data = {
             "id": episode.id,
+            "game_id": episode.game.id,
             "name": episode.name,
             "image": episode.image,
             "status": EpisodeStatus.get_episode_status()[episode.status_id],
@@ -237,6 +238,11 @@ class GetEpisodeById(APIView):
             if character.user.id == request.user.id:
                 is_mine = True
         data["is_mine"] = is_mine
+
+        can_edit = False
+        if episode.user_created.id == request.user.id:
+            can_edit = True
+        data["can_edit"] = can_edit
 
         notification = CharacterEpisodeNotification.objects.filter(
             episode_id=episode.id,
@@ -493,6 +499,74 @@ class EpisodeCreate(APIView):
         game = Game.objects.get(pk=request.data['game'])
         game.total_episodes += 1
         game.save()
+
+        return Response({"data": episode.id})
+
+class EpisodeUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        print(request.data)
+
+        language = None
+        if request.data['language']:
+            language = int(request.data['language'])
+
+        episode = Episode.objects.get(pk=id)
+
+        if episode.user_created.id != request.user.id:
+            return Response({"data": "Access denied"})
+
+
+        episode.name=request.data['name']
+        episode.image=request.data['image']
+        episode.description=request.data['description']
+        episode.status_id=1
+        episode.rating_id=3
+        episode.language_id = language
+
+        old_characters = list(episode.characters.all().values_list('id', flat=True))
+
+        for entity in request.data['characters']:
+            if entity == '':
+                continue
+            if entity['id'] in old_characters:
+                old_characters.remove(entity['id'])
+            else:
+                episode.characters.add(entity['id'])
+                character = Character.objects.get(pk=entity['id'])
+                character.participating_episodes += 1
+                character.save()
+
+                if request.user.id != character.user.id:
+                    CharacterEpisodeNotification.objects.create(
+                        user_id=character.user.id,
+                        character_id=character.id,
+                        episode_id=episode.id,
+                        date_created=datetime.datetime.now(),
+                        is_read=False,
+                        notification_type=1
+                    )
+
+        for removed_character in old_characters:
+            character = Character.objects.get(pk=removed_character)
+            episode.characters.remove(character)
+            character.participating_episodes -= 1
+            character.save()
+
+            if request.user.id != character.user.id:
+                CharacterEpisodeNotification.objects.create(
+                    user_id=character.user.id,
+                    character_id=character.id,
+                    episode_id=episode.id,
+                    date_created=datetime.datetime.now(),
+                    is_read=False,
+                    notification_type=0
+                )
+
+        episode.save()
 
         return Response({"data": episode.id})
 

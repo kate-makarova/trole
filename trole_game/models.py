@@ -11,6 +11,7 @@ class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     ui_language = models.CharField(max_length=2)
     timezone = models.CharField(max_length=20)
+    theme = models.CharField(max_length=20, default='style-default')
 
 class Genre(models.Model):
     name = models.CharField(max_length=200)

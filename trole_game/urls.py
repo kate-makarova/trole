@@ -1,18 +1,19 @@
 from django.urls import path
 
-from .admin_views import AdminUserCreate
+from .admin_views import AdminUserCreate, AdminPageCreate
 from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
-    GetCharacterSheetById, GetLanguageList, GetGameLanguageList
+    GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate
 
 urlpatterns = [
     path('api/', index, name='index'),
     path('api/home', UserHome.as_view(), name='home'),
     path('api/game-list', GameList.as_view(), name='game_list'),
     path('api/user/get-by-username/<str:username>', UserGetByUsername.as_view()),
+    path('api/user-settings-update/<int:user_id>', UpdateUserSettings.as_view()),
     path('api/language-list', GetLanguageList.as_view(), name='language_list'),
     path('api/game-language-list/<int:game_id>', GetGameLanguageList.as_view(), name='game_language_list'),
     path('api/game/<int:id>', GetGameById.as_view(), name='game'),
@@ -24,8 +25,10 @@ urlpatterns = [
     path('api/character-autocomplete/<int:game_id>/<str:search>', CharacterAutocomplete.as_view(), name='character_autocomplete'),
     path('api/static-list/<str:class_name>', StaticList.as_view(), name='static_list'),
     path('api/episode-create', EpisodeCreate.as_view(), name='episode_create'),
+    path('api/episode-update/<int:id>', EpisodeUpdate.as_view(), name='episode_update'),
     path('api/character-create', CharacterCreate.as_view(), name='character_create'),
     path('api/game-create', GameCreate.as_view(), name='game_create'),
+    path('api/game-update/<int:id>', GameUpdate.as_view(), name='game_update'),
     path('api/game-join', GameJoin.as_view(), name='game_join'),
     path('api/post-create', PostCreate.as_view(), name='post_create'),
     path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
@@ -47,4 +50,5 @@ urlpatterns = [
     path('api/page/<str:path>', GetPageByPath.as_view(), name='page_get'),
 
     path('api/admin-user-create', AdminUserCreate.as_view(), name='admin_user_create'),
+    path('api/admin-page-create', AdminPageCreate.as_view(), name='admin_page_create'),
 ]

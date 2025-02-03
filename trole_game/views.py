@@ -146,12 +146,15 @@ class UserGetByUsername(APIView):
 
     def get(self, request, username):
         user = User.objects.get(username=username)
+        settings = UserSetting.objects.filter(user_id=user.id)[0]
         data = {
             "id": user.id,
             "username": user.username,
             "is_admin": user.is_staff,
             "avatar": "",
-            "characters": []
+            "characters": [],
+            "theme": settings.theme,
+            "language": settings.ui_language
         }
         characters = Character.objects.filter(user_id=user.id)
         for character in characters:
@@ -172,13 +175,24 @@ class GetGameById(APIView):
         game = Game.objects.get(pk=id)
         data = {
             "id": game.id,
+            "status": {
+                'id': game.status_id,
+                'name': GameStatus.get_game_status()[game.status_id]
+            },
+            "access_level": {
+                'id': game.permission_level,
+                'name': GamePermissions.get_levels()[game.permission_level]
+            },
             "name": game.name,
             "image": game.image,
             "total_characters": game.total_characters,
             "total_posts": game.total_posts,
             "total_users": game.total_users,
             "total_episodes": game.total_episodes,
-            "rating": Rating.get_ratings()[game.rating_id]['name'],
+            "rating": {
+                "id": game.rating_id,
+                "name": Rating.get_ratings()[game.rating_id]['name']
+            },
             "description": game.description,
             "fandoms": game.fandoms.all().values('id', 'name'),
             "genres": game.genres.all().values('id', 'name'),
@@ -211,6 +225,7 @@ class GetEpisodeById(APIView):
         episode = Episode.objects.get(pk=id)
         data = {
             "id": episode.id,
+            "game_id": episode.game.id,
             "name": episode.name,
             "image": episode.image,
             "status": EpisodeStatus.get_episode_status()[episode.status_id],
@@ -234,6 +249,11 @@ class GetEpisodeById(APIView):
             if character.user.id == request.user.id:
                 is_mine = True
         data["is_mine"] = is_mine
+
+        can_edit = False
+        if episode.user_created.id == request.user.id:
+            can_edit = True
+        data["can_edit"] = can_edit
 
         notification = CharacterEpisodeNotification.objects.filter(
             episode_id=episode.id,
@@ -493,6 +513,74 @@ class EpisodeCreate(APIView):
 
         return Response({"data": episode.id})
 
+class EpisodeUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        print(request.data)
+
+        language = None
+        if request.data['language']:
+            language = int(request.data['language'])
+
+        episode = Episode.objects.get(pk=id)
+
+        if episode.user_created.id != request.user.id:
+            return Response({"data": "Access denied"})
+
+
+        episode.name=request.data['name']
+        episode.image=request.data['image']
+        episode.description=request.data['description']
+        episode.status_id=1
+        episode.rating_id=3
+        episode.language_id = language
+
+        old_characters = list(episode.characters.all().values_list('id', flat=True))
+
+        for entity in request.data['characters']:
+            if entity == '':
+                continue
+            if entity['id'] in old_characters:
+                old_characters.remove(entity['id'])
+            else:
+                episode.characters.add(entity['id'])
+                character = Character.objects.get(pk=entity['id'])
+                character.participating_episodes += 1
+                character.save()
+
+                if request.user.id != character.user.id:
+                    CharacterEpisodeNotification.objects.create(
+                        user_id=character.user.id,
+                        character_id=character.id,
+                        episode_id=episode.id,
+                        date_created=datetime.datetime.now(),
+                        is_read=False,
+                        notification_type=1
+                    )
+
+        for removed_character in old_characters:
+            character = Character.objects.get(pk=removed_character)
+            episode.characters.remove(character)
+            character.participating_episodes -= 1
+            character.save()
+
+            if request.user.id != character.user.id:
+                CharacterEpisodeNotification.objects.create(
+                    user_id=character.user.id,
+                    character_id=character.id,
+                    episode_id=episode.id,
+                    date_created=datetime.datetime.now(),
+                    is_read=False,
+                    notification_type=0
+                )
+
+        episode.save()
+
+        return Response({"data": episode.id})
+
 
 class GameJoin(APIView):
     authentication_classes = [JWTAuthentication]
@@ -639,6 +727,83 @@ class GameCreate(APIView):
 
         return Response({"data": game.id})
 
+class GameUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        print(request.data)
+
+        game = Game.objects.get(pk=id)
+
+        game.name=request.data['name']
+        game.image=request.data['image']
+        game.status_id=request.data['status']
+        game.description=request.data['description']
+        game.permission_level=request.data['access_level']
+        game.rating_id=request.data['rating']
+
+        old_languages = list(game.languages.all().values_list('id', flat=True))
+
+        for lang_id in request.data['languages']:
+            if id == '':
+                continue
+            lang_id = int(lang_id)
+            if id in old_languages:
+                old_languages.remove(lang_id)
+            else:
+                game.languages.add(lang_id)
+
+        for removed_language in old_languages:
+            language = Language.objects.get(pk=removed_language)
+            game.languages.remove(language)
+
+        is_original = False
+        fandom_ids = []
+
+        old_fandoms = list(game.fandoms.all().values_list('id', flat=True))
+
+        for entity in request.data['fandoms']:
+            if entity == '':
+                continue
+            if entity['id'] == 1:
+                is_original = True
+            if entity['id'] in old_fandoms:
+                old_fandoms.remove(entity['id'])
+            else:
+                game.fandoms.add(entity['id'])
+
+        for removed_fandom in old_fandoms:
+            fandom = Fandom.objects.get(pk=removed_fandom)
+            game.fandoms.remove(fandom)
+
+        if not is_original:
+            game.genres.clear()
+
+        if is_original:
+            old_genres = list(game.genres.all().values_list('id', flat=True))
+
+            for genre_id in request.data['genres']:
+                if genre_id == '':
+                    continue
+                if genre_id in old_genres:
+                    old_genres.remove(genre_id)
+                else:
+                    game.genres.add(genre_id)
+
+            for removed_genre in old_genres:
+                genre = Genre.objects.get(pk=removed_genre)
+                game.genre.remove(genre)
+
+        genres = Genre.objects.filter(id__in=fandom_ids)
+        for genre in genres:
+            if not len(game.genres.filter(pk=genre.id)):
+                game.genres.add(genre)
+
+        game.save()
+
+        return Response({"data": game.id})
 
 class PostCreate(APIView):
     authentication_classes = [JWTAuthentication]
@@ -948,10 +1113,14 @@ class GetPageByPath(APIView):
     permission_classes = []
 
     def get(self, request, path):
-        user_setting = UserSetting.objects.filter(user_id=request.user.id)[:1][0]
+        try:
+            user_setting = UserSetting.objects.filter(user_id=request.user.id)[:1][0]
+            language = user_setting.language
+        except:
+            language = 'en'
 
         articles = Page.objects.filter(path=path)
-        filtered = [article for article in articles if article.language == user_setting.language]
+        filtered = [article for article in articles if article.language == language]
         if len(filtered) == 0:
             filtered = [article for article in articles if article.language == DEFAULT_LANGUAGE]
         article = filtered[0]
@@ -1041,3 +1210,14 @@ class GetGameLanguageList(APIView):
                 "name": language.name
             })
         return Response({"data": data})
+
+class UpdateUserSettings(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        settings = UserSetting.objects.filter(user_id=user_id)[0]
+        settings.theme = request.data['theme']
+        settings.save()
+
+        return Response({"data": True})

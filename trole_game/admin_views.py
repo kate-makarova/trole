@@ -1,10 +1,12 @@
+import datetime
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.models import UserSetting
+from trole_game.util.bb_translator import translate_bb
+from trole_game.models import UserSetting, Page
 
 
 class AdminUserCreate(APIView):
@@ -23,8 +25,26 @@ class AdminUserCreate(APIView):
 
         UserSetting.objects.create(
             user=user,
-            language='en',
+            ui_language='en',
             timezone='UTC',
         )
 
         return Response({"data": user.id})
+
+class AdminPageCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+
+        page = Page.objects.create(
+            name=request.data['name'],
+            language=request.data['language'],
+            path=request.data['path'],
+            content_bb=request.data['content'],
+            content_html= translate_bb(request.data['content']),
+            user_created=request.user,
+            date_created=datetime.datetime.now()
+        )
+
+        return Response({"data": page.id})

@@ -765,7 +765,7 @@ class GameUpdate(APIView):
         old_fandoms = list(game.fandoms.all().values_list('id', flat=True))
 
         for entity in request.data['fandoms']:
-            if entity == '' or entity == 0:
+            if entity == '' or entity['id'] == 0:
                 continue
             if entity['id'] == 1:
                 is_original = True

@@ -13,5 +13,6 @@ def translate_bb(bb_code):
     result = result.replace('[img]', '<img src="').replace('[/img]', '" />')
     result = re.sub(r'\[color=([^]]*)\]([^[]*)\[\/url\]', r'<span style="color: \1">\2</span>', result)
     result = re.sub(r'\[size=([^]]*)\]([^[]*)\[\/url\]', r'<span style="font-size: \1">\2</span>', result)
+    result = re.sub(r'\[font=([^]]*)\]([^[]*)\[\/url\]', r'<span style="font-family: \1">\2</span>', result)
 
     return result

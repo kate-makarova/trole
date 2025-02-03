@@ -10,7 +10,8 @@ def translate_bb(bb_code):
     result = result.replace('[code]', '<code>').replace('[/code]', '</code>')
     result = result.replace('[quote]', '<blockquote>').replace('[/quote]', '</blockquote>')
     result = re.sub(r'\[url=([^]]*)\]([^[]*)\[\/url\]', r'<a href="\1">\2</a>', result)
-  #  result = result.replace('[img]', '<img src="').replace('[/img]', '">')
-    # result = result.replace('[color=', '<span style="color:').replace('[/color]', '</span>')
-    # result = result.replace('[size=', '<span style="font-size:').replace('[/size]', '</span>')
+    result = result.replace('[img]', '<img src="').replace('[/img]', '" />')
+    result = re.sub(r'\[color=([^]]*)\]([^[]*)\[\/url\]', r'<span style="color: \1">\2</span>', result)
+    result = re.sub(r'\[size=([^]]*)\]([^[]*)\[\/url\]', r'<span style="font-size: \1">\2</span>', result)
+
     return result

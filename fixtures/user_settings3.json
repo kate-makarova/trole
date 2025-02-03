@@ -1,0 +1,11 @@
+[
+  {
+    "model": "trole_game.usersetting",
+    "pk": 3,
+    "fields": {
+      "user_id": 3,
+      "ui_language": "en",
+      "timezone": "America/Toronto"
+    }
+  }
+]

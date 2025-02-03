@@ -87,7 +87,7 @@ class GameList(APIView):
 
     def get(self, request):
         if request.user.is_authenticated:
-            games = Game.objects.all().order_by('-last_post_published')[:10]
+            games = Game.objects.filter(status_id=1).order_by('-last_post_published')[:10]
         else:
             games = Game.objects.filter(permission_level=0).order_by('-last_post_published')[:10]
 

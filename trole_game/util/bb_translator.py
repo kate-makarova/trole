@@ -31,7 +31,7 @@ def translate_bb(text):
     ]
 
     for pattern in patterns:
-        matches = re.finditer(pattern[0], text)
+        matches = re.finditer(pattern[0], text, re.DOTALL)
 
         if pattern[2] == 2:
             for match in matches:

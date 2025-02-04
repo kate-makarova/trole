@@ -21,6 +21,6 @@
 #          key: ${{ secrets.EC2_SSH_KEY }}
 #          script: |
 #            cd trole
-#            source ./.venv/bin/activate
+#            source .venv/bin/activate
 #            git pull --no-edit origin main
-#            sudo service gunicorn restart
+#            sudo systemctl restart gunicorn

@@ -119,6 +119,16 @@ class Post(models.Model):
     content_html = models.TextField()
     order = models.IntegerField()
 
+class Draft(models.Model):
+    name = models.CharField(max_length=200)
+    episode = models.ForeignKey(Episode, on_delete=models.DO_NOTHING)
+    draft_id = models.IntegerField()
+    autosave = models.BooleanField(default=True)
+    post_author = models.ForeignKey(Character, on_delete=models.DO_NOTHING)
+    date_created = models.DateTimeField()
+    content_bb = models.TextField()
+    content_html = models.TextField()
+
 class CharacterEpisodeNotification(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)

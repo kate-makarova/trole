@@ -4,7 +4,7 @@ import re
 def translate_bb(text):
     patterns = [
         (r"\[url=(.*?)\](.*?)\[\/url\]", '<a href="{find1}">{find2}</a>', 2),
-        (r"\[font=(.*?)\](.*?)\[\/font\]", '<span data-replace="font-family:{find1}">{find2}</span>', 2),
+        (r"\[font=(.*?)\](.*?)\[\/font\]", '<span style="font-family:{find1}">{find2}</span>', 2),
         (r"\[color=(.*?)\](.*?)\[\/color\]", '<span data-replace="color:{find1}">{find2}</span>', 2),
         (r"\[size=(.*?)\](.*?)\[\/size\]", '<span data-replace="font-size:{find1}">{find2}</span>', 2),
         (r"\[b\](.*?)\[\/b\]", '<b>{find1}</b>', 1),

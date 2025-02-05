@@ -589,6 +589,10 @@ class GameJoin(APIView):
     def post(self, request):
         print(request.data)
 
+        game = Game.objects.get(pk=request.data['game'])
+        game.total_users += 1
+        game.save()
+
         UserGameParticipation.objects.create(
             user_id=request.user.id,
             game_id=request.data['game'],

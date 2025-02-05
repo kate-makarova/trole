@@ -20,7 +20,7 @@ jobs:
 
       - name: SSH into EC2
         run: |
-          ssh -i ec2-key.pem ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com 
+          ssh -i ec2-key.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com 
 
       - name: Deploy to EC2
         run: |

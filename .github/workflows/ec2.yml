@@ -16,7 +16,6 @@ jobs:
       - name: Set up PEM file from GitHub Secrets
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > trole-backend-aws.pem
-          cat trole-backend-aws.pem
           chmod 400 trole-backend-aws.pem  # Ensure proper permissions for the key
 
       - name: Add EC2 instance to known hosts
@@ -28,7 +27,7 @@ jobs:
 
       - name: SSH into EC2 and deploy
         run: |
-          ssh -i ec2-key.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com << 'EOF'
+          ssh -i trole-backend-aws.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com << 'EOF'
             cd trole && \
             source .venv/bin/activate && \
             git pull --no-edit origin main && \

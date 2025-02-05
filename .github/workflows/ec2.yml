@@ -27,7 +27,7 @@ jobs:
 
       - name: SSH into EC2 and deploy
         run: |
-          ssh -i trole-backend-aws.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com << 'EOF'
+          ssh -i trole-backend-aws.pem ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com << 'EOF'
             cd trole && \
             source .venv/bin/activate && \
             git pull --no-edit origin main && \

@@ -19,6 +19,11 @@ jobs:
           cat trole-backend-aws.pem
           chmod 400 trole-backend-aws.pem  # Ensure proper permissions for the key
 
+      - name: Add EC2 instance to known hosts
+        run: |
+          # Retrieve the EC2 public key and add it to known_hosts
+          ssh-keyscan -H ec2-3-92-190-141.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+
       - name: SSH into EC2
         run: |
           ssh -i trole-backend-aws.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com 

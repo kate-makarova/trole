@@ -22,6 +22,8 @@ jobs:
       - name: Add EC2 instance to known hosts
         run: |
           # Retrieve the EC2 public key and add it to known_hosts
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh 
           ssh-keyscan -H ec2-3-92-190-141.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: SSH into EC2

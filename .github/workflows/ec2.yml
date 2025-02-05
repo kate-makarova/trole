@@ -16,6 +16,7 @@ jobs:
       - name: Set up PEM file from GitHub Secrets
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > trole-backend-aws.pem
+          cat trole-backend-aws.pem
           chmod 400 trole-backend-aws.pem  # Ensure proper permissions for the key
 
       - name: SSH into EC2

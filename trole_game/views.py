@@ -236,7 +236,10 @@ class GetEpisodeById(APIView):
         }
 
         if episode.language is not None:
-            data["language"] = episode.language.name
+            data["language"] = {
+                "id": episode.language.id,
+                "name": episode.language.name
+            }
 
         is_mine = False
         for character in episode.characters.all():

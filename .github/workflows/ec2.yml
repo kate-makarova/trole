@@ -26,13 +26,12 @@ jobs:
           chmod 700 ~/.ssh 
           ssh-keyscan -H ec2-3-92-190-141.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
-      - name: SSH into EC2
+      - name: SSH into EC2 and deploy
         run: |
-          ssh -i trole-backend-aws.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com 
+          ssh -i ec2-key.pem -tt ubuntu@ec2-3-92-190-141.compute-1.amazonaws.com << 'EOF'
+            cd trole && \
+            source .venv/bin/activate && \
+            git pull --no-edit origin main && \
+            sudo systemctl restart gunicorn
+          EOF
 
-      - name: Deploy to EC2
-        run: |
-          cd trole
-          source .venv/bin/activate
-          git pull --no-edit origin main
-          sudo systemctl restart gunicorn

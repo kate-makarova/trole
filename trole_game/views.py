@@ -998,6 +998,19 @@ class PostDelete(APIView):
             post.is_deleted = True
             post.save()
 
+            episode = post.episode
+            episode.number_of_posts -= 1
+            episode.save()
+
+            game = episode.game
+            game.total_posts -= 1
+            game.save()
+
+            character = post.post_author
+            character.posts_written -= 1
+            character.save()
+
+
         return Response({"data": {
             "id": post.id,
             "is_deleted": True

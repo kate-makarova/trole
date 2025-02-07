@@ -1,8 +1,10 @@
 import re
 
+def form_html(text):
+    text = '<p>' + text.replace("\n", '</p><p>') + '</p>'
+    return translate_bb(text)
 
 def translate_bb(text):
-    text = '<p>' + text.replace("\n", '</p><p>') + '</p>'
     patterns = [
         (r"\[url=(.*?)\](.*?)\[\/url\]", '<a href="{find1}">{find2}</a>', 2),
         (r"\[font=(.*?)\](.*?)\[\/font\]", '<span style="font-family:{find1}">{find2}</span>', 2),

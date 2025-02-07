@@ -1,9 +1,8 @@
 import datetime
-from importlib.resources import contents
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -16,9 +15,9 @@ from trole_game.misc.status import GameStatus, EpisodeStatus
 from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
-    UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, MediaType, CharacterSheetTemplate, \
+    UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, CharacterSheetTemplate, \
     CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language
-from trole_game.util.bb_translator import translate_bb
+from trole_game.util.bb_translator import form_html
 import operator
 
 
@@ -822,7 +821,7 @@ class PostCreate(APIView):
         order = Post.objects.filter(episode_id=request.data['episode']).count() + 1
         post = Post.objects.create(
             content_bb=request.data['content'],
-            content_html=translate_bb(request.data['content']),
+            content_html=form_html(request.data['content']),
             episode_id=request.data['episode'],
             order=order,
             post_author_id=request.data['character'],
@@ -938,7 +937,7 @@ class ArticleCreate(APIView):
             user_created_id=request.user.id,
             date_created=datetime.datetime.now(),
             content_bb=request.data['content'],
-            content_html=translate_bb(request.data['content']),
+            content_html=form_html(request.data['content']),
             is_index=False
         )
 
@@ -961,7 +960,7 @@ class ArticleUpdate(APIView):
         else:
             article.name = request.data['name']
             article.content_bb = request.data['content']
-            article.content_html = translate_bb(request.data['content'])
+            article.content_html = form_html(request.data['content'])
             article.save()
 
         return Response({"data": article})
@@ -977,7 +976,7 @@ class PostUpdate(APIView):
             return Response({"data": "You are not the author of this post"})
         else:
             post.content_bb = request.data['content']
-            post.content_html = translate_bb(request.data['content'])
+            post.content_html = form_html(request.data['content'])
             post.save()
 
         return Response({"data": {

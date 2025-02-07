@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.util.bb_translator import translate_bb
+from trole_game.util.bb_translator import translate_bb, form_html
 from trole_game.models import UserSetting, Page
 
 
@@ -42,7 +42,7 @@ class AdminPageCreate(APIView):
             language=request.data['language'],
             path=request.data['path'],
             content_bb=request.data['content'],
-            content_html= translate_bb(request.data['content']),
+            content_html= form_html(request.data['content']),
             user_created=request.user,
             date_created=datetime.datetime.now()
         )

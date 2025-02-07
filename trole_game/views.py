@@ -20,6 +20,7 @@ from trole_game.models import Character, Game, UserGameParticipation, Episode, P
 from trole_game.util.bb_translator import form_html
 import operator
 
+limit = 30
 
 def index(request):
     return JsonResponse({
@@ -339,8 +340,9 @@ class GetPostsByEpisode(APIView):
     authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
 
-    def get(self, request, episode_id):
-        posts = Post.objects.filter(episode_id=episode_id).order_by('order')
+    def get(self, request, episode_id, page=1):
+        offset = (page-1)*limit
+        posts = Post.objects.filter(episode_id=episode_id).order_by('order')[offset:offset+limit]
         data = []
 
         unread_post_ids = CharacterEpisodeNotification.objects.filter(

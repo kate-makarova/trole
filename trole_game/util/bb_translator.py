@@ -61,6 +61,8 @@ def translate_bb(text):
                 replacement = pattern[1]
                 text = text[:match_start] + replacement + text[match_end:]
 
+    text = '<p>'+ text.replace("\n", '</p><p>') + '</p>'
+
     return text
 
 

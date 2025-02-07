@@ -340,7 +340,7 @@ class GetPostsByEpisode(APIView):
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, episode_id):
-        posts = Post.objects.filter(episode_id=episode_id).order_by('order')
+        posts = Post.objects.filter(episode_id=episode_id, is_deleted=False).order_by('order')
         data = []
 
         unread_post_ids = CharacterEpisodeNotification.objects.filter(
@@ -983,6 +983,24 @@ class PostUpdate(APIView):
             "id": post.id,
             "content": post.content_html,
             "content_bb": post.content_bb
+        }})
+
+class PostDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        post = Post.objects.get(pk=id)
+        if post.post_author.user.id != request.user.id:
+            return Response({"data": "You are not the author of this post"})
+        else:
+            post.is_deleted = True
+            post.save()
+
+        return Response({"data": {
+            "id": post.id,
+            "is_deleted": True
         }})
 
 class CharacterSheetTemplateGet(APIView):

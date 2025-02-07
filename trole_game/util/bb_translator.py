@@ -1,7 +1,8 @@
 import re
 
 def form_html(text):
-    text = '<p>' + text.replace("\n", '</p><p>') + '</p>'
+    text = re.sub(r'(\n{2,})', '</p><p>', text)
+    text = '<p>' + text.replace("\n", '<br />') + '</p>'
     return translate_bb(text)
 
 def translate_bb(text):

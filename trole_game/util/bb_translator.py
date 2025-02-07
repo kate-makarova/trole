@@ -2,6 +2,7 @@ import re
 
 
 def translate_bb(text):
+    text = '<p>' + text.replace("\n", '</p><p>') + '</p>'
     patterns = [
         (r"\[url=(.*?)\](.*?)\[\/url\]", '<a href="{find1}">{find2}</a>', 2),
         (r"\[font=(.*?)\](.*?)\[\/font\]", '<span style="font-family:{find1}">{find2}</span>', 2),
@@ -60,8 +61,6 @@ def translate_bb(text):
 
                 replacement = pattern[1]
                 text = text[:match_start] + replacement + text[match_end:]
-
-    text = '<p>'+ text.replace("\n", '</p><p>') + '</p>'
 
     return text
 

@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.utils.timezone import localtime
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,7 +21,7 @@ from trole_game.models import Character, Game, UserGameParticipation, Episode, P
 from trole_game.util.bb_translator import form_html
 import operator
 
-limit = 30
+limit = 10
 
 def index(request):
     return JsonResponse({
@@ -305,7 +306,7 @@ class GetEpisodeList(APIView):
                 "image": episode.image,
                 "category": category,
                 "status": EpisodeStatus.get_episode_status()[episode.status_id],
-                "last_post_date": episode.last_post_date,
+                "last_post_date": localtime(episode.last_post_date),
                 "last_post_author": last_post_author,
                 "description": episode.description,
                 "characters": episode.characters.all().values('id', 'name', 'avatar'),

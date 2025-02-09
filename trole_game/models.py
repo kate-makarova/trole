@@ -118,6 +118,7 @@ class Post(models.Model):
     content_bb = models.TextField()
     content_html = models.TextField()
     order = models.IntegerField()
+    is_deleted = models.BooleanField(default=False)
 
 class Draft(models.Model):
     name = models.CharField(max_length=200)

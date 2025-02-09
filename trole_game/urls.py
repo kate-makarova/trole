@@ -6,7 +6,8 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
-    GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate
+    GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
+    PostDelete
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),
     path('api/article-create', ArticleCreate.as_view(), name='article_create'),
     path('api/post-update/<int:id>', PostUpdate.as_view(), name='post_update'),
+    path('api/post-delete/<int:id>', PostDelete.as_view(), name='post_delete'),
     path('api/article-update/<int:id>', ArticleUpdate.as_view(), name='article_update'),
     path('api/breadcrumbs/<str:path>', Breadcrumbs.as_view(), name='breadcrumbs'),
     path('api/set-posts-read/<int:episode_id>', SetPostsRead.as_view(), name='set_posts_read'),

@@ -306,7 +306,7 @@ class GetEpisodeList(APIView):
                 "image": episode.image,
                 "category": category,
                 "status": EpisodeStatus.get_episode_status()[episode.status_id],
-                "last_post_date": localtime(episode.last_post_date),
+                "last_post_date": episode.last_post_date,
                 "last_post_author": last_post_author,
                 "description": episode.description,
                 "characters": episode.characters.all().values('id', 'name', 'avatar'),
@@ -986,6 +986,37 @@ class PostUpdate(APIView):
             "id": post.id,
             "content": post.content_html,
             "content_bb": post.content_bb
+        }})
+
+class PostDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+
+        post = Post.objects.get(pk=id)
+        if post.post_author.user.id != request.user.id:
+            return Response({"data": "You are not the author of this post"})
+        else:
+            post.is_deleted = True
+            post.save()
+
+            episode = post.episode
+            episode.number_of_posts -= 1
+            episode.save()
+
+            game = episode.game
+            game.total_posts -= 1
+            game.save()
+
+            character = post.post_author
+            character.posts_written -= 1
+            character.save()
+
+
+        return Response({"data": {
+            "id": post.id,
+            "is_deleted": True
         }})
 
 class CharacterSheetTemplateGet(APIView):

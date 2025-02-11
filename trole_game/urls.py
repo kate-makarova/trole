@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import register_converter, path
 
 from .admin_views import AdminUserCreate, AdminPageCreate
 from .breadcrumb_views import Breadcrumbs
@@ -8,6 +8,9 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
     GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
     PostDelete
+from trole_game.util.negative_int_converter import NegativeIntConverter
+
+register_converter(NegativeIntConverter, 'negint')
 
 urlpatterns = [
     path('api/', index, name='index'),
@@ -21,7 +24,7 @@ urlpatterns = [
     path('api/episode-list/<int:game_id>', GetEpisodeList.as_view(), name='episode_list'),
     path('api/character-list/<int:game_id>', GetCharacterList.as_view(), name='character_list'),
     path('api/episode/<int:id>', GetEpisodeById.as_view(), name='episode'),
-    path('api/episode-posts/<int:episode_id>/<int:page>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
+    path('api/episode-posts/<int:episode_id>/<negint:page>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
     path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete'),
     path('api/character-autocomplete/<int:game_id>/<str:search>', CharacterAutocomplete.as_view(), name='character_autocomplete'),
     path('api/static-list/<str:class_name>', StaticList.as_view(), name='static_list'),

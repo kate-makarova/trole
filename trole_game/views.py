@@ -1,8 +1,8 @@
 import datetime
+import math
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.utils.timezone import localtime
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -344,7 +344,7 @@ class GetPostsByEpisode(APIView):
     def get(self, request, episode_id, page=1):
         if page == -1:
             episode = Episode.objects.get(pk=episode_id)
-            page = round(episode.total_posts / limit)
+            page = math.ceil(episode.number_of_posts / limit)
         offset = (page-1)*limit
         posts = Post.objects.filter(episode_id=episode_id, is_deleted=False).order_by('order')[offset:offset+limit]
         data = []

@@ -1332,6 +1332,7 @@ class DraftGet(APIView):
             "auto": draft.autosave,
             "published": draft.published,
             "published_post_id": draft.publisher_post_id,
+            "content_bb": draft.content_bb,
             "content": draft.content_html
         }
 

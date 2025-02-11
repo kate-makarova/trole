@@ -17,8 +17,8 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, CharacterSheetTemplate, \
-    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language
-from trole_game.util.bb_translator import form_html
+    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft
+from trole_game.util.bb_translator import form_html, translate_bb
 import operator
 
 limit = 10
@@ -1264,3 +1264,75 @@ class UpdateUserSettings(APIView):
         settings.save()
 
         return Response({"data": True})
+
+class DraftCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        draft = Draft.objects.create(
+            episode_id=request.data['episode'],
+            character_id =request.data['character'],
+            user_id=request.user.id,
+            date_draft_initiated=request.data['initiated'],
+            autosave=request.data['autosave'],
+            date_draft_created=datetime.datetime.now(),
+            content_bb=request.data['content'],
+            content_html=form_html(request.data['content']),
+            published=False,
+            publisher_post_id=None
+        )
+
+        if request.data['autosave']:
+            stale = Draft.objects.filter(
+                episode_id=request.data['episode'],
+                character_id =request.data['character'],
+                autosave=True).order('-date_draft_created').findAll()[:5]
+            for stale_draft in stale:
+                stale_draft.remove()
+
+        return Response({"data": True})
+
+class DraftList(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, episode_id, page=-1):
+        if page == -1:
+            total = Draft.objects.filter(episode_id=episode_id, user_id =request.user_id).count()
+            page = math.ceil(total / limit)
+        offset = (page-1)*limit
+        drafts = Draft.objects.filter(
+            episode_id=episode_id,
+            user_id =request.user_id).order('-date_draft_created').findAll()[offset:offset+limit]
+
+        data = []
+        for draft in drafts:
+            data.append({
+                "id": draft.id,
+                "character": draft.character.name,
+                "date_time": draft.date_draft_initiated,
+                "auto": draft.autosave,
+                "published": draft.published,
+                "published_post_id": draft.publisher_post_id
+            })
+
+        return Response({"data": data})
+
+class DraftGet(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        draft = Draft.objects.get(pk=id)
+        data = {
+            "id": draft.id,
+            "character": draft.character.name,
+            "date_time": draft.date_draft_initiated,
+            "auto": draft.autosave,
+            "published": draft.published,
+            "published_post_id": draft.publisher_post_id,
+            "content": draft.content_html
+        }
+
+        return Response({"data": data})

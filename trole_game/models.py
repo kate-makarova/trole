@@ -1,3 +1,5 @@
+from tkinter.constants import CASCADE
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import DO_NOTHING
@@ -121,14 +123,16 @@ class Post(models.Model):
     is_deleted = models.BooleanField(default=False)
 
 class Draft(models.Model):
-    name = models.CharField(max_length=200)
     episode = models.ForeignKey(Episode, on_delete=models.DO_NOTHING)
-    draft_id = models.IntegerField()
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_draft_initiated = models.DateTimeField()
     autosave = models.BooleanField(default=True)
-    post_author = models.ForeignKey(Character, on_delete=models.DO_NOTHING)
-    date_created = models.DateTimeField()
+    date_draft_created = models.DateTimeField()
     content_bb = models.TextField()
     content_html = models.TextField()
+    published = models.BooleanField(default=False)
+    publisher_post_id = models.ForeignKey(Post, on_delete=CASCADE, null=True, default=None)
 
 class CharacterEpisodeNotification(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)

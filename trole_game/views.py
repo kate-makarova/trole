@@ -1299,19 +1299,26 @@ class DraftList(APIView):
 
     def get(self, request, episode_id, page=-1):
         if page == -1:
-            total = Draft.objects.filter(episode_id=episode_id, user_id =request.user_id).count()
+            total = Draft.objects.filter(episode_id=episode_id, user_id =request.user.id).count()
+            if total == 0:
+                return Response({"data": []})
             page = math.ceil(total / limit)
+            print(page)
         offset = (page-1)*limit
         drafts = Draft.objects.filter(
             episode_id=episode_id,
-            user_id =request.user_id).order_by('-date_draft_created').all()[offset:offset+limit]
+            user_id =request.user.id).order_by('-date_draft_created').all()[offset:offset+limit]
 
         data = []
         for draft in drafts:
             data.append({
                 "id": draft.id,
-                "character": draft.character.name,
-                "date_time": draft.date_draft_initiated,
+                "character": {
+                    "id": draft.character.id,
+                    "name": draft.character.name
+                },
+                "init_date_time": draft.date_draft_initiated,
+                "date_time": draft.date_draft_created,
                 "auto": draft.autosave,
                 "published": draft.published,
                 "published_post_id": draft.publisher_post_id

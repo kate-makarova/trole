@@ -1287,9 +1287,9 @@ class DraftCreate(APIView):
             stale = Draft.objects.filter(
                 episode_id=request.data['episode'],
                 character_id =request.data['character'],
-                autosave=True).order('-date_draft_created').findAll()[:5]
+                autosave=True).order_by('-date_draft_created').all()[5:]
             for stale_draft in stale:
-                stale_draft.remove()
+                stale_draft.delete()
 
         return Response({"data": True})
 
@@ -1304,7 +1304,7 @@ class DraftList(APIView):
         offset = (page-1)*limit
         drafts = Draft.objects.filter(
             episode_id=episode_id,
-            user_id =request.user_id).order('-date_draft_created').findAll()[offset:offset+limit]
+            user_id =request.user_id).order_by('-date_draft_created').all()[offset:offset+limit]
 
         data = []
         for draft in drafts:

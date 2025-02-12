@@ -1,4 +1,4 @@
-from tkinter.constants import CASCADE
+import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -128,11 +128,11 @@ class Draft(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_draft_initiated = models.DateTimeField()
     autosave = models.BooleanField(default=True)
-    date_draft_created = models.DateTimeField()
+    date_draft_created = models.DateTimeField(default=datetime.datetime.now())
     content_bb = models.TextField()
     content_html = models.TextField()
     published = models.BooleanField(default=False)
-    publisher_post_id = models.ForeignKey(Post, on_delete=CASCADE, null=True, default=None)
+    publisher_post_id = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, default=None)
 
 class CharacterEpisodeNotification(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)

@@ -320,7 +320,7 @@ class GetCharacterList(APIView):
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
-        characters = Character.objects.filter(game_id=game_id).order_by('name')
+        characters = Character.objects.filter(game_id=game_id, status=1).order_by('name')
         data = []
 
         for character in characters:
@@ -403,7 +403,7 @@ class CharacterAutocomplete(APIView):
 
     def get(self, request, game_id, search):
         data = []
-        results = Character.objects.filter(game_id=game_id, name__contains=search).order_by('name')[:10]
+        results = Character.objects.filter(game_id=game_id, status=1, name__contains=search).order_by('name')[:10]
 
         for result in results:
             data.append({

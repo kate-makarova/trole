@@ -610,6 +610,39 @@ class GameJoin(APIView):
 
         return Response({"data": 'success'})
 
+class GameLeave(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        print(request.data)
+
+        participation = UserGameParticipation.objects.filter(
+            user_id=request.user.id,
+            game_id=request.data['game']
+        )
+
+        if not len(participation):
+            return Response({"data": 'error'})
+
+        participation = participation[0]
+        participation.status = 0
+        participation.save()
+
+        characters = Character.objects.filter(
+            user_id=request.user.id,
+            game_id=request.data['game']
+        )
+        for character in characters:
+            character.status = 0
+            character.save()
+
+        game = Game.objects.get(pk=request.data['game'])
+        game.total_users -= 1
+        game.save()
+
+        return Response({"data": 'success'})
+
 
 class CharacterCreate(APIView):
     authentication_classes = [JWTAuthentication]
@@ -622,6 +655,7 @@ class CharacterCreate(APIView):
 
         character = Character.objects.create(
             name=request.data['name'],
+            status=1,
             game_id=request.data['game'],
             avatar=request.data['avatar'],
             description=request.data['description'],

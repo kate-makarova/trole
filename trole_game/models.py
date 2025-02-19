@@ -80,6 +80,7 @@ class CharacterSheetTemplate(models.Model):
 
 class Character(models.Model):
     name = models.CharField(max_length=300)
+    status = models.IntegerField(default=1)
     game = models.ForeignKey(Game, on_delete=models.DO_NOTHING)
     avatar = models.CharField(max_length=300)
     description = models.TextField()

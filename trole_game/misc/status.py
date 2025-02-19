@@ -22,3 +22,13 @@ class EpisodeStatus:
             3: _('Archived'),
             4: _('Suspended')
         }
+
+class CharacterStatus:
+
+    @staticmethod
+    def get_character_status():
+        return {
+            0: _('Cancelled'),
+            1: _('Active'),
+            2: _('Pending')
+        }

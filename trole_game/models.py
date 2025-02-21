@@ -154,14 +154,11 @@ class UserGameDisplay(models.Model):
     order = models.IntegerField(null=True)
 
 class SiteStatistics(models.Model):
-    total_fandoms = models.IntegerField()
-    total_games = models.IntegerField()
-    total_posts = models.IntegerField()
-    total_episodes = models.IntegerField()
-    total_characters = models.IntegerField()
-    total_users = models.IntegerField()
-    permission_level = models.IntegerField()
-    was_online_in_24 = models.IntegerField()
+    key = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=12)
+    int_field = models.IntegerField(null=True)
+    date_time_field = models.DateTimeField(null=True)
 
 class Article(models.Model):
     name = models.CharField(max_length=300)

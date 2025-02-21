@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from trole_game.util.bb_translator import translate_bb, form_html
-from trole_game.models import UserSetting, Page
+from trole_game.models import UserSetting, Page, SiteStatistics
 
 
 class AdminUserCreate(APIView):

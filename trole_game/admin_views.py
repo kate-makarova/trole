@@ -48,3 +48,28 @@ class AdminPageCreate(APIView):
         )
 
         return Response({"data": page.id})
+
+class AdminUserList(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, page=1):
+
+        page = page - 1
+        limit = 30
+        users = User.objects.all()[page*limit:(page+1)*limit]
+
+        data = []
+        for user in users:
+            setting = UserSetting.objects.filter(user_id=user.id)[0]
+
+            data.append({
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "ui_language": setting.ui_language,
+                "timezone": setting.timezone,
+                "theme": setting.theme
+            })
+
+        return Response({"data": data})

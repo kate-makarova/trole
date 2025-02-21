@@ -386,7 +386,7 @@ class Autocomplete(APIView):
         data = []
         if class_name in self.allowed_entities:
             cls = globals()[class_name]
-            results = getattr(cls, "objects").filter(name__contains=search).order_by('name')[:10]
+            results = getattr(cls, "objects").filter(name__lower__contains=search.lower()).order_by('name')[:10]
 
             for result in results:
                 data.append({

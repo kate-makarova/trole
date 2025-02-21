@@ -73,3 +73,22 @@ class AdminUserList(APIView):
             })
 
         return Response({"data": data})
+
+class AdminStats(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+
+        stats = SiteStatistics.objects.all().order_by('key')
+
+        data = []
+        for stat in stats:
+
+            data.append({
+                "key": stat.key,
+                "name": stat.name,
+                "value": stat.get_stat(),
+            })
+
+        return Response({"data": data})

@@ -11,10 +11,14 @@ class SiteStat:
             return False
         return stat[0]
 
-    def set(self, value):
+    def set_value(self, value):
         stat = self.get_stat()
         stat[self.value_field] = value
         stat.save()
+
+    def get_value(self):
+        stat = self.get_stat()
+        return stat[self.value_field]
 
 class SiteStatInt(SiteStat):
     key = None

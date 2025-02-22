@@ -1,6 +1,6 @@
 from django.urls import register_converter, path
 
-from .admin_views import AdminUserCreate, AdminPageCreate
+from .admin_views import AdminUserCreate, AdminPageCreate, AdminUserList
 from .breadcrumb_views import Breadcrumbs
 from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeList, GetCharacterList, GetEpisodeById, \
     GetPostsByEpisode, Autocomplete, EpisodeCreate, CharacterCreate, StaticList, GameCreate, PostCreate, \
@@ -58,5 +58,6 @@ urlpatterns = [
     path('api/draft/<int:id>', DraftGet.as_view(), name='draft_get'),
 
     path('api/admin-user-create', AdminUserCreate.as_view(), name='admin_user_create'),
+    path('api/admin-user-list/<int:page>', AdminUserList.as_view(), name='admin_user_list'),
     path('api/admin-page-create', AdminPageCreate.as_view(), name='admin_page_create'),
 ]

@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core.paginator import Paginator
 
 from trole_game.util.bb_translator import translate_bb, form_html
 from trole_game.models import UserSetting, Page, SiteStatistics
@@ -55,19 +56,30 @@ class AdminUserList(APIView):
 
     def get(self, request, page=1):
 
-        page = page - 1
-        limit = 30
-        users = User.objects.all()[page*limit:(page+1)*limit]
+        user_list = User.objects.all().order_by('id')
+        paginator = Paginator(user_list, 30)  # Show 30 contacts per page.
+
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
 
         data = []
-        for user in users:
-            setting = UserSetting.objects.filter(user_id=user.id)[0]
+        for user in page_obj.object_list:
+            setting = UserSetting.objects.filter(user_id=user.id)
+
+            if not len(setting):
+                setting = UserSetting.objects.create(
+                    user_id=user.id,
+                    ui_language='en',
+                    timezone='UTC',
+                )
+            else:
+                setting = setting[0]
 
             data.append({
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
-                "ui_language": setting.ui_language,
+                "language": setting.ui_language,
                 "timezone": setting.timezone,
                 "theme": setting.theme
             })

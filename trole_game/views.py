@@ -1257,6 +1257,15 @@ class UpdateCharacter(APIView):
         character = Character.objects.get(pk=id)
         if character.user.id == request.user.id or character.game.user_created.id == request.user.id:
             for key, value in request.data.items():
+                if key == 'status':
+                    game = Game.objects.get(pk=character.game.id)
+                    if int(value) == 1 and character.status != 1:
+                        game.total_characters += 1
+                        game.save()
+
+                    if int(value) != 1 and character.status == 1:
+                        game.total_characters -= 1
+                        game.save()
                 setattr(character, key, value)
             character.save()
 

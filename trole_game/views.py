@@ -230,6 +230,7 @@ class GetEpisodeById(APIView):
 
     def get(self, request, id):
         episode = Episode.objects.get(pk=id)
+        participations = UserGameParticipation.objects.filter(user_id=request.user.id).exclude(status=0)
         data = {
             "id": episode.id,
             "game_id": episode.game.id,
@@ -253,15 +254,16 @@ class GetEpisodeById(APIView):
             data['characters'].append({
                 "id": character.id,
                 "name": character.name,
+                "status": character.status,
                 "avatar": character.avatar,
                 "is_mine": (character.user.id == request.user.id)
             })
-            if character.user.id == request.user.id:
+            if character.user.id == request.user.id and not character.status == 0:
                 is_mine = True
         data["is_mine"] = is_mine
 
         can_edit = False
-        if episode.user_created.id == request.user.id:
+        if episode.user_created.id == request.user.id and len(participations):
             can_edit = True
         data["can_edit"] = can_edit
 
@@ -333,6 +335,7 @@ class GetCharacterList(APIView):
             data.append({
                 "id": character.id,
                 "name": character.name,
+                "status": character.status,
                 "avatar": character.avatar,
                 "user": {
                     "id": character.user.id,
@@ -680,7 +683,7 @@ class CharacterCreate(APIView):
                     value=value
                 )
 
-        participations = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game'])
+        participations = UserGameParticipation.objects.filter(user_id=request.user.id, game_id=request.data['game']).exclude(status=0)
         if len(participations):
             participation = participations[0]
             if participation.status == 2:

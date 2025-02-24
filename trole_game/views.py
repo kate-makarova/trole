@@ -1231,6 +1231,40 @@ class GetPageByPath(APIView):
         }
         return Response({"data": data})
 
+class GetCharacter(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        character = Character.objects.get(pk=id)
+        data = {
+            "id": character.id,
+            "name": character.name,
+            "status": character.status,
+            "avatar": character.avatar,
+            "user": {
+                "id": character.user.id,
+                "name": character.user.username
+            }
+        }
+        return Response({"data": data})
+
+class UpdateCharacter(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        character = Character.objects.get(pk=id)
+        if character.user.id == request.user.id or character.game.user_created.id == request.user.id:
+            for key, value in request.data.items():
+                setattr(character, key, value)
+            character.save()
+
+            return Response({"data": True})
+
+        return Response({"data": False})
+
+
 class GetCharacterSheetById(APIView):
     authentication_classes = [JWTOrGuestAuthentication]
     permission_classes = [AccessLevelPermission]
@@ -1265,6 +1299,8 @@ class GetCharacterSheetById(APIView):
 
         data = {
             "character_id": character.id,
+            "can_moderate": character.game.user_created.id == request.user.id,
+            "can_edit": character.user.id == request.user.id,
             "fields": fields,
             "user": {
                 "id": character.user.id,

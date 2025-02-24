@@ -291,7 +291,7 @@ class GetEpisodeList(APIView):
 
         for episode in episodes:
             is_mine = False
-            for character in episode.characters.all():
+            for character in episode.characters.all().exclude(status=0):
                 if character.user.id == request.user.id:
                     is_mine = True
                     break

@@ -20,7 +20,10 @@ from trole_game.models import Character, Game, UserGameParticipation, Episode, P
     CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft
 from trole_game.util.bb_translator import form_html, translate_bb
 import operator
+from django.db.models import CharField
+from django.db.models.functions import Lower
 
+CharField.register_lookup(Lower)
 limit = 10
 
 def index(request):
@@ -406,7 +409,7 @@ class CharacterAutocomplete(APIView):
 
     def get(self, request, game_id, search):
         data = []
-        results = Character.objects.filter(game_id=game_id, status=1, name__contains=search).order_by('name')[:10]
+        results = Character.objects.filter(game_id=game_id, status=1, name__lower__contains=search.lower()).order_by('name')[:10]
 
         for result in results:
             data.append({
@@ -1082,7 +1085,7 @@ class CharacterSheetTemplateGet(APIView):
                 "field_name": "Character Avatar",
                 "description": "Character avatar",
                 "is_required": True,
-                "order": character_sheet.name_order,
+                "order": character_sheet.avatar_order,
                 "is_active": character_sheet.is_active
             },
             {
@@ -1091,7 +1094,7 @@ class CharacterSheetTemplateGet(APIView):
                 "field_name": "Character Description",
                 "description": "Character description",
                 "is_required": True,
-                "order": character_sheet.name_order,
+                "order": character_sheet.description_order,
                 "is_active": character_sheet.is_active
             }
         ]
@@ -1109,6 +1112,7 @@ class CharacterSheetTemplateGet(APIView):
                 "is_active": field.is_active
             })
 
+        print(field_data)
         field_data = sorted(field_data, key=operator.itemgetter('order'))
 
         return Response({

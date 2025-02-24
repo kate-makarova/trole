@@ -7,7 +7,7 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
     GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
-    PostDelete, DraftCreate, DraftList, DraftGet
+    PostDelete, DraftCreate, DraftList, DraftGet, GameLeave
 from trole_game.util.negative_int_converter import NegativeIntConverter
 
 register_converter(NegativeIntConverter, 'negint')
@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/game-create', GameCreate.as_view(), name='game_create'),
     path('api/game-update/<int:id>', GameUpdate.as_view(), name='game_update'),
     path('api/game-join', GameJoin.as_view(), name='game_join'),
+    path('api/game-leave', GameLeave.as_view(), name='game_leave'),
     path('api/post-create', PostCreate.as_view(), name='post_create'),
     path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
     path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),

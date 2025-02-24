@@ -36,7 +36,7 @@ class UserHome(APIView):
     def get(self, request):
         user_id = request.user.id
         data = []
-        participations = UserGameParticipation.objects.filter(user_id=user_id)
+        participations = UserGameParticipation.objects.filter(user_id=user_id).exclude(status=0)
         for participation in participations:
             game = {
                 "id": participation.game.id,
@@ -206,7 +206,10 @@ class GetGameById(APIView):
         else:
             data["can_admin"] = False
 
-        participation = UserGameParticipation.objects.filter(game_id=game.id, user_id=request.user.id)
+        participation = UserGameParticipation.objects.filter(
+            game_id=game.id,
+            user_id=request.user.id
+        ).exclude(status=0)
         if len(participation):
             data["is_mine"] = True
 

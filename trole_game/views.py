@@ -649,6 +649,10 @@ class GameLeave(APIView):
         game = Game.objects.get(pk=request.data['game'])
         game.total_users -= 1
         game.total_characters -= len(characters)
+
+        if game.total_users == 0:
+            game.status_id = 2
+
         game.save()
 
         return Response({"data": 'success'})

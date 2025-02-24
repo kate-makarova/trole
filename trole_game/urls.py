@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/article/<int:game_id>/<int:id>', GetArticleById.as_view(), name='article'),
     path('api/article-index/<int:game_id>', GetIndexArticle.as_view(), name='article_index'),
     path('api/article-create', ArticleCreate.as_view(), name='article_create'),
+    path('api/article-update/<int:id>', ArticleUpdate.as_view(), name='article_update'),
     path('api/post-update/<int:id>', PostUpdate.as_view(), name='post_update'),
     path('api/post-delete/<int:id>', PostDelete.as_view(), name='post_delete'),
     path('api/article-update/<int:id>', ArticleUpdate.as_view(), name='article_update'),

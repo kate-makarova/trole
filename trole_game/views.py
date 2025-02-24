@@ -328,7 +328,7 @@ class GetCharacterList(APIView):
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, game_id):
-        characters = Character.objects.filter(game_id=game_id, status=1).order_by('name')
+        characters = Character.objects.filter(game_id=game_id).order_by('name')
         data = []
 
         for character in characters:

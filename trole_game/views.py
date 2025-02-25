@@ -379,6 +379,7 @@ class GetPostsByEpisode(APIView):
                     "id": post.post_author.id,
                     "name": post.post_author.name,
                     "avatar": post.post_author.avatar,
+                    "status": post.post_author.status,
                     "is_mine": (post.post_author.user.id == request.user.id)
                 },
                 "is_mine": (post.post_author.user.id == request.user.id)

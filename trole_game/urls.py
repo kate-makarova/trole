@@ -7,7 +7,8 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     CharacterAutocomplete, GameJoin, GetArticleById, GetIndexArticle, SetPostsRead, ArticleCreate, \
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
     GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
-    PostDelete, DraftCreate, DraftList, DraftGet, GameLeave, GetCharacter, UpdateCharacter
+    PostDelete, DraftCreate, DraftList, DraftGet, GameLeave, GetCharacter, UpdateCharacter, GetNewsArticleById, \
+    GetNewsArticleList
 from trole_game.util.negative_int_converter import NegativeIntConverter
 
 register_converter(NegativeIntConverter, 'negint')
@@ -59,6 +60,9 @@ urlpatterns = [
     path('api/draft-create', DraftCreate.as_view(), name='draft_create'),
     path('api/draft-list/<int:episode_id>/<negint:page>', DraftList.as_view(), name='draft_list'),
     path('api/draft/<int:id>', DraftGet.as_view(), name='draft_get'),
+    path('api/news-article/<int:id>', GetNewsArticleById.as_view(), name='news_article'),
+    path('api/news-article-list/<int:offset>/<int:limit>', GetNewsArticleList.as_view(), name='news_article_list_full'),
+    path('api/news-article-list', GetNewsArticleList.as_view(), name='news_article_list'),
 
     path('api/admin-user-create', AdminUserCreate.as_view(), name='admin_user_create'),
     path('api/admin-user-list/<int:page>', AdminUserList.as_view(), name='admin_user_list'),

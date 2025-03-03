@@ -193,3 +193,12 @@ class Page(models.Model):
     user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
     date_created = models.DateTimeField()
 
+class NewsArticle(models.Model):
+    name = models.CharField(max_length=300)
+    language = models.CharField(max_length=2)
+    image = models.CharField(max_length=300, null=True, default=None)
+    content_bb = models.TextField()
+    content_html = models.TextField()
+    user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
+    date_created = models.DateTimeField()
+

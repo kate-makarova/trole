@@ -17,7 +17,7 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, CharacterSheetTemplate, \
-    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft
+    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft, NewsArticle
 from trole_game.util.bb_translator import form_html, translate_bb
 import operator
 from django.db.models import CharField
@@ -1182,23 +1182,42 @@ class GetNewsArticleById(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, game_id, id):
-        article = Article.objects.get(game_id=game_id, pk=id)
+    def get(self, request, id):
+        article = NewsArticle.objects.get(pk=id)
         data = {
             "id": article.id,
             "name": article.name,
+            "image": article.image,
             "content": article.content_html,
             "content_bb": article.content_bb,
-            "game": {
-                "id": article.game_id,
-                "name": article.game.name
-            },
             "author": {
                 "id": article.user_created.id,
                 "name": article.user_created.username
             },
             "date_created": article.date_created,
         }
+        return Response({"data": data})
+
+class GetNewsArticleList(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, offset=0, limit=10):
+        articles = NewsArticle.objects.order_by('-date_created').all()[offset:offset+limit]
+        data = []
+        for article in articles:
+            data.append({
+                "id": article.id,
+                "name": article.name,
+                "image": article.image,
+                "content": article.content_html,
+                "content_bb": article.content_bb,
+                "author": {
+                    "id": article.user_created.id,
+                    "name": article.user_created.username
+                },
+                "date_created": article.date_created,
+            })
         return Response({"data": data})
 
 class GetPageByPath(APIView):

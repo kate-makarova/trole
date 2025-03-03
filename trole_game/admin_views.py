@@ -7,7 +7,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.paginator import Paginator
 
 from trole_game.util.bb_translator import translate_bb, form_html
-from trole_game.models import UserSetting, Page, SiteStatistics
+from trole_game.models import UserSetting, Page, SiteStatistics, NewsArticle
 
 
 class AdminUserCreate(APIView):
@@ -104,3 +104,20 @@ class AdminStats(APIView):
             })
 
         return Response({"data": data})
+
+class NewsArticleCreate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        article = NewsArticle.objects.create(
+            name=request.data['name'],
+            image=request.data['image'],
+            language=request.data['language'],
+            content_bb=request.data['content'],
+            content_html=form_html(request.data['content']),
+            user_created=request.user,
+            date_created=datetime.datetime.now()
+        )
+
+        return Response({"data": article.id})

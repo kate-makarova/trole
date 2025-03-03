@@ -12,6 +12,11 @@ class Chat(models.Model):
     last_post = models.ForeignKey('ChatPost', on_delete=models.CASCADE)
     channel = models.CharField(max_length=100)
 
+class ChatParticipation(models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    channel_name = models.CharField(max_length=80)
+
 class ChatPost(models.Model):
     author = models.ForeignKey(User, on_delete=DO_NOTHING)
     chat = models.ForeignKey(Chat, on_delete=CASCADE)

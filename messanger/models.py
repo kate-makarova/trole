@@ -8,16 +8,15 @@ class Chat(models.Model):
     class Meta:
         abstract = True
     name = models.CharField(max_length=300)
-    participants = models.ManyToManyField(User)
-    last_post = models.ForeignKey('ChatPost', on_delete=models.CASCADE)
-    channel = models.CharField(max_length=100)
 
-class ChatParticipation(models.Model):
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+class UserChatSettings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    channel_name = models.CharField(max_length=80)
+    channel_name = models.CharField(max_length=300)
+    status = models.IntegerField(default=1)
 
 class ChatPost(models.Model):
+    class Meta:
+        abstract = True
     author = models.ForeignKey(User, on_delete=DO_NOTHING)
     chat = models.ForeignKey(Chat, on_delete=CASCADE)
     date_created = models.DateTimeField()
@@ -25,9 +24,27 @@ class ChatPost(models.Model):
     content_html = models.TextField()
 
 class PrivateChat(Chat):
-    admin = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    chat_admin = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
 class GameChat(Chat):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     access_level = models.IntegerField(default=1)
+
+class PrivateChatPost(models.Model):
+    class Meta:
+        abstract = True
+    chat = models.ForeignKey(PrivateChat, on_delete=CASCADE)
+
+class GameChatPost(models.Model):
+    class Meta:
+        abstract = True
+    chat = models.ForeignKey(GameChat, on_delete=CASCADE)
+
+    # 1 for private chars, 2 for game chats
+class ChatParticipation(models.Model):
+    chat_type = models.IntegerField(max_length=1, default=1)
+    private_chat = models.ForeignKey(PrivateChat, null=True, on_delete=models.CASCADE)
+    game_chat = models.ForeignKey(GameChat, null=True, on_delete=models.CASCADE)
+    user_setting = models.ForeignKey(UserChatSettings, on_delete=models.CASCADE)
+    unread = models.IntegerField(default=0)
 

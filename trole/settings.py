@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'trole_game',
+    'messanger',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt'
@@ -84,10 +85,7 @@ WSGI_APPLICATION = 'trole.wsgi.application'
 ASGI_APPLICATION = "mysite.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_dynamo.core.DynamoChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
+        "BACKEND": "messanger.sqs_channel_layer.SQSChannelLayer",
     },
 }
 

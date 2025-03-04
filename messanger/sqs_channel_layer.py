@@ -1,5 +1,8 @@
+import asyncio
 import logging
 import uuid
+from logging import DEBUG
+
 import boto3
 from botocore.exceptions import ClientError
 from channels.db import database_sync_to_async
@@ -24,7 +27,6 @@ class SQSChannelLayer(BaseChannelLayer):
         self.receive_count = 0
         self.receive_event_loop = None
         self.client_prefix = uuid.uuid4().hex
-
         self.sqs = boto3.client("sqs")
 
     async def send(self, channel, message):
@@ -40,8 +42,11 @@ class SQSChannelLayer(BaseChannelLayer):
             return response
 
     async def receive(self, channel):
+        print('??')
         while True:
-            pass
+            await asyncio.sleep(10)
+            print('tick tack')
+        return True
         # message = None
         # while message is None:
         #     try:
@@ -68,21 +73,20 @@ class SQSChannelLayer(BaseChannelLayer):
         #             pass
 
     async def new_channel(self, prefix="specific"):
-        # name = f"{uuid.uuid4().hex}"
-        # try:
-        #     queue = self.sqs.create_queue(QueueName=name, Attributes={})
-        #     logger.info("Created queue '%s' with URL=%s", name, queue['QueueUrl'])
-        # except ClientError as error:
-        #     logger.exception("Couldn't create queue named '%s'.", name)
-        #     raise error
-        # else:
-        #     return queue['QueueUrl']
-        return 'test'
+        name = f"{uuid.uuid4().hex}"
+        try:
+            queue = self.sqs.create_queue(QueueName=name, Attributes={})
+            logger.info("Created queue '%s' with URL=%s", name, queue['QueueUrl'])
+        except ClientError as error:
+            logger.exception("Couldn't create queue named '%s'.", name)
+            raise error
+        else:
+            return queue['QueueUrl']
 
 
     def update_participation(self, group, channel):
         participation = ChatParticipation.objects.filter(
-            chat_type=1,  private_chat_id=group['chat_id'],  user_setting__user_id=group['user_id']
+            chat_type=1,  private_chat_id=group['group_id'],  user_setting__user_id=group['user_id']
         ).first()
 
         if not participation:
@@ -102,7 +106,12 @@ class SQSChannelLayer(BaseChannelLayer):
         participation.save()
 
     async def group_send(self, group, message):
-        participations = ChatParticipation.objects.filter(chat_id=group)
+        print(group)
+        print(message)
+        if group['type'] == 1:
+            participations = ChatParticipation.objects.filter(private_chat_id=group['group_id'])
+        else:
+            participations = ChatParticipation.objects.filter(game_chat_id=group['group_id'])
         for participation in participations:
             if participation.channel_name is not None:
                 try:

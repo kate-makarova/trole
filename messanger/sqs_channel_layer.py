@@ -2,12 +2,15 @@ import logging
 import uuid
 import boto3
 from botocore.exceptions import ClientError
+from channels.db import database_sync_to_async
 
 from channels.layers import BaseChannelLayer
+from django.db import transaction
 
 from messanger.models import ChatParticipation
 
 logger = logging.getLogger(__name__)
+
 
 class SQSChannelLayer(BaseChannelLayer):
     """
@@ -15,44 +18,20 @@ class SQSChannelLayer(BaseChannelLayer):
 
     It routes all messages into SQS.
     """
-    def _init_(self,
-               prefix="asgi",
-               ):
-        self.prefix=prefix
+
+    def __init__(self, prefix="asgi"):
+        self.prefix = prefix
         self.receive_count = 0
         self.receive_event_loop = None
         self.client_prefix = uuid.uuid4().hex
-        # Detached channel cleanup tasks
-        self.receive_cleaners = []
-        # Per-channel cleanup locks to prevent a receive starting and moving
-        # a message back into the main queue before its cleanup has completed
 
         self.sqs = boto3.client("sqs")
 
-
-    def get_queue(self, channel_name):
-        """
-        Gets an SQS queue by name.
-
-        :param name: The name that was used to create the queue.
-        :return: A Queue object.
-        """
-        try:
-            queue = self.sqs.get_queue_by_name(QueueName=channel_name)
-            logger.info("Got queue '%s' with URL=%s", channel_name, queue.url)
-        except ClientError as error:
-            logger.exception("Couldn't get queue named %s.", channel_name)
-            raise error
-        else:
-            return queue
-
     async def send(self, channel, message):
-        message_attributes = {}
-
-        queue = self.get_queue(channel)
         try:
-            response = queue.send_message(
-                MessageBody=message, MessageAttributes=message_attributes
+            response = self.sqs.send_message(
+                QueueUrl=channel,
+                MessageBody=message
             )
         except ClientError as error:
             logger.exception("Send message failed: %s", message)
@@ -60,37 +39,76 @@ class SQSChannelLayer(BaseChannelLayer):
         else:
             return response
 
-    async def new_channel(self, prefix="specific"):
-        name = f"{prefix}.{self.client_prefix}!{uuid.uuid4().hex}"
-        try:
-            queue = self.sqs.create_queue(QueueName=name, Attributes={})
-            logger.info("Created queue '%s' with URL=%s", name, queue.url)
-        except ClientError as error:
-            logger.exception("Couldn't create queue named '%s'.", name)
-            raise error
-        else:
-            return queue
+    async def receive(self, channel):
+        while True:
+            pass
+        # message = None
+        # while message is None:
+        #     try:
+        #         messages = self.sqs.receive_message(
+        #             QueueUrl=channel,
+        #             MessageAttributeNames=["All"],
+        #             MaxNumberOfMessages=1,
+        #             WaitTimeSeconds=10,
+        #         )
+        #     except ClientError as error:
+        #         logger.exception("Couldn't receive messages from queue: %s", channel)
+        #         raise error
+        #     else:
+        #         print(messages)
+        #         try:
+        #             m = messages['Messages'][0]
+        #             message = {
+        #                 "message_id": m['MessageId'],
+        #                 "body": m["Body"],
+        #                 "type": "string"
+        #                 }
+        #             return channel, message
+        #         except:
+        #             pass
 
-    # async def group_add(self, group, channel):
-    #     #todo
-    #
-    # async def group_discard(self, group, channel):
-    #     #todo
+    async def new_channel(self, prefix="specific"):
+        # name = f"{uuid.uuid4().hex}"
+        # try:
+        #     queue = self.sqs.create_queue(QueueName=name, Attributes={})
+        #     logger.info("Created queue '%s' with URL=%s", name, queue['QueueUrl'])
+        # except ClientError as error:
+        #     logger.exception("Couldn't create queue named '%s'.", name)
+        #     raise error
+        # else:
+        #     return queue['QueueUrl']
+        return 'test'
+
+
+    def update_participation(self, group, channel):
+        participation = ChatParticipation.objects.filter(
+            chat_type=1,  private_chat_id=group['chat_id'],  user_setting__user_id=group['user_id']
+        ).first()
+
+        if not participation:
+            raise ValueError("No matching ChatParticipation found")
+
+        participation.channel_name = channel
+        participation.save()
+
+    async def group_add(self, group, channel):
+        await database_sync_to_async(self.update_participation)(group, channel)
+
+    async def group_discard(self, group, channel):
+        group_id = 1
+        user_id = 1
+        participation = ChatParticipation.objects.filter(chat_type=1, private_chat_id=group_id,  user_setting__user_id=user_id)[0]
+        participation.channel_name = None
+        participation.save()
 
     async def group_send(self, group, message):
-        participations = ChatParticipation.objects.filter(chat_id=group).select_related('user')
+        participations = ChatParticipation.objects.filter(chat_id=group)
         for participation in participations:
-            if participation.status == 1:
+            if participation.channel_name is not None:
                 try:
-                    queue = self.get_queue(self, participation.channel_name)
-                    response = queue.send_message(
-                        MessageBody=message, MessageAttributes={}
-                    )
+                    await self.send(participation.channel_name, message)
                 except ClientError as error:
                     logger.exception("Send message failed: %s", message)
                     raise error
                 else:
-                    return response
-
-
-
+                    return True

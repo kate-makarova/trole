@@ -82,7 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'trole.wsgi.application'
 
-ASGI_APPLICATION = "mysite.asgi.application"
+ASGI_APPLICATION = "trole.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "messanger.sqs_channel_layer.SQSChannelLayer",

@@ -5,3 +5,6 @@ django-cors-headers
 djangorestframework~=3.15.2
 djangorestframework_simplejwt
 channels~=4.2.0
+daphne
+boto3
+botocore

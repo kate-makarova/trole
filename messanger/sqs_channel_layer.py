@@ -43,34 +43,31 @@ class SQSChannelLayer(BaseChannelLayer):
 
     async def receive(self, channel):
         print('??')
-        while True:
-            await asyncio.sleep(10)
-            print('tick tack')
-        return True
-        # message = None
-        # while message is None:
-        #     try:
-        #         messages = self.sqs.receive_message(
-        #             QueueUrl=channel,
-        #             MessageAttributeNames=["All"],
-        #             MaxNumberOfMessages=1,
-        #             WaitTimeSeconds=10,
-        #         )
-        #     except ClientError as error:
-        #         logger.exception("Couldn't receive messages from queue: %s", channel)
-        #         raise error
-        #     else:
-        #         print(messages)
-        #         try:
-        #             m = messages['Messages'][0]
-        #             message = {
-        #                 "message_id": m['MessageId'],
-        #                 "body": m["Body"],
-        #                 "type": "string"
-        #                 }
-        #             return channel, message
-        #         except:
-        #             pass
+
+        message = None
+        while message is None:
+            try:
+                messages = self.sqs.receive_message(
+                    QueueUrl=channel,
+                    MessageAttributeNames=["All"],
+                    MaxNumberOfMessages=1,
+                    WaitTimeSeconds=10,
+                )
+            except ClientError as error:
+                logger.exception("Couldn't receive messages from queue: %s", channel)
+                raise error
+            else:
+                print(messages)
+                try:
+                    m = messages['Messages'][0]
+                    message = {
+                        "message_id": m['MessageId'],
+                        "body": m["Body"],
+                        "type": "string"
+                        }
+                    return channel, message
+                except:
+                    pass
 
     async def new_channel(self, prefix="specific"):
         name = f"{uuid.uuid4().hex}"
@@ -84,7 +81,7 @@ class SQSChannelLayer(BaseChannelLayer):
             return queue['QueueUrl']
 
 
-    def update_participation(self, group, channel):
+    def update_participation(self, group, channel, add=True):
         participation = ChatParticipation.objects.filter(
             chat_type=1,  private_chat_id=group['group_id'],  user_setting__user_id=group['user_id']
         ).first()
@@ -92,27 +89,22 @@ class SQSChannelLayer(BaseChannelLayer):
         if not participation:
             raise ValueError("No matching ChatParticipation found")
 
-        participation.channel_name = channel
+        if add:
+            participation.channel_name = channel
+        else:
+            participation.channel_name = None
         participation.save()
 
     async def group_add(self, group, channel):
         await database_sync_to_async(self.update_participation)(group, channel)
 
     async def group_discard(self, group, channel):
-        group_id = 1
-        user_id = 1
-        participation = ChatParticipation.objects.filter(chat_type=1, private_chat_id=group_id,  user_setting__user_id=user_id)[0]
-        participation.channel_name = None
-        participation.save()
+        await database_sync_to_async(self.update_participation)(group, channel, False)
 
     async def group_send(self, group, message):
         print(group)
         print(message)
-        if group['type'] == 1:
-            participations = ChatParticipation.objects.filter(private_chat_id=group['group_id'])
-        else:
-            participations = ChatParticipation.objects.filter(game_chat_id=group['group_id'])
-        for participation in participations:
+        for participation in group:
             if participation.channel_name is not None:
                 try:
                     await self.send(participation.channel_name, message)

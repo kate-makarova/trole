@@ -9,10 +9,6 @@ class Chat(models.Model):
         abstract = True
     name = models.CharField(max_length=300)
 
-class UserChatSettings(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.IntegerField(default=1)
-
 class ChatPost(models.Model):
     class Meta:
         abstract = True
@@ -44,7 +40,7 @@ class ChatParticipation(models.Model):
     chat_type = models.IntegerField(default=1)
     private_chat = models.ForeignKey(PrivateChat, null=True, on_delete=models.CASCADE)
     game_chat = models.ForeignKey(GameChat, null=True, on_delete=models.CASCADE)
-    user_setting = models.ForeignKey(UserChatSettings, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     unread = models.IntegerField(default=0)
     channel_name = models.CharField(max_length=300, null=True)
 

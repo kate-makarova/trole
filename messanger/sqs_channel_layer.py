@@ -4,6 +4,7 @@ import uuid
 from logging import DEBUG
 
 import boto3
+from asgiref.sync import sync_to_async
 from botocore.exceptions import ClientError
 from channels.db import database_sync_to_async
 
@@ -42,7 +43,11 @@ class SQSChannelLayer(BaseChannelLayer):
             return response
 
     async def receive(self, channel):
-        print('??')
+        # print('??')
+        # while True:
+        #     await asyncio.sleep(10)
+        #     print('tick tack')
+        # return True
 
         message = None
         while message is None:
@@ -51,21 +56,25 @@ class SQSChannelLayer(BaseChannelLayer):
                     QueueUrl=channel,
                     MessageAttributeNames=["All"],
                     MaxNumberOfMessages=1,
-                    WaitTimeSeconds=10,
+                    WaitTimeSeconds=3,
                 )
             except ClientError as error:
                 logger.exception("Couldn't receive messages from queue: %s", channel)
                 raise error
             else:
-                print(messages)
                 try:
                     m = messages['Messages'][0]
                     message = {
                         "message_id": m['MessageId'],
-                        "body": m["Body"],
-                        "type": "string"
+                        "message": m["Body"],
+                        "type": "chat.message"
                         }
-                    return channel, message
+
+                    self.sqs.delete_message(
+                        QueueUrl=channel,
+                        ReceiptHandle=m['ReceiptHandle']
+                    )
+                    return message
                 except:
                     pass
 
@@ -74,20 +83,30 @@ class SQSChannelLayer(BaseChannelLayer):
         try:
             queue = self.sqs.create_queue(QueueName=name, Attributes={})
             logger.info("Created queue '%s' with URL=%s", name, queue['QueueUrl'])
+            self.sqs.send_message(
+                QueueUrl=queue['QueueUrl'],
+                MessageBody='connection'
+            )
+            return queue['QueueUrl']
         except ClientError as error:
             logger.exception("Couldn't create queue named '%s'.", name)
             raise error
-        else:
-            return queue['QueueUrl']
+
 
 
     def update_participation(self, group, channel, add=True):
         participation = ChatParticipation.objects.filter(
-            chat_type=1,  private_chat_id=group['group_id'],  user_setting__user_id=group['user_id']
+            chat_type=1,  private_chat_id=group['group_id'],  user_id=group['user_id']
         ).first()
-
+        logger.info(participation)
         if not participation:
             raise ValueError("No matching ChatParticipation found")
+
+        if participation.channel_name is not None:
+            try:
+                self.sqs.delete_queue(QueueUrl=participation.channel_name)
+            except:
+                pass
 
         if add:
             participation.channel_name = channel
@@ -101,15 +120,17 @@ class SQSChannelLayer(BaseChannelLayer):
     async def group_discard(self, group, channel):
         await database_sync_to_async(self.update_participation)(group, channel, False)
 
+    def get_channels(self, group):
+        channels = ChatParticipation.objects.filter(
+            chat_type=group['type'],  private_chat_id=group['group_id']
+        ).exclude(channel_name=None).values_list('channel_name', flat=True)
+        return list(channels)
+
     async def group_send(self, group, message):
-        print(group)
-        print(message)
-        for participation in group:
-            if participation.channel_name is not None:
-                try:
-                    await self.send(participation.channel_name, message)
-                except ClientError as error:
-                    logger.exception("Send message failed: %s", message)
-                    raise error
-                else:
-                    return True
+        channels = await database_sync_to_async(self.get_channels)(group)
+        for channel in channels:
+            try:
+                await self.send(channel, message)
+            except ClientError as error:
+                logger.exception("Send message failed: %s", message)
+                raise error

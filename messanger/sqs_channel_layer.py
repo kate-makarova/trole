@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import uuid
 from logging import DEBUG
@@ -58,6 +59,8 @@ class SQSChannelLayer(BaseChannelLayer):
                     MaxNumberOfMessages=1,
                     WaitTimeSeconds=3,
                 )
+                await asyncio.sleep(3)
+                await self.send(channel, json.dumps({"type": "heartbit", "message": ''}))
             except ClientError as error:
                 logger.exception("Couldn't receive messages from queue: %s", channel)
                 raise error
@@ -85,7 +88,7 @@ class SQSChannelLayer(BaseChannelLayer):
             logger.info("Created queue '%s' with URL=%s", name, queue['QueueUrl'])
             self.sqs.send_message(
                 QueueUrl=queue['QueueUrl'],
-                MessageBody='connection'
+                MessageBody=json.dumps({"type": "heartbit", "message": "connection"})
             )
             return queue['QueueUrl']
         except ClientError as error:

@@ -5,6 +5,7 @@ import uuid
 from logging import DEBUG
 
 import boto3
+import botocore
 from asgiref.sync import sync_to_async
 from botocore.exceptions import ClientError
 from channels.db import database_sync_to_async
@@ -43,43 +44,68 @@ class SQSChannelLayer(BaseChannelLayer):
         else:
             return response
 
-    async def receive(self, channel):
-        # print('??')
-        # while True:
-        #     await asyncio.sleep(10)
-        #     print('tick tack')
-        # return True
+    async def send_heartbeat(self, channel):
+        while True:
+            await asyncio.sleep(30)  # Send heartbeat every 30 seconds or as required
+            await self.send(channel, json.dumps({"type": "heartbeat", "message": ''}))
 
+    async def receive(self, channel):
         message = None
+
+        # Start by entering the polling loop
         while message is None:
             try:
+                # Poll for messages
                 messages = self.sqs.receive_message(
                     QueueUrl=channel,
                     MessageAttributeNames=["All"],
                     MaxNumberOfMessages=1,
-                    WaitTimeSeconds=3,
+                    WaitTimeSeconds=1,  # Long polling for 1 second
                 )
-                await asyncio.sleep(3)
-                await self.send(channel, json.dumps({"type": "heartbeat", "message": ''}))
-            except ClientError as error:
-                logger.exception("Couldn't receive messages from queue: %s", channel)
-                raise error
-            else:
-                try:
+
+
+
+                # Log the result for debugging
+                #logger.info(f"Received SQS response: {messages}")
+
+                # Allow the event loop to yield control (non-blocking)
+                await asyncio.sleep(0)
+
+                if 'Messages' in messages:
+                    # Process the received message
                     m = messages['Messages'][0]
                     message = {
                         "message_id": m['MessageId'],
                         "message": m["Body"],
                         "type": "chat.message"
-                        }
+                    }
 
+                  #  logger.info(m)
+
+                    # Delete message from queue after processing
                     self.sqs.delete_message(
                         QueueUrl=channel,
                         ReceiptHandle=m['ReceiptHandle']
                     )
+
                     return message
-                except:
-                    pass
+                else:
+                    # No messages, continue polling
+                    pass # logger.info("No messages received")
+
+
+            except ClientError as error:
+                if error.response['Error']['Code'] == 'AWS.SimpleQueueService.NonExistentQueue':
+                    print(f"Error: The SQS queue does not exist anymore")
+                    return
+
+                else:
+                    logger.exception("Couldn't receive messages from queue: %s", channel)
+                    raise error
+
+            except Exception as e:
+                logger.exception("Error receiving or processing messages: %s", e)
+                await asyncio.sleep(1)  # Avoid tight loop in case of error
 
     async def new_channel(self, prefix="specific"):
         name = f"{uuid.uuid4().hex}"

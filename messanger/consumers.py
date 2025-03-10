@@ -1,7 +1,6 @@
 import json
 import logging
 
-from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 
 from messanger.models import ChatParticipation
@@ -56,7 +55,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from room group
     async def chat_message(self, event):
-        print(event)
+        logger.info(event)
         message = event["message"]
 
         # Send message to WebSocket

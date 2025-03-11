@@ -4,8 +4,10 @@ from . import views
 
 urlpatterns = [
     path("test/<int:id>", views.test, name="test"),
-    path("api/active-chats/<int:user_id>", views.ActiveChats.as_view(), name="active_chats"),
-    # path("chat/<int:id>", views.room, name="private_chat"),
-    # path("game_chat/<int:game_id>", views.room, name="default_game_chat"),
-    # path("game_chat/<int:game_id>/<int:id>", views.room, name="custom_game_chat"),
+    path("api/active-chats", views.ActiveChats.as_view(), name="active_chats"),
+    path("api/private-chat-messages/<int:id>", views.PrivateChatGetMessages.as_view(), name="private_chat_get_messages"),
+    path("api/private-chat-messages/<int:id>/<int:page>", views.PrivateChatGetMessages.as_view(),
+         name="private_chat_get_messages_full"),
+    path("api/private-chat-add", views.AddPrivateChat.as_view(), name="add_private_chat"),
+    path("api/private-chat-add-participant", views.PrivateChatAddParticipant.as_view(), name="add_private_chat_participant"),
 ]

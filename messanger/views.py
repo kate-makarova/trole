@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from messanger.models import PrivateChat, ChatParticipation
+from messanger.models import PrivateChat, ChatParticipation, PrivateChatPost
 
 
 def test(request, id):
@@ -19,8 +19,8 @@ class ActiveChats(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, user_id):
-        participation = ChatParticipation.objects.filter(user_id=user_id)
+    def get(self, request):
+        participation = ChatParticipation.objects.filter(user_id=request.user.id)
         data = []
         for p in participation:
             if p.chat_type == 1:
@@ -35,3 +35,100 @@ class ActiveChats(APIView):
                 "unread": 0
             })
         return Response({"data": data})
+
+class PrivateChatGetMessages(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id, page=1):
+        limit = 10
+        offset = page * limit
+        participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
+        if len(participation) == 0:
+            return Response({'data': 'Not found'}, status=404)
+
+        data = []
+        posts = PrivateChatPost.objects.filter(chat_id=id).order_by('-date_created')[offset:offset+limit]
+        for post in reversed(posts):
+            data.append({
+                "id": post.id,
+                "text": post.content_html,
+                "user": {
+                    "id": post.author.id,
+                    "name": post.author.username,
+                    "avatar": post.author.avatar
+                    },
+                "time": post.date_created
+            })
+
+        return Response({"data": data})
+
+class AddPrivateChat(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        chat = PrivateChat.objects.create(
+            name = request.data['name'],
+            chat_admin=request.user
+        )
+
+        for user_id in request.data['participants']:
+            ChatParticipation.objects.create(
+                chat_type=1,
+                private_chat=chat,
+                user_id=user_id,
+            )
+
+        return Response({'data': 'ok'})
+
+
+class RenamePrivateChat(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        chat = PrivateChat.objects.get(pk=request.data['id'])
+        chat.name = request.data['name']
+        chat.save()
+
+        return Response({'data': 'ok'})
+
+class PrivateChatAddParticipant(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        chat = PrivateChat.objects.get(pk=request.data['id'])
+        if chat.admin.id != request.user.id:
+            return Response({'data': 'Not allowed'}, status=403)
+
+        participation = ChatParticipation.objects.filter(private_chat=chat, user_id=request.data['user_id'])
+        if len(participation):
+            return Response({'data': 'Already participating'}, status=400)
+
+        ChatParticipation.objects.create(
+            chat_type=1,
+            private_chat=chat,
+            user_id=request.data['user_id'],
+        )
+
+        return Response({'data': 'ok'})
+
+
+class PrivateChatRemoveParticipant(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        chat = PrivateChat.objects.get(pk=request.data['id'])
+        if chat.admin.id != request.user.id:
+            return Response({'data': 'Not allowed'}, status=403)
+
+        participation = ChatParticipation.objects.filter(private_chat=chat, user_id=request.data['user_id'])
+        if len(participation) == 0:
+            return Response({'data': 'Not participating'}, status=400)
+
+        participation.delete()
+
+        return Response({'data': 'ok'})

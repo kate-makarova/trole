@@ -25,14 +25,10 @@ class GameChat(Chat):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     access_level = models.IntegerField(default=1)
 
-class PrivateChatPost(models.Model):
-    class Meta:
-        abstract = True
+class PrivateChatPost(ChatPost):
     chat = models.ForeignKey(PrivateChat, on_delete=CASCADE)
 
-class GameChatPost(models.Model):
-    class Meta:
-        abstract = True
+class GameChatPost(ChatPost):
     chat = models.ForeignKey(GameChat, on_delete=CASCADE)
 
     # 1 for private chars, 2 for game chats

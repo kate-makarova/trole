@@ -4,7 +4,7 @@ import logging
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from messanger.models import ChatPost
+from messanger.models import ChatPost, PrivateChatPost
 from trole_game.util.bb_translator import form_html
 
 logger = logging.getLogger('django')
@@ -38,15 +38,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-
-        id = ChatPost.objects.create(
-            chat_id=self.room_group_name,
-            author=data['user'].id,
-            date_created = datetime.time,
-            content_bb = data['text'],
-            content_html = form_html(data['text'])
-        )
-        data['id'] = id
 
         # Send message to room group
         await self.channel_layer.group_send(

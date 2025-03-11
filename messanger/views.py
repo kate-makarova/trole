@@ -42,7 +42,7 @@ class PrivateChatGetMessages(APIView):
 
     def get(self, request, id, page=1):
         limit = 10
-        offset = page * limit
+        offset = (page - 1) * limit
         participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
         if len(participation) == 0:
             return Response({'data': 'Not found'}, status=404)
@@ -56,7 +56,7 @@ class PrivateChatGetMessages(APIView):
                 "user": {
                     "id": post.author.id,
                     "name": post.author.username,
-                    "avatar": post.author.avatar
+                    "avatar": "--"
                     },
                 "time": post.date_created
             })

@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import uuid
+import datetime
 from logging import DEBUG
 
 import boto3
@@ -13,7 +14,8 @@ from channels.db import database_sync_to_async
 from channels.layers import BaseChannelLayer
 from django.db import transaction
 
-from messanger.models import ChatParticipation
+from messanger.models import ChatParticipation, PrivateChatPost
+from trole_game.util.bb_translator import form_html
 
 logger = logging.getLogger(__name__)
 
@@ -155,7 +157,20 @@ class SQSChannelLayer(BaseChannelLayer):
         ).exclude(channel_name=None).values_list('channel_name', flat=True)
         return list(channels)
 
+    def save_message(self, chat_id, message):
+        data = json.loads(message)
+        post = PrivateChatPost.objects.create(
+            chat_id=chat_id,
+            author_id=data['user']['id'],
+            date_created=datetime.datetime.now(),
+            content_bb=data['text'],
+            content_html=form_html(data['text'])
+        )
+        data['id'] = post.id
+        return json.dumps(data)
+
     async def group_send(self, group, message):
+        message = await database_sync_to_async(self.save_message)(group['group_id'], message)
         channels = await database_sync_to_async(self.get_channels)(group)
         for channel in channels:
             try:

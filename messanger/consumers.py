@@ -1,9 +1,6 @@
-import json
 import logging
 
-from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
-
-from messanger.models import ChatParticipation
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger('django')
 
@@ -11,18 +8,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         logger.debug('Connect')
         self.room_group_name = self.scope["url_route"]["kwargs"]["room_name"]
-      #  self.room_group_name = f"chat_{self.room_name}"
-       # self.room_group_name = 1
-        user_id = 1
-        user = self.scope
-        print(user)
 
         logger.debug(self.channel_name)
 
         # Join room group
         await self.channel_layer.group_add(
             {'group_id': self.room_group_name,
-             'user_id': user_id},
+             'user_id': self.scope['user'].id},
             self.channel_name
         )
 
@@ -34,24 +26,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         logger.debug('Disconnect')
         await self.channel_layer.group_discard(
             {'group_id': self.room_group_name,
-             'user_id': 1},
+             'user_id': self.scope['user'].id},
             self.channel_name
         )
 
     # Receive message from WebSocket
     async def receive(self, text_data=None, bytes_data=None):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["text"]
 
         # Send message to room group
-        # await self.channel_layer.group_send(
-        #     {"type": 1,
-        #      "group_id": self.room_group_name},
-        #     message
-        # )
-        await self.channel_layer.send(
-            self.channel_name
-        , json.dumps({"type": "message", "message": message}))
+        await self.channel_layer.group_send(
+            {"type": 1,
+             "group_id": self.room_group_name},
+            text_data
+        )
 
     # Receive message from room group
     async def chat_message(self, event):

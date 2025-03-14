@@ -36,6 +36,35 @@ class ActiveChats(APIView):
             })
         return Response({"data": data})
 
+class GetPrivateChat(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id, page=1):
+        limit = 10
+        offset = (page - 1) * limit
+        participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
+        if len(participation) == 0:
+            return Response({'data': 'Not found'}, status=404)
+
+        chat = PrivateChat.objects.get(pk=id)
+        participants = ChatParticipation.objects.filter(private_chat_id=id)
+
+        data = {
+            "id": chat.id,
+            "title": chat.name,
+            "users": []
+        }
+
+        for participant in participants:
+            data['users'].append({
+                "id": participant.user.id,
+                "name": participant.user.username,
+                "avatar": "--"
+            })
+
+        return Response({"data": data})
+
 class PrivateChatGetMessages(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

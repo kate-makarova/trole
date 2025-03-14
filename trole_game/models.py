@@ -1,8 +1,14 @@
 import datetime
 
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import DO_NOTHING
+
+class MyUser(AbstractBaseUser):
+    identifier = models.CharField(max_length=40, unique=True)
+    ...
+    USERNAME_FIELD = "identifier"
 
 class Language(models.Model):
     code = models.CharField(max_length=2)

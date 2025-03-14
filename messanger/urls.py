@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("test/<int:id>", views.test, name="test"),
     path("api/active-chats", views.ActiveChats.as_view(), name="active_chats"),
+    path("api/private-chat/<int:id>", views.GetPrivateChat.as_view(), name="get_private_chat"),
     path("api/private-chat-messages/<int:id>", views.PrivateChatGetMessages.as_view(), name="private_chat_get_messages"),
     path("api/private-chat-messages/<int:id>/<int:page>", views.PrivateChatGetMessages.as_view(),
          name="private_chat_get_messages_full"),

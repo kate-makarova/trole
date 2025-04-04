@@ -32,7 +32,7 @@ class SQSChannelLayer(BaseChannelLayer):
         self.receive_count = 0
         self.receive_event_loop = None
         self.client_prefix = uuid.uuid4().hex
-        self.sqs = boto3.client("sqs")
+        self.sqs = boto3.client("sqs", region_name="us-east-1")
 
     async def send(self, channel, message):
         try:

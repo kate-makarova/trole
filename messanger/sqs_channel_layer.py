@@ -71,7 +71,7 @@ class SQSChannelLayer(BaseChannelLayer):
                 #logger.info(f"Received SQS response: {messages}")
 
                 # Allow the event loop to yield control (non-blocking)
-                await asyncio.sleep(0)
+              #  await asyncio.sleep(0)
 
                 if 'Messages' in messages:
                     # Process the received message
@@ -93,7 +93,8 @@ class SQSChannelLayer(BaseChannelLayer):
                     return message
                 else:
                     # No messages, continue polling
-                    pass # logger.info("No messages received")
+                    await asyncio.sleep(0.5)
+                  #  pass # logger.info("No messages received")
 
 
             except ClientError as error:

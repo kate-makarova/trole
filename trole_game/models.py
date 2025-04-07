@@ -1,9 +1,11 @@
 import datetime
 
+from attr.validators import max_len
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import DO_NOTHING
+from django.db.models import DO_NOTHING, CASCADE
+
 
 class MyUser(AbstractBaseUser):
     identifier = models.CharField(max_length=40, unique=True)
@@ -207,4 +209,14 @@ class NewsArticle(models.Model):
     content_html = models.TextField()
     user_created = models.ForeignKey(User, on_delete=DO_NOTHING)
     date_created = models.DateTimeField()
+
+class Invitation(models.Model):
+    key = models.CharField(max_length=100)
+    sender = models.ForeignKey(User, on_delete=CASCADE)
+    receiver_email = models.CharField(max_length=300)
+    send_date = models.DateTimeField()
+    expiration_date = models.DateTimeField()
+    accepted = models.BooleanField(default=False)
+    receiver = models.ForeignKey(User, on_delete=DO_NOTHING, null=True, default=None)
+    accept_date = models.DateTimeField(null=True, default=None)
 

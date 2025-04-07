@@ -1,6 +1,7 @@
 import datetime
 import math
 
+import django.utils.crypto
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -17,11 +18,13 @@ from trole_game.misc.participation import Participation
 from trole_game.misc.permissions import GamePermissions
 from trole_game.models import Character, Game, UserGameParticipation, Episode, Post, Genre, \
     UserGameDisplay, CharacterEpisodeNotification, Article, Fandom, CharacterSheetTemplate, \
-    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft, NewsArticle
+    CharacterSheetTemplateField, CharacterSheetField, Page, UserSetting, Language, Draft, NewsArticle, Invitation
 from trole_game.util.bb_translator import form_html, translate_bb
 import operator
 from django.db.models import CharField
 from django.db.models.functions import Lower
+
+from trole_game.util.mail_client import MailClient
 
 CharField.register_lookup(Lower)
 limit = 10
@@ -1458,3 +1461,44 @@ class DraftGet(APIView):
         }
 
         return Response({"data": data})
+
+class InvitationSend(APIView):
+    def post(self, request):
+        sender = request.user
+        receiver_email = request.data['receiver_email']
+        mail_client = MailClient()
+        with open('emails/invitation.html', 'r') as file:
+            body_html = file.read()
+        with open('emails/invitation.txt', 'r') as file:
+            body_text = file.read()
+
+        send_date = datetime.datetime.now()
+        expiration_date = datetime.datetime.now() + datetime.timedelta(days=30)
+        key = django.utils.crypto.get_random_string(100)
+
+        Invitation.objects.create(
+            key=key,
+            sender = sender,
+            receiver_email = receiver_email,
+            send_date = send_date,
+            expiration_date = expiration_date
+        )
+
+        replacements = {
+            "{{username}}": sender,
+            "{{expiration_date}}": expiration_date.isoformat(),
+            "{{url}}": 'https://trole.online/invitation?key=' + key
+        }
+
+        for placeholder_name in replacements:
+            body_html = body_html.replace(placeholder_name, replacements[placeholder_name])
+
+        for placeholder_name in replacements:
+            body_text = body_text.replace(placeholder_name, replacements[placeholder_name])
+
+        mail_client.send(
+            'You Are Invited to Trole Online',
+            body_html,
+            body_text,
+            receiver_email
+            )

@@ -1467,9 +1467,9 @@ class InvitationSend(APIView):
         sender = request.user
         receiver_email = request.data['receiver_email']
         mail_client = MailClient()
-        with open('emails/invitation.html', 'r') as file:
+        with open('./trole_game/emails/invitation.html', 'r') as file:
             body_html = file.read()
-        with open('emails/invitation.txt', 'r') as file:
+        with open('./trole_game/emails/invitation.txt', 'r') as file:
             body_text = file.read()
 
         send_date = datetime.datetime.now()
@@ -1485,7 +1485,7 @@ class InvitationSend(APIView):
         )
 
         replacements = {
-            "{{username}}": sender,
+            "{{username}}": sender.username,
             "{{expiration_date}}": expiration_date.isoformat(),
             "{{url}}": 'https://trole.online/invitation?key=' + key
         }
@@ -1493,12 +1493,16 @@ class InvitationSend(APIView):
         for placeholder_name in replacements:
             body_html = body_html.replace(placeholder_name, replacements[placeholder_name])
 
+        print(body_html)
+
         for placeholder_name in replacements:
             body_text = body_text.replace(placeholder_name, replacements[placeholder_name])
 
-        mail_client.send(
+        result = mail_client.send(
             'You Are Invited to Trole Online',
-            body_html,
             body_text,
+            body_html,
             receiver_email
             )
+
+        return Response({"data": "sent"})

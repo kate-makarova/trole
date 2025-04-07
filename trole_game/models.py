@@ -212,11 +212,11 @@ class NewsArticle(models.Model):
 
 class Invitation(models.Model):
     key = models.CharField(max_length=100)
-    sender = models.ForeignKey(User, on_delete=CASCADE)
+    sender = models.ForeignKey(User, related_name='sender_id', on_delete=CASCADE)
     receiver_email = models.CharField(max_length=300)
     send_date = models.DateTimeField()
     expiration_date = models.DateTimeField()
     accepted = models.BooleanField(default=False)
-    receiver = models.ForeignKey(User, on_delete=DO_NOTHING, null=True, default=None)
+    receiver = models.ForeignKey(User, on_delete=DO_NOTHING, related_name='receiver_id', null=True, default=None)
     accept_date = models.DateTimeField(null=True, default=None)
 

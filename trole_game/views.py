@@ -1463,6 +1463,9 @@ class DraftGet(APIView):
         return Response({"data": data})
 
 class InvitationSend(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         sender = request.user
         receiver_email = request.data['receiver_email']
@@ -1487,7 +1490,7 @@ class InvitationSend(APIView):
         replacements = {
             "{{username}}": sender.username,
             "{{expiration_date}}": expiration_date.isoformat(),
-            "{{url}}": 'https://trole.online/invitation?key=' + key
+            "{{url}}": 'https://trole.online/invitation/' + key
         }
 
         for placeholder_name in replacements:
@@ -1506,3 +1509,25 @@ class InvitationSend(APIView):
             )
 
         return Response({"data": "sent"})
+
+class InvitationGet(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, key):
+        invitation = Invitation.objects.get(key=key)
+        if invitation is None:
+            return None
+        else:
+            data = {
+                "key": invitation.key,
+                "receiverEmail": invitation.receiver_email,
+                "sender": {
+                    "id": invitation.sender.id,
+                    "name": invitation.sender.username,
+                },
+                "expirationDate": invitation.expiration_date.isoformat(),
+                "accepted": invitation.accepted
+            }
+            return Response({"data": data})
+

@@ -13,6 +13,10 @@ class DefinedStats(models.Model):
     name = models.CharField(max_length=100)
     max = models.IntegerField(null=True, default=Empty)
 
+class DefinedSpellActionPont(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
+    name = models.CharField(100)
+
 class DefinedExpLevels(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     level_number = models.IntegerField()
@@ -36,6 +40,13 @@ class DefinedCharacterClassFeatures(models.Model):
     number_of_cantrips = models.IntegerField()
     main_stat_damage_modifier = models.IntegerField()
 
+class DefinedCharacterClassSpellPoints(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
+    character_class = models.ForeignKey(DefinedCharacterClass, on_delete=CASCADE)
+    level = models.IntegerField()
+    spell_point = models.ForeignKey(DefinedSpellActionPont, on_delete=CASCADE)
+    value = models.IntegerField()
+
 class DefinedCharacterClassStats(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     character_class = models.ForeignKey(DefinedCharacterClass, on_delete=CASCADE)
@@ -53,6 +64,10 @@ class DefinedSkill(models.Model):
     description = models.TextField()
     is_spell = models.BooleanField(default=False)
     is_cantrip = models.BooleanField(default=False)
+    action_point_cost = models.IntegerField()
+    bonus_action_cost = models.IntegerField()
+    spell_point_type = models.ForeignKey(DefinedSpellActionPont, on_delete=DO_NOTHING)
+    spell_point_cost = models.IntegerField()
 
 class SkillAvailability(models.Model):
     skill = models.ForeignKey(DefinedSkill, on_delete=CASCADE)
@@ -100,6 +115,29 @@ class CharacterClass(models.Model):
 class CharacterSkills(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
     skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING)
+
+class FightLogTurn(models.Model):
+    fight = models.ForeignKey(Fight, on_delete=CASCADE)
+    round_number = models.IntegerField()
+    fight_start = models.BooleanField(default=False)
+    fight_finish = models.BooleanField(default=False)
+    summary = models.TextField()
+    details = models.JSONField()
+
+class FightLogCharacter(models.Model):
+    fight = models.ForeignKey(Fight, on_delete=CASCADE)
+    turn = models.ForeignKey(FightLogTurn, on_delete=CASCADE)
+    character = models.ForeignKey(Character, on_delete=CASCADE)
+    details = models.JSONField()
+    is_down = models.BooleanField()
+
+class FightLogMob(models.Model):
+    fight = models.ForeignKey(Fight, on_delete=CASCADE)
+    turn = models.ForeignKey(FightLogTurn, on_delete=CASCADE)
+    mob = models.ForeignKey(Mob, on_delete=CASCADE)
+    details = models.JSONField()
+    is_dead = models.BooleanField()
+
 
 
 

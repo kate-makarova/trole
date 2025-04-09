@@ -1531,3 +1531,52 @@ class InvitationGet(APIView):
             }
             return Response({"data": data})
 
+class Register(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        invitation = Invitation.objects.get(key=request.data['invitation_key'])
+
+        if invitation is None:
+            return Response({"data": {
+                "status": "error",
+                "error": "Invitation not found"
+            }})
+
+        if invitation.accepted:
+            return Response({"data": {
+                "status": "error",
+                "error": "Invitation already accepted"
+            }})
+
+        if invitation.expiration_date < datetime.datetime.now():
+            return Response({"data": {
+                "status": "error",
+                "error": "Invitation expired"
+            }})
+
+        existing_user = User.objects.get(email=request.data['email'])
+        if existing_user is not None:
+            return Response({"data": {
+                "status": "error",
+                "error": "Email already exists"
+            }})
+
+        user = User.objects.create_user(
+            request.data['username'],
+            request.data['email'],
+            request.data['password']
+        )
+
+        invitation.accepted = True
+        invitation.receiver = user
+        invitation.save()
+
+        return Response({"data": {
+            "status": "success",
+            "user": {
+                "id": user.id,
+                "name": user.username
+            }
+        }})

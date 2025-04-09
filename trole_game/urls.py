@@ -8,7 +8,7 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
     GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
     PostDelete, DraftCreate, DraftList, DraftGet, GameLeave, GetCharacter, UpdateCharacter, GetNewsArticleById, \
-    GetNewsArticleList, InvitationSend, InvitationGet
+    GetNewsArticleList, InvitationSend, InvitationGet, Register
 from trole_game.util.negative_int_converter import NegativeIntConverter
 
 register_converter(NegativeIntConverter, 'negint')
@@ -68,6 +68,7 @@ urlpatterns = [
     path('api/admin-user-list/<int:page>', AdminUserList.as_view(), name='admin_user_list'),
     path('api/admin-page-create', AdminPageCreate.as_view(), name='admin_page_create'),
     path('api/invitation-send', InvitationSend.as_view(), name='invitation_send'),
-    path('api/invitation/<str:key>', InvitationGet.as_view(), name='invitation')
+    path('api/invitation/<str:key>', InvitationGet.as_view(), name='invitation'),
+    path('api/register', Register.as_view(), name='register')
 ]
 

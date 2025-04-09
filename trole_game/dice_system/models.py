@@ -13,6 +13,10 @@ class DefinedStats(models.Model):
     name = models.CharField(max_length=100)
     max = models.IntegerField(null=True, default=Empty)
 
+class BaseMechanics(models.Model):
+    health_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
+    health_multiplier = models.IntegerField()
+
 class DefinedSpellActionPont(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(100)
@@ -27,6 +31,7 @@ class DefinedCharacterClass(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     base_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
+    base_stat_multiplier = models.IntegerField()
     playable = models.BooleanField(default=True)
     locked_by_default = models.BooleanField(default=False)
 
@@ -75,6 +80,10 @@ class SkillAvailability(models.Model):
     required_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
     required_level = models.IntegerField()
 
+class FightCharacters(models.Model):
+    fight = models.ForeignKey(Fight, on_delete=DO_NOTHING)
+    character = models.ForeignKey(Character, on_delete=DO_NOTHING)
+
 class Mob(models.Model):
     name = models.CharField(max_length=200)
     fight = models.ForeignKey(Fight, on_delete=DO_NOTHING)
@@ -115,6 +124,7 @@ class CharacterClass(models.Model):
 class CharacterSkills(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
     skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING)
+    character_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
 
 class FightLogTurn(models.Model):
     fight = models.ForeignKey(Fight, on_delete=CASCADE)

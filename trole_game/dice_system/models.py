@@ -9,14 +9,17 @@ class Fight(models.Model):
     episode = models.ForeignKey(Episode, on_delete=DO_NOTHING, null=True, default=Empty)
 
 class DefinedStats(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(max_length=100)
     max = models.IntegerField(null=True, default=Empty)
 
 class DefinedExpLevels(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     level_number = models.IntegerField()
     required_experience = models.IntegerField()
 
 class DefinedCharacterClass(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField()
     base_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
@@ -24,6 +27,7 @@ class DefinedCharacterClass(models.Model):
     locked_by_default = models.BooleanField(default=False)
 
 class DefinedCharacterClassFeatures(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     character_class = models.ForeignKey(DefinedCharacterClass, on_delete=CASCADE)
     level = models.IntegerField()
     number_of_action_points = models.IntegerField()
@@ -33,6 +37,7 @@ class DefinedCharacterClassFeatures(models.Model):
     main_stat_damage_modifier = models.IntegerField()
 
 class DefinedCharacterClassStats(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     character_class = models.ForeignKey(DefinedCharacterClass, on_delete=CASCADE)
     level = models.IntegerField()
     stat = models.ForeignKey(DefinedStats, on_delete=CASCADE)
@@ -42,20 +47,22 @@ class ClassAvailability(models.Model):
     required_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
     required_level = models.IntegerField()
 
-class Skill(models.Model):
+class DefinedSkill(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField()
     is_spell = models.BooleanField(default=False)
     is_cantrip = models.BooleanField(default=False)
 
 class SkillAvailability(models.Model):
-    skill = models.ForeignKey(Skill, on_delete=CASCADE)
+    skill = models.ForeignKey(DefinedSkill, on_delete=CASCADE)
     is_basic = models.BooleanField(default=False)
     required_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
     required_level = models.IntegerField()
 
 class Mob(models.Model):
     name = models.CharField(max_length=200)
+    fight = models.ForeignKey(Fight, on_delete=DO_NOTHING)
     health = models.IntegerField()
     character_level = models.IntegerField()
     is_dead = models.BooleanField(default=False)
@@ -73,7 +80,7 @@ class MobClass(models.Model):
 
 class MobSkills(models.Model):
     mob = models.ForeignKey(Mob, on_delete=CASCADE)
-    skill = models.ForeignKey(Skill, on_delete=DO_NOTHING)
+    skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING)
 
 class CharacterBasics(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
@@ -92,7 +99,7 @@ class CharacterClass(models.Model):
 
 class CharacterSkills(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
-    skill = models.ForeignKey(Skill, on_delete=DO_NOTHING)
+    skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING)
 
 
 

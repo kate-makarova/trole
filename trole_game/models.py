@@ -220,3 +220,4 @@ class Invitation(models.Model):
     receiver = models.ForeignKey(User, on_delete=DO_NOTHING, related_name='receiver_id', null=True, default=None)
     accept_date = models.DateTimeField(null=True, default=None)
 
+from trole_game.dice_system.models import *

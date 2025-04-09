@@ -31,7 +31,9 @@ class DefinedCharacterClass(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     base_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
-    base_stat_multiplier = models.IntegerField()
+    base_attack_melee_physical_multiplier = models.IntegerField()
+    base_attack_ranged_physical_multiplier = models.IntegerField()
+    base_attack_magical_multiplier = models.IntegerField()
     playable = models.BooleanField(default=True)
     locked_by_default = models.BooleanField(default=False)
 
@@ -69,6 +71,7 @@ class DefinedSkill(models.Model):
     description = models.TextField()
     is_spell = models.BooleanField(default=False)
     is_cantrip = models.BooleanField(default=False)
+    base_stat_multiplier = models.IntegerField()
     action_point_cost = models.IntegerField()
     bonus_action_cost = models.IntegerField()
     spell_point_type = models.ForeignKey(DefinedSpellActionPont, on_delete=DO_NOTHING)

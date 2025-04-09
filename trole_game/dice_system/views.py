@@ -34,8 +34,7 @@ class StartFight(APIView):
                 character_id=character_id
             )
             character = Character.objects.get(pk=character_id)
-            full_character_stats = logic.getFullCharacterStats(character)
-
+            character_meta = logic.getCharacterFullStats(character)
 
             fight['characters'].append({
                 "character": {

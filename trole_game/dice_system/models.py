@@ -14,6 +14,7 @@ class DefinedStats(models.Model):
     max = models.IntegerField(null=True, default=Empty)
 
 class BaseMechanics(models.Model):
+    name = models.CharField(100)
     health_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
     health_multiplier = models.IntegerField()
 

@@ -11,7 +11,28 @@ class Logic:
         self.mechanics = BaseMechanics.objects.get(game_id=self.game_id)
         self.modifiers = DefinedAttackStatModifiers.objects.get(game_id=self.game_id)
 
-    def getCharacterFullStats(self, character):
+    def getCharacterBaseMeta(self, character):
+        stats = CharacterStats.objects.get(character=character)
+        health = self.calculateHealth(stats)
+        classes = CharacterClass.object.filter(character=character)
+        meta = {
+            "health": health,
+            "basic_physical_melee_damage": None,
+            "basic_physical_range_damage": None,
+            "classes": [],
+            "skills": [],
+        }
+        for char_class in classes:
+            meta['classes'].append({
+                "id": char_class.id,
+                "name": char_class.name,
+                "level": char_class.level
+            })
+
+
+        return meta
+
+    def getCharacterFullMeta(self, character):
         stats = CharacterStats.objects.get(character=character)
         classes = CharacterClass.object.filter(character=character)
         skills = CharacterSkills.objects.filter(character=character)

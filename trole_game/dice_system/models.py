@@ -71,6 +71,15 @@ class ClassAvailability(models.Model):
     required_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
     required_level = models.IntegerField()
 
+class DefinedBaseAttack(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    action_point_cost = models.IntegerField()
+    dice_type = models.IntegerField()
+    use_class_base_stat = models.BooleanField(True)
+    base_stat = models.IntegerField(null=True, default=None)
+
 class DefinedSkill(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(max_length=200)
@@ -78,7 +87,8 @@ class DefinedSkill(models.Model):
     is_spell = models.BooleanField(default=False)
     is_cantrip = models.BooleanField(default=False)
     dice_type = models.IntegerField()
-    base_stat = models.IntegerField()
+    use_class_base_stat = models.BooleanField(True)
+    base_stat = models.IntegerField(null=True, default=None)
     action_point_cost = models.IntegerField()
     bonus_action_cost = models.IntegerField()
     spell_point_type = models.ForeignKey(DefinedSpellActionPont, on_delete=DO_NOTHING)
@@ -135,6 +145,13 @@ class CharacterSkills(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
     skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING)
     character_class = models.ForeignKey(DefinedCharacterClass, on_delete=DO_NOTHING)
+    
+class CharacterModifiers(models.Model):
+    character = models.ForeignKey(Character, on_delete=CASCADE)
+    stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING, null=True, default=None)
+    base_action = models.ForeignKey(DefinedBaseAction, on_delete=DO_NOTHING, null=True, default=None)
+    skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING, null=True, default=None)
+    value = models.JSONField()
 
 class FightLogTurn(models.Model):
     fight = models.ForeignKey(Fight, on_delete=CASCADE)
@@ -157,8 +174,3 @@ class FightLogMob(models.Model):
     mob = models.ForeignKey(Mob, on_delete=CASCADE)
     details = models.JSONField()
     is_dead = models.BooleanField()
-
-
-
-
-

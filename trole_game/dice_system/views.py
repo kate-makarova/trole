@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from trole_game.dice_system.models import Fight, FightCharacters, Mob, CharacterStats
+from trole_game.dice_system.models import Fight, FightCharacters, Mob
 from trole_game.dice_system.logic import Logic
 from trole_game.models import Character
 
@@ -79,4 +79,8 @@ class TakeAction(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+
+
+
+
         return Response({"data": True})

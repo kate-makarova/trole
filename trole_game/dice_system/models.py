@@ -31,11 +31,20 @@ class DefinedCharacterClass(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField()
-    base_stat_melee = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
-    base_stat_ranged = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
-    base_stat_magic = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
     playable = models.BooleanField(default=True)
     locked_by_default = models.BooleanField(default=False)
+
+class DefinedWeaponType(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+
+class DefinedBaseClassAttack(models.Model):
+    game = models.ForeignKey(Game, on_delete=CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    base_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
+    weapon_type = models.ForeignKey(DefinedWeaponType, on_delete=DO_NOTHING, null=True, default=None)
 
 class DefinedCharacterClassFeatures(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
@@ -149,7 +158,7 @@ class CharacterSkills(models.Model):
 class CharacterModifiers(models.Model):
     character = models.ForeignKey(Character, on_delete=CASCADE)
     stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING, null=True, default=None)
-    base_action = models.ForeignKey(DefinedBaseAction, on_delete=DO_NOTHING, null=True, default=None)
+    base_attack = models.ForeignKey(DefinedBaseAttack, on_delete=DO_NOTHING, null=True, default=None)
     skill = models.ForeignKey(DefinedSkill, on_delete=DO_NOTHING, null=True, default=None)
     value = models.JSONField()
 

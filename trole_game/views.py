@@ -2,6 +2,7 @@ import datetime
 import math
 
 import django.utils.crypto
+import pytz
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -1537,13 +1538,17 @@ class Register(APIView):
     permission_classes = []
 
     def post(self, request):
-        invitation = Invitation.objects.get(key=request.data['invitation_key'])
+        invitation = Invitation.objects.filter(key=request.data['invitation_key'])
+        utc = pytz.UTC
+        print(request.data)
 
-        if invitation is None:
+        if len(invitation) == 0:
             return Response({"data": {
                 "status": "error",
                 "error": "Invitation not found"
             }})
+
+        invitation = invitation[0]
 
         if invitation.accepted:
             return Response({"data": {
@@ -1551,14 +1556,14 @@ class Register(APIView):
                 "error": "Invitation already accepted"
             }})
 
-        if invitation.expiration_date < datetime.datetime.now():
+        if invitation.expiration_date < utc.localize(datetime.datetime.now()):
             return Response({"data": {
                 "status": "error",
                 "error": "Invitation expired"
             }})
 
-        existing_user = User.objects.get(email=request.data['email'])
-        if existing_user is not None:
+        existing_user = User.objects.filter(email=request.data['email'])
+        if len(existing_user):
             return Response({"data": {
                 "status": "error",
                 "error": "Email already exists"
@@ -1580,8 +1585,10 @@ class Register(APIView):
             "status": "success",
             "user": {
                 "id": user.id,
-                "name": user.username,
-                "refresh_token": str(refresh),
-                "access_token": str(refresh.access_token),
+                "username": user.username,
+            },
+            "token": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
             }
         }})

@@ -100,9 +100,8 @@ class Logic:
             return 0
         return randrange(1, dN)
 
-    def calculatBaseAttackDamage(self, action, stats, classes, modifiers, dN):
+    def calculatBaseAttackDamage(self, action, stats, classes, modifiers, dN = None):
         total_action_damage = 0
-        
         
         
         for char_class in classes:

@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from trole.settings import DEFAULT_LANGUAGE
 from trole_game.access_level import AccessLevelPermission
@@ -1573,10 +1574,14 @@ class Register(APIView):
         invitation.receiver = user
         invitation.save()
 
+        refresh = RefreshToken.for_user(user)
+
         return Response({"data": {
             "status": "success",
             "user": {
                 "id": user.id,
-                "name": user.username
+                "name": user.username,
+                "refresh_token": str(refresh),
+                "access_token": str(refresh.access_token),
             }
         }})

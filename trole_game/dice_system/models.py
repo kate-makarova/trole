@@ -39,13 +39,6 @@ class DefinedWeaponType(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
 
-class DefinedBaseClassAttack(models.Model):
-    game = models.ForeignKey(Game, on_delete=CASCADE)
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    base_stat = models.ForeignKey(DefinedStats, on_delete=DO_NOTHING)
-    weapon_type = models.ForeignKey(DefinedWeaponType, on_delete=DO_NOTHING, null=True, default=None)
-
 class DefinedCharacterClassFeatures(models.Model):
     game = models.ForeignKey(Game, on_delete=CASCADE)
     character_class = models.ForeignKey(DefinedCharacterClass, on_delete=CASCADE)
@@ -85,7 +78,7 @@ class DefinedBaseAttack(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     action_point_cost = models.IntegerField()
-    dice_type = models.IntegerField()
+    dice_type = models.IntegerField(null=True, default=None)
     use_class_base_stat = models.BooleanField(True)
     base_stat = models.IntegerField(null=True, default=None)
 
@@ -95,7 +88,7 @@ class DefinedSkill(models.Model):
     description = models.TextField()
     is_spell = models.BooleanField(default=False)
     is_cantrip = models.BooleanField(default=False)
-    dice_type = models.IntegerField()
+    dice_type = models.IntegerField(null=True, default=None)
     use_class_base_stat = models.BooleanField(True)
     base_stat = models.IntegerField(null=True, default=None)
     action_point_cost = models.IntegerField()

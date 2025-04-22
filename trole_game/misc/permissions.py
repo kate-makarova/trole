@@ -14,7 +14,10 @@ class GamePermissions:
 
     @staticmethod
     def check_game_access(game_id, user):
-        game = Game.objects.get(pk=game_id)
+        try:
+            game = Game.objects.get(pk=game_id)
+        except:
+            return True
 
         if game.permission_level == 0:
             return True
@@ -35,7 +38,10 @@ class GamePermissions:
 
     @staticmethod
     def check_episode_access(episode_id, user_id):
-        episode = Episode.objects.get(pk=episode_id)
+        try:
+            episode = Episode.objects.get(pk=episode_id)
+        except:
+            return True
         game = episode.game
         if game.permission_level > episode.permission_level:
             return GamePermissions.check_game_access(game.id, user_id)

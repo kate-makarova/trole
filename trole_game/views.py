@@ -181,7 +181,10 @@ class GetGameById(APIView):
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
-        game = Game.objects.get(pk=id)
+        try:
+            game = Game.objects.get(pk=id)
+        except:
+            return Response({"data": None}, 404)
         data = {
             "id": game.id,
             "status": {
@@ -1540,7 +1543,6 @@ class Register(APIView):
     def post(self, request):
         invitation = Invitation.objects.filter(key=request.data['invitation_key'])
         utc = pytz.UTC
-        print(request.data)
 
         if len(invitation) == 0:
             return Response({"data": {

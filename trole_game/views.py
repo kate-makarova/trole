@@ -237,7 +237,10 @@ class GetEpisodeById(APIView):
     permission_classes = [AccessLevelPermission]
 
     def get(self, request, id):
-        episode = Episode.objects.get(pk=id)
+        try:
+            episode = Episode.objects.get(pk=id)
+        except:
+            return Response({"data": None}, 404)
         participations = UserGameParticipation.objects.filter(user_id=request.user.id).exclude(status=0)
         data = {
             "id": episode.id,

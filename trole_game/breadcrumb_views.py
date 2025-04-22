@@ -14,121 +14,124 @@ class Breadcrumbs(APIView):
     def get(self, request, path):
         breadcrumbs = []
 
-        if path == 'game':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-            ]
+        try:
+            if path == 'game':
+                game = Game.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                ]
 
-        if path == 'game-settings':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": 'Game Settings', "path": "/game-settings/game-edit" + str(game.id)},
-            ]
+            if path == 'game-settings':
+                game = Game.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": 'Game Settings', "path": "/game-settings/game-edit" + str(game.id)},
+                ]
 
-        if path == 'character-list':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": "Character List", "path": "/character-list/" + str(game.id)}
-            ]
+            if path == 'character-list':
+                game = Game.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Character List", "path": "/character-list/" + str(game.id)}
+                ]
 
-        if path == 'episode-create':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": "Create Episode", "path": "/episode-create/" + str(game.id)}
-            ]
+            if path == 'episode-create':
+                game = Game.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Create Episode", "path": "/episode-create/" + str(game.id)}
+                ]
 
-        if path == 'episode-edit':
-            episode = Episode.objects.get(pk=request.GET.get('0'))
-            game = Game.objects.get(pk=episode.game_id)
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": episode.name, "path": "/episode/" + str(episode.id)},
-                {"name": "Edit Episode", "path": "/episode-edit/" + str(episode.id)}
-            ]
+            if path == 'episode-edit':
+                episode = Episode.objects.get(pk=request.GET.get('0'))
+                game = Game.objects.get(pk=episode.game_id)
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": episode.name, "path": "/episode/" + str(episode.id)},
+                    {"name": "Edit Episode", "path": "/episode-edit/" + str(episode.id)}
+                ]
 
-        if path == 'character-create':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": "Create Character", "path": "/character-create/" + str(game.id)}
-            ]
+            if path == 'character-create':
+                game = Game.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Create Character", "path": "/character-create/" + str(game.id)}
+                ]
 
-        if path == 'character':
-            character = Character.objects.get(pk=request.GET.get('0'))
-            game = Game.objects.get(pk=character.game_id)
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {"name": "Character List", "path": "/character-list/" + str(game.id)},
-                {"name": character.name, "path": "/character/" + str(character.id)}
-            ]
+            if path == 'character':
+                character = Character.objects.get(pk=request.GET.get('0'))
+                game = Game.objects.get(pk=character.game_id)
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
+                    {"name": "Character List", "path": "/character-list/" + str(game.id)},
+                    {"name": character.name, "path": "/character/" + str(character.id)}
+                ]
 
-        if path == 'article-create':
-            game = Game.objects.get(pk=request.GET.get('0'))
-            article = Article.objects.get(game_id=request.GET.get('0'), pk=request.GET.get('1'))
-            index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
-
-            breadcrumbs = [
-                get_game_link(game.id, request.user.id),
-                {"name": game.name, "path": "/game/" + str(game.id)},
-                {
-                    "name": index_article.name,
-                    "path": '/article/' + str(request.GET.get('0'))
-                },
-                {
-                    "name": article.name,
-                    "path": '/article/' + str(request.GET.get('0')) + '/' + str(request.GET.get('1'))
-                }
-            ]
-
-        if path == 'episode':
-            episode = Episode.objects.get(pk=request.GET.get('0'))
-            breadcrumbs = [
-                get_game_link(episode.game.id, request.user.id),
-                {"name": episode.game.name, "path": "/game/" + str(episode.game.id)},
-                {"name": episode.name, "path": "/episode/" + str(episode.id)}
-            ]
-
-        if path == 'article':
-            if len(request.GET) > 1:
+            if path == 'article-create':
+                game = Game.objects.get(pk=request.GET.get('0'))
                 article = Article.objects.get(game_id=request.GET.get('0'), pk=request.GET.get('1'))
                 index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
-                article_breadcrumbs = [
+
+                breadcrumbs = [
+                    get_game_link(game.id, request.user.id),
+                    {"name": game.name, "path": "/game/" + str(game.id)},
                     {
                         "name": index_article.name,
                         "path": '/article/' + str(request.GET.get('0'))
                     },
                     {
                         "name": article.name,
-                        "path": '/article/'+str(request.GET.get('0'))+'/'+str(request.GET.get('1'))
+                        "path": '/article/' + str(request.GET.get('0')) + '/' + str(request.GET.get('1'))
                     }
                 ]
 
-            else:
-                index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
-                article_breadcrumbs = [
-                    {
-                        "name": index_article.name,
-                        "path": '/article/' + str(request.GET.get('0'))
-                    }
+            if path == 'episode':
+                episode = Episode.objects.get(pk=request.GET.get('0'))
+                breadcrumbs = [
+                    get_game_link(episode.game.id, request.user.id),
+                    {"name": episode.game.name, "path": "/game/" + str(episode.game.id)},
+                    {"name": episode.name, "path": "/episode/" + str(episode.id)}
                 ]
 
+            if path == 'article':
+                if len(request.GET) > 1:
+                    article = Article.objects.get(game_id=request.GET.get('0'), pk=request.GET.get('1'))
+                    index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
+                    article_breadcrumbs = [
+                        {
+                            "name": index_article.name,
+                            "path": '/article/' + str(request.GET.get('0'))
+                        },
+                        {
+                            "name": article.name,
+                            "path": '/article/'+str(request.GET.get('0'))+'/'+str(request.GET.get('1'))
+                        }
+                    ]
 
-            breadcrumbs = [
-                get_game_link(index_article.game.id, request.user.id),
-                {"name": index_article.game.name, "path": "/game/" + str(index_article.game.id)},
-            ]
-            breadcrumbs += article_breadcrumbs
+                else:
+                    index_article = Article.objects.get(game_id=int(request.GET.get('0')), is_index=True)
+                    article_breadcrumbs = [
+                        {
+                            "name": index_article.name,
+                            "path": '/article/' + str(request.GET.get('0'))
+                        }
+                    ]
+
+
+                breadcrumbs = [
+                    get_game_link(index_article.game.id, request.user.id),
+                    {"name": index_article.game.name, "path": "/game/" + str(index_article.game.id)},
+                ]
+                breadcrumbs += article_breadcrumbs
+        except:
+            pass
 
         return Response({"data": breadcrumbs})
 

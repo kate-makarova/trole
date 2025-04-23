@@ -49,6 +49,10 @@ class UserHome(APIView):
             game = {
                 "id": participation.game.id,
                 "name": participation.game.name,
+                "rating": {
+                    "id": participation.game.rating_id,
+                    "name": Rating.get_ratings()[participation.game.rating_id]['name']
+                },
                 "description": participation.game.description,
                 "image": participation.game.image,
                 "total_episodes": participation.game.total_episodes,

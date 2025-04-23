@@ -1286,8 +1286,23 @@ class UpdateCharacter(APIView):
 
     def post(self, request, id):
         character = Character.objects.get(pk=id)
+        print(request.data)
         if character.user.id == request.user.id or character.game.user_created.id == request.user.id:
             for key, value in request.data.items():
+                if key.isnumeric():
+                    try:
+                        field = CharacterSheetField.objects.get(character=character, character_sheet_template_field_id=key)
+                        field.value = value
+                        field.save()
+                    except:
+                        CharacterSheetField.objects.create(
+                            character=character,
+                            character_sheet_template_field_id=key,
+                            value=value
+                        )
+                    continue
+                if key == 'game':
+                    continue
                 if key == 'status':
                     game = Game.objects.get(pk=character.game.id)
                     if int(value) == 1 and character.status != 1:
@@ -1297,6 +1312,7 @@ class UpdateCharacter(APIView):
                     if int(value) != 1 and character.status == 1:
                         game.total_characters -= 1
                         game.save()
+                    continue
                 setattr(character, key, value)
             character.save()
 
@@ -1332,13 +1348,14 @@ class GetCharacterSheetById(APIView):
         for additional_field in additional_fields:
             template = CharacterSheetTemplateField.objects.get(pk=additional_field.character_sheet_template_field_id)
             fields.append({
-                "id": additional_field.id,
+                "id": template.id,
                 "field_name": template.field_name,
                 "value": additional_field.value
             })
 
         data = {
             "character_id": character.id,
+            "game_id": character.game.id,
             "can_moderate": character.game.user_created.id == request.user.id,
             "can_edit": character.user.id == request.user.id,
             "fields": fields,

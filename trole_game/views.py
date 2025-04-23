@@ -106,6 +106,10 @@ class GameList(APIView):
             game_data = {
                 "id": game.id,
                 "name": game.name,
+                "rating": {
+                    "id": game.rating_id,
+                   "name": Rating.get_ratings()[game.rating_id]['name']
+                },
                 "description": game.description,
                 "image": game.image,
                 "total_episodes": game.total_episodes,

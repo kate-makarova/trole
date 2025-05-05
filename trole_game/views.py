@@ -1529,8 +1529,6 @@ class InvitationSend(APIView):
         for placeholder_name in replacements:
             body_html = body_html.replace(placeholder_name, replacements[placeholder_name])
 
-        print(body_html)
-
         for placeholder_name in replacements:
             body_text = body_text.replace(placeholder_name, replacements[placeholder_name])
 

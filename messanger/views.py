@@ -161,3 +161,35 @@ class PrivateChatRemoveParticipant(APIView):
         participation.delete()
 
         return Response({'data': 'ok'})
+
+
+class LastOpenChat(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        participations = ChatParticipation.objects.filter(user_id=request.user.id, last_open_private_chat=True)
+        if len(participations) == 0:
+            return Response({'data': 'Not found'}, status=404)
+        participation = participations[0]
+        return Response({'data': participation.private_chat.id})
+
+class LastOpenChatUpdate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=request.data['chat_id'])
+        if len(participation) == 0:
+            return Response({'data': 'Not found'}, status=404)
+        participation = participation[0]
+        participation.last_open_private_chat = True
+        participation.save()
+
+        old_participation = ChatParticipation.objects.filter(user_id=request.user.id, last_open_private_chat=True)
+        if len(old_participation) != 0:
+            old_participation = old_participation[0]
+            old_participation.last_open_private_chat = False
+            old_participation.save()
+
+        return Response({'data': 'ok'})

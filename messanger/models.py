@@ -38,5 +38,5 @@ class ChatParticipation(models.Model):
     game_chat = models.ForeignKey(GameChat, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     unread = models.IntegerField(default=0)
-    channel_name = models.CharField(max_length=300, null=True)
+    last_open_private_chat = models.BooleanField(default=False)
 

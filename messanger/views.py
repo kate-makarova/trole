@@ -170,7 +170,7 @@ class LastOpenChat(APIView):
     def get(self, request):
         participations = ChatParticipation.objects.filter(user_id=request.user.id, last_open_private_chat=True)
         if len(participations) == 0:
-            return Response({'data': 'Not found'}, status=404)
+            return Response({'data': None})
         participation = participations[0]
         return Response({'data': participation.private_chat.id})
 

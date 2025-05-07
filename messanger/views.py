@@ -41,7 +41,7 @@ class GetPrivateChat(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id, page=1):
-        limit = 10
+        limit = 20
         offset = (page - 1) * limit
         participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
         if len(participation) == 0:

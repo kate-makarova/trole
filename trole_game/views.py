@@ -413,14 +413,18 @@ class Autocomplete(APIView):
 
     def get(self, request, class_name, search):
         data = []
+        name_field = 'name'
+        if class_name == 'User':
+            name_field = 'username'
+
         if class_name in self.allowed_entities:
             cls = globals()[class_name]
-            results = getattr(cls, "objects").filter(name__lower__contains=search.lower()).order_by('name')[:10]
+            results = getattr(cls, "objects").filter(name__lower__contains=search.lower()).order_by(name_field)[:10]
 
             for result in results:
                 data.append({
                     "id": result.id,
-                    "name": result.name
+                    "name": result[name_field]
                 })
 
         return Response({"data": data})

@@ -104,7 +104,7 @@ class AddPrivateChat(APIView):
             ChatParticipation.objects.create(
                 chat_type=1,
                 private_chat=chat,
-                user_id=user_data.id
+                user_id=user_data['id']
             )
 
         return Response({'data': 'ok'})

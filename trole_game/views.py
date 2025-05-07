@@ -409,7 +409,7 @@ class GetPostsByEpisode(APIView):
 class Autocomplete(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    allowed_entities = ['Fandom']
+    allowed_entities = ['Fandom', 'User']
 
     def get(self, request, class_name, search):
         data = []

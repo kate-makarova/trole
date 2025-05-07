@@ -40,9 +40,7 @@ class GetPrivateChat(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, id, page=1):
-        limit = 20
-        offset = (page - 1) * limit
+    def get(self, request, id):
         participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
         if len(participation) == 0:
             return Response({'data': 'Not found'}, status=404)
@@ -70,7 +68,7 @@ class PrivateChatGetMessages(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id, page=1):
-        limit = 10
+        limit = 20
         offset = (page - 1) * limit
         participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=id)
         if len(participation) == 0:

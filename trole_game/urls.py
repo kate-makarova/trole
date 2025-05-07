@@ -8,7 +8,7 @@ from .views import index, UserHome, UserGetByUsername, GetGameById, GetEpisodeLi
     ArticleUpdate, GameList, PostUpdate, CharacterSheetTemplateGet, GetPageByPath, CharacterSheetTemplateUpdate, \
     GetCharacterSheetById, GetLanguageList, GetGameLanguageList, UpdateUserSettings, EpisodeUpdate, GameUpdate, \
     PostDelete, DraftCreate, DraftList, DraftGet, GameLeave, GetCharacter, UpdateCharacter, GetNewsArticleById, \
-    GetNewsArticleList, InvitationSend, InvitationGet, Register
+    GetNewsArticleList, InvitationSend, InvitationGet, Register, UserAutocomplete
 from trole_game.util.negative_int_converter import NegativeIntConverter
 
 register_converter(NegativeIntConverter, 'negint')
@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/episode/<int:id>', GetEpisodeById.as_view(), name='episode'),
     path('api/episode-posts/<int:episode_id>/<negint:page>', GetPostsByEpisode.as_view(), name='get_posts_by_episode'),
     path('api/autocomplete/<str:class_name>/<str:search>', Autocomplete.as_view(), name='autocomplete'),
+    path('api/user-autocomplete/<str:search>', UserAutocomplete.as_view(), name='user_autocomplete'),
     path('api/character-autocomplete/<int:game_id>/<str:search>', CharacterAutocomplete.as_view(), name='character_autocomplete'),
     path('api/static-list/<str:class_name>', StaticList.as_view(), name='static_list'),
     path('api/episode-create', EpisodeCreate.as_view(), name='episode_create'),

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from messanger.models import PrivateChat, ChatParticipation, PrivateChatPost, ChatPost
+from messanger.models import PrivateChat, ChatParticipation, PrivateChatPost, ChatPost, GameChat
 
 
 class ActiveChats(APIView):
@@ -20,11 +20,12 @@ class ActiveChats(APIView):
         for p in participation:
             if p.chat_type == 1:
                 chat = p.private_chat
+                unread = PrivateChat.objects.filter(chat_id=chat.id,
+                                                 date_created__gt=participation.last_read_message_date).count()
             else:
                 chat = p.game_chat
-
-            unread = ChatPost.objects.filter(chat_id=chat.id,
-                                    date_created__gt=participation.last_read_message_date).count()
+                unread = GameChat.objects.filter(chat_id=chat.id,
+                                                    date_created__gt=participation.last_read_message_date).count()
 
             data.append({
                 "id": chat.id,

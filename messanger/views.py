@@ -1,19 +1,14 @@
 # chat/views.py
+from datetime import datetime
+
 from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from messanger.models import PrivateChat, ChatParticipation, PrivateChatPost
+from messanger.models import PrivateChat, ChatParticipation, PrivateChatPost, ChatPost
 
-
-def test(request, id):
-    #chat = PrivateChat.oblects.get(pk=id)
-   # user_id = 1
-   # participation = ChatParticipation.objects.select_related('user_setting').filter(chat_type=1, private_chat_id=id, user_setting__user_id=user_id)[0]
-
-    return render(request, "messanger/test.html", {"room_name": 'uuu'})
 
 class ActiveChats(APIView):
     authentication_classes = [JWTAuthentication]
@@ -27,14 +22,34 @@ class ActiveChats(APIView):
                 chat = p.private_chat
             else:
                 chat = p.game_chat
+
+            unread = ChatPost.objects.filter(chat_id=chat.id,
+                                    date_created__gt=participation.last_read_message_date).count()
+
             data.append({
                 "id": chat.id,
                 "type": p.chat_type,
                 "title": chat.name,
                 "users": [],
-                "unread": 0
+                "unread": unread
             })
         return Response({"data": data})
+
+class UpdateLastReadMessageDate(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if request.data['chat_type'] == 1:
+            participation = ChatParticipation.objects.filter(user_id=request.user.id, private_chat_id=request.data['chat_id'])
+        else:
+            participation = ChatParticipation.objects.filter(user_id=request.user.id,
+                                                             game_chat_id=request.data['chat_id'])
+        if participation.exists():
+            participation = participation[0]
+            participation.last_read_message_date = datetime.datetime.now()
+            participation.save()
+
 
 class GetPrivateChat(APIView):
     authentication_classes = [JWTAuthentication]

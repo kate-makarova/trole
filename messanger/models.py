@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import DO_NOTHING, CASCADE
@@ -37,6 +39,6 @@ class ChatParticipation(models.Model):
     private_chat = models.ForeignKey(PrivateChat, null=True, on_delete=models.CASCADE)
     game_chat = models.ForeignKey(GameChat, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    unread = models.IntegerField(default=0)
+    last_read_message_date = models.DateTimeField(default=datetime.datetime.now)
     last_open_private_chat = models.BooleanField(default=False)
 

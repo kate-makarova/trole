@@ -13,4 +13,5 @@ urlpatterns = [
     path("api/private-chat/add-participant", views.PrivateChatAddParticipant.as_view(), name="add_private_chat_participant"),
     path("api/last-open-chat", views.LastOpenChat.as_view(), name="last_open_chat"),
     path("api/last-open-chat/update", views.LastOpenChatUpdate.as_view(), name="last_open_chat_update"),
+    path("api/last-read-message-date/update", views.UpdateLastReadMessageDate.as_view(), name="last_read_message_date"),
 ]

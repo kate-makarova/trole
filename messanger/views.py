@@ -227,7 +227,7 @@ class LastOpenChatUpdate(APIView):
         return Response({'data': 'ok'})
 
 
-class TotalPrivateUnread:
+class HeaderCharData(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -241,4 +241,12 @@ class TotalPrivateUnread:
                            WHERE m.date_created > r.last_read_message_date;
                            """, [request.user.id])
             row = cursor.fetchone()
-        return Response({'data': row[0]})
+
+            participation = ChatParticipation.objects.filter(user_id=request.user.id, last_open_private_chat=True)
+            if len(participation) != 0:
+                participation = participation[0]
+
+        return Response({'data': {
+            "unread": row[0],
+            "last_chat": participation.private_chat.id
+        }})

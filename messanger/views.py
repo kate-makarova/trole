@@ -22,16 +22,33 @@ class ActiveChats(APIView):
                 chat = p.private_chat
                 unread = PrivateChatPost.objects.filter(chat_id=chat.id,
                                                  date_created__gt=p.last_read_message_date).count()
+
+                users = []
+                participants = ChatParticipation.objects.filter(private_chat_id=chat.id)
+                for p1 in participants:
+                    users.append({
+                        "id": p1.user.id,
+                        "name": p1.user.username,
+                        "avatar": ""
+                    })
             else:
                 chat = p.game_chat
                 unread = GameChatPost.objects.filter(chat_id=chat.id,
                                                     date_created__gt=p.last_read_message_date).count()
+                users = []
+                participants = ChatParticipation.objects.filter(private_chat_id=chat.id)
+                for p1 in participants:
+                    users.append({
+                        "id": p1.user.id,
+                        "name": p1.user.username,
+                        "avatar": ""
+                    })
 
             data.append({
                 "id": chat.id,
                 "type": p.chat_type,
                 "title": chat.name,
-                "users": [],
+                "users": users,
                 "unread": unread
             })
         return Response({"data": data})

@@ -1,6 +1,7 @@
 # chat/views.py
 from datetime import datetime
 
+from django.db import connection
 from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -224,3 +225,20 @@ class LastOpenChatUpdate(APIView):
         participation.save()
 
         return Response({'data': 'ok'})
+
+
+class TotalPrivateUnread:
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT COUNT(*) AS total_unread_messages
+                           FROM messanger_privatechatpost m
+                                    LEFT JOIN messanger_chatparticipation r
+                                              ON m.chat_id = r.private_chat_id AND r.user_id = %s
+                           WHERE m.date_created > r.last_read_message_date;
+                           """, [request.user.id])
+            row = cursor.fetchone()
+        return Response({'data': row[0]})

@@ -21,11 +21,11 @@ class ActiveChats(APIView):
             if p.chat_type == 1:
                 chat = p.private_chat
                 unread = PrivateChatPost.objects.filter(chat_id=chat.id,
-                                                 date_created__gt=participation.last_read_message_date).count()
+                                                 date_created__gt=p.last_read_message_date).count()
             else:
                 chat = p.game_chat
                 unread = GameChatPost.objects.filter(chat_id=chat.id,
-                                                    date_created__gt=participation.last_read_message_date).count()
+                                                    date_created__gt=p.last_read_message_date).count()
 
             data.append({
                 "id": chat.id,
